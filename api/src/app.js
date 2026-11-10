@@ -210,7 +210,7 @@ function crearApp({ archivoDb, selladoMs = 10000, ots = true, logger = false } =
     r.get("/v1/reclamos", async () => ({ reclamos: R.todos() }));
     r.get("/v1/reclamos/:id", async (req, reply) => R.uno(req.params.id) || reply.code(404).send({ error: "No existe ese reclamo" }));
     r.post("/v1/reclamos", {
-      schema: { body: { type: "object", required: ["est"], properties: { est: { type: "string" }, chips: { type: "array", items: { type: "string" } }, desc: { type: "string", maxLength: 4000 }, autor: { type: "string", maxLength: 120 }, canal: { type: "string", enum: ["web", "whatsapp"] }, fotos: { type: "array", items: { type: "string" } }, contacto: { type: "string" } } } },
+      schema: { body: { type: "object", required: ["est"], properties: { est: { type: "string" }, chips: { type: "array", items: { type: "string" } }, desc: { type: "string", maxLength: 4000 }, autor: { type: "string", maxLength: 120 }, canal: { type: "string", enum: ["web", "whatsapp", "telegram"] }, fotos: { type: "array", items: { type: "string" } }, contacto: { type: "string" } } } },
     }, async (req, reply) => {
       if (!EST.has(req.body.est)) return reply.code(400).send({ error: "Estación desconocida" });
       const { contacto, ...d } = req.body; // el contacto no se publica

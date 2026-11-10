@@ -92,4 +92,9 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => console.log(`Bot de WhatsApp escuchando en el puerto ${PORT}`));
+
+// Respaldo por Telegram: se activa si existe TELEGRAM_TOKEN (misma conversación y mismos datos)
+if (process.env.TELEGRAM_TOKEN) {
+  require("./telegram").iniciarTelegram(process.env.TELEGRAM_TOKEN, { ...datos, crearReclamo: (d) => datos.crearReclamo({ ...d, canal: "telegram" }) });
+}
 module.exports = { enviar };
