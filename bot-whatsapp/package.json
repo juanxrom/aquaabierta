@@ -1,0 +1,14 @@
+{
+  "name": "aquaabierta-whatsapp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bot de WhatsApp de AquaAbierta (API oficial de WhatsApp Cloud, sin dependencias)",
+  "main": "servidor.js",
+  "scripts": {
+    "start": "node servidor.js",
+    "test": "node prueba.js"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
