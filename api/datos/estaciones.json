@@ -1,0 +1,405 @@
+[
+ {
+  "id": "taguas-arriba",
+  "nombre": "Río de las Taguas (aguas arriba de la zona minera)",
+  "cuenca": "jachal",
+  "lat": -29.4493,
+  "lon": -69.9016,
+  "base": {
+   "ph": 7.3,
+   "ce": 480,
+   "q": 1.2
+  },
+  "minas": [
+   "veladero",
+   "pascua-lama"
+  ],
+  "rol": "control",
+  "rio": "Río de las Taguas"
+ },
+ {
+  "id": "taguas-abajo",
+  "nombre": "Río de las Taguas (aguas abajo de la zona minera)",
+  "cuenca": "jachal",
+  "lat": -29.358,
+  "lon": -69.9153,
+  "base": {
+   "ph": 7.3,
+   "ce": 510,
+   "q": 1.9
+  },
+  "minas": [
+   "veladero",
+   "pascua-lama"
+  ],
+  "rol": "abajo",
+  "rio": "Río de las Taguas"
+ },
+ {
+  "id": "palca",
+  "nombre": "Río de la Palca (río abajo de Veladero)",
+  "cuenca": "jachal",
+  "lat": -29.3407,
+  "lon": -69.5874,
+  "base": {
+   "ph": 7.5,
+   "ce": 740,
+   "q": 7.1
+  },
+  "minas": [
+   "veladero",
+   "pascua-lama"
+  ],
+  "rol": "confluencia",
+  "rio": "Río de la Palca"
+ },
+ {
+  "id": "lavadero",
+  "nombre": "Río Lavadero (río abajo de Veladero)",
+  "cuenca": "jachal",
+  "lat": -29.545,
+  "lon": -69.2289,
+  "base": {
+   "ph": 7.6,
+   "ce": 940,
+   "q": 11.9
+  },
+  "minas": [
+   "veladero",
+   "pascua-lama"
+  ],
+  "rol": "confluencia",
+  "rio": "Río Lavadero"
+ },
+ {
+  "id": "vicuna-arriba",
+  "nombre": "Cabecera del río de los Mogotes (aguas arriba de la zona minera)",
+  "cuenca": "jachal",
+  "lat": -28.4605,
+  "lon": -69.6469,
+  "base": {
+   "ph": 7.3,
+   "ce": 480,
+   "q": 1.2
+  },
+  "minas": [
+   "vicuna"
+  ],
+  "rol": "control",
+  "rio": "Río de los Mogotes"
+ },
+ {
+  "id": "vicuna-abajo",
+  "nombre": "Río de los Mogotes (aguas abajo de la zona minera)",
+  "cuenca": "jachal",
+  "lat": -28.5484,
+  "lon": -69.6069,
+  "base": {
+   "ph": 7.3,
+   "ce": 510,
+   "q": 1.9
+  },
+  "minas": [
+   "vicuna"
+  ],
+  "rol": "abajo",
+  "rio": "Río de los Mogotes"
+ },
+ {
+  "id": "vicuna-roblanco",
+  "nombre": "Río Blanco (río abajo de Vicuña (Filo del Sol))",
+  "cuenca": "jachal",
+  "lat": -28.3934,
+  "lon": -69.2695,
+  "base": {
+   "ph": 7.5,
+   "ce": 750,
+   "q": 7.5
+  },
+  "minas": [
+   "vicuna"
+  ],
+  "rol": "confluencia",
+  "rio": "Río Blanco"
+ },
+ {
+  "id": "angualasto",
+  "nombre": "Río Blanco en Angualasto",
+  "cuenca": "jachal",
+  "lat": -30.0533,
+  "lon": -69.1688,
+  "base": {
+   "ph": 7.6,
+   "ce": 900,
+   "q": 4.5
+  },
+  "minas": [
+   "pascua-lama",
+   "veladero",
+   "vicuna"
+  ],
+  "rol": "pueblo",
+  "rio": "Río Blanco"
+ },
+ {
+  "id": "rodeo",
+  "nombre": "Río Jáchal cerca de Rodeo",
+  "cuenca": "jachal",
+  "lat": -30.1948,
+  "lon": -69.0649,
+  "base": {
+   "ph": 7.8,
+   "ce": 1000,
+   "q": 7
+  },
+  "minas": [
+   "pascua-lama",
+   "veladero",
+   "vicuna"
+  ],
+  "rol": "pueblo",
+  "rio": "Río Jáchal"
+ },
+ {
+  "id": "jachal",
+  "nombre": "Río Jáchal en San José de Jáchal (toma de riego)",
+  "cuenca": "jachal",
+  "lat": -30.2208,
+  "lon": -68.7571,
+  "base": {
+   "ph": 7.9,
+   "ce": 1400,
+   "q": 6
+  },
+  "minas": [
+   "pascua-lama",
+   "veladero",
+   "vicuna"
+  ],
+  "rol": "pueblo",
+  "rio": "Río Jáchal"
+ },
+ {
+  "id": "el-pachon-abajo",
+  "nombre": "Río Santa Cruz (aguas abajo de la zona minera)",
+  "cuenca": "ullum",
+  "lat": -31.6109,
+  "lon": -70.2943,
+  "base": {
+   "ph": 7.3,
+   "ce": 510,
+   "q": 1.9
+  },
+  "minas": [
+   "el-pachon"
+  ],
+  "rol": "abajo",
+  "rio": "Río Santa Cruz"
+ },
+ {
+  "id": "el-pachon-roblanco",
+  "nombre": "Río Blanco (río abajo de El Pachón)",
+  "cuenca": "ullum",
+  "lat": -31.5269,
+  "lon": -70.233,
+  "base": {
+   "ph": 7.4,
+   "ce": 560,
+   "q": 3.1
+  },
+  "minas": [
+   "el-pachon"
+  ],
+  "rol": "confluencia",
+  "rio": "Río Blanco"
+ },
+ {
+  "id": "el-pachon-rocolorado",
+  "nombre": "Río Colorado (río abajo de El Pachón)",
+  "cuenca": "ullum",
+  "lat": -31.8927,
+  "lon": -69.7536,
+  "base": {
+   "ph": 7.6,
+   "ce": 850,
+   "q": 9.9
+  },
+  "minas": [
+   "el-pachon"
+  ],
+  "rol": "confluencia",
+  "rio": "Río Colorado"
+ },
+ {
+  "id": "barreal",
+  "nombre": "Río de los Patos en Barreal",
+  "cuenca": "ullum",
+  "lat": -31.65,
+  "lon": -69.4722,
+  "base": {
+   "ph": 7.7,
+   "ce": 600,
+   "q": 10
+  },
+  "minas": [
+   "casposo",
+   "el-pachon"
+  ],
+  "rol": "pueblo",
+  "rio": "Río de los Patos"
+ },
+ {
+  "id": "el-pachon-rodelospatos",
+  "nombre": "Río de Los Patos (río abajo de El Pachón)",
+  "cuenca": "ullum",
+  "lat": -31.3782,
+  "lon": -69.4312,
+  "base": {
+   "ph": 7.8,
+   "ce": 1140,
+   "q": 16.4
+  },
+  "minas": [
+   "el-pachon"
+  ],
+  "rol": "confluencia",
+  "rio": "Río de Los Patos"
+ },
+ {
+  "id": "casposo-abajo",
+  "nombre": "Río Castaño (aguas abajo de la zona minera)",
+  "cuenca": "ullum",
+  "lat": -31.1501,
+  "lon": -69.4578,
+  "base": {
+   "ph": 7.3,
+   "ce": 510,
+   "q": 1.9
+  },
+  "minas": [
+   "casposo"
+  ],
+  "rol": "abajo",
+  "rio": "Río Castaño"
+ },
+ {
+  "id": "casposo-rosanjuan",
+  "nombre": "Río San Juan (río abajo de Casposo)",
+  "cuenca": "ullum",
+  "lat": -31.2685,
+  "lon": -69.399,
+  "base": {
+   "ph": 7.4,
+   "ce": 570,
+   "q": 3.4
+  },
+  "minas": [
+   "casposo"
+  ],
+  "rol": "confluencia",
+  "rio": "Río San Juan"
+ },
+ {
+  "id": "ullum",
+  "nombre": "Río San Juan en el Dique de Ullum (agua para la ciudad)",
+  "cuenca": "ullum",
+  "lat": -31.4634,
+  "lon": -68.6529,
+  "base": {
+   "ph": 7.8,
+   "ce": 800,
+   "q": 40
+  },
+  "minas": [
+   "casposo",
+   "el-pachon"
+  ],
+  "rol": "pueblo",
+  "rio": "Río San Juan"
+ },
+ {
+  "id": "gualcamayo-arriba",
+  "nombre": "Río Gualcamayo (aguas arriba de la zona minera)",
+  "cuenca": "bermejo",
+  "lat": -29.7488,
+  "lon": -68.6297,
+  "base": {
+   "ph": 7.3,
+   "ce": 480,
+   "q": 1.2
+  },
+  "minas": [
+   "gualcamayo"
+  ],
+  "rol": "control",
+  "rio": "Río Gualcamayo"
+ },
+ {
+  "id": "gualcamayo-abajo",
+  "nombre": "Río Gualcamayo (aguas abajo de la zona minera)",
+  "cuenca": "bermejo",
+  "lat": -29.6727,
+  "lon": -68.6342,
+  "base": {
+   "ph": 7.3,
+   "ce": 510,
+   "q": 1.9
+  },
+  "minas": [
+   "gualcamayo"
+  ],
+  "rol": "abajo",
+  "rio": "Río Gualcamayo"
+ },
+ {
+  "id": "gualcamayo-rodelospiojos",
+  "nombre": "Río de Los Piojos (río abajo de Gualcamayo)",
+  "cuenca": "bermejo",
+  "lat": -29.6476,
+  "lon": -68.5153,
+  "base": {
+   "ph": 7.4,
+   "ce": 560,
+   "q": 3.1
+  },
+  "minas": [
+   "gualcamayo"
+  ],
+  "rol": "confluencia",
+  "rio": "Río de Los Piojos"
+ },
+ {
+  "id": "gualcamayo-roguandacol",
+  "nombre": "Río Guandacol (río abajo de Gualcamayo)",
+  "cuenca": "bermejo",
+  "lat": -29.6696,
+  "lon": -68.4331,
+  "base": {
+   "ph": 7.4,
+   "ce": 600,
+   "q": 4.0
+  },
+  "minas": [
+   "gualcamayo"
+  ],
+  "rol": "confluencia",
+  "rio": "Río Guandacol"
+ },
+ {
+  "id": "gualcamayo-robermejo",
+  "nombre": "Río Bermejo (río abajo de Gualcamayo)",
+  "cuenca": "bermejo",
+  "lat": -29.8034,
+  "lon": -68.355,
+  "base": {
+   "ph": 7.5,
+   "ce": 700,
+   "q": 6.2
+  },
+  "minas": [
+   "gualcamayo"
+  ],
+  "rol": "confluencia",
+  "rio": "Río Bermejo"
+ }
+]
