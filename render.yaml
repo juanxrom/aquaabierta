@@ -21,7 +21,7 @@ services:
     healthCheckPath: /salud
     envVars:
       - key: AQUA_API_URL
-        value: https://aquaabierta-api.onrender.com
+        value: https://aquaabierta-api-production.up.railway.app
       - key: WHATSAPP_TOKEN
         sync: false
       - key: WHATSAPP_PHONE_ID
