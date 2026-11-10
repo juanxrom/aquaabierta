@@ -165,6 +165,22 @@ pre.code{background:var(--soft);border-radius:12px;padding:14px;overflow-x:auto;
 .big-num{font-size:2.2rem;font-weight:900;color:var(--azul)}
 footer{border-top:1px solid var(--line);padding-block:20px 32px;font-size:.88rem;color:var(--muted)}
 footer .wrap{display:grid;gap:6px}
+/* Análisis profesionales */
+.fs{min-width:0;border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:12px;grid-template-columns:minmax(0,1fr);margin:0}
+.fs legend{font-weight:900;font-size:1.05rem;padding:0 6px}
+.campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.campos>*{min-width:0}
+.campos input[type=file]{max-width:100%;width:100%}
+.res-tabla input,.res-tabla select{padding:8px;font-size:.95rem}
+.res-tabla td{padding:6px 4px}
+.res-tabla td:first-child{min-width:170px}
+.doc{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--line);font-size:.92rem}
+.doc .mono{font-size:.72rem}
+.conf{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:.8rem;padding:3px 10px;border-radius:999px}
+.conf.alta{background:var(--ok-bg);color:var(--ok)}
+.conf.media{background:var(--warn-bg);color:var(--warn)}
+.conf.basica{background:var(--soft);color:var(--muted)}
+.help{font-size:.85rem;color:var(--muted);margin-top:4px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;z-index:20;max-width:calc(100% - 32px)}
 </style>
 </head><body>
@@ -181,6 +197,7 @@ footer .wrap{display:grid;gap:6px}
       <a href="#reportar">Avisar algo</a>
       <a href="#reclamos">Reclamos</a>
       <a href="#verificar">Comprobar un dato</a>
+      <a href="#analisis">Análisis</a>
       <a href="#datos">Datos abiertos</a>
       <a href="#presentacion">Demo</a>
     </nav>
@@ -308,6 +325,8 @@ footer .wrap{display:grid;gap:6px}
           <tr><td class="mono">GET /v1/lecturas?estacion=taguas-abajo</td><td>Mediciones de un punto, por fecha</td></tr>
           <tr><td class="mono">POST /v1/lecturas/lote</td><td>Carga de miles de mediciones de una vez (sensores)</td></tr>
           <tr><td class="mono">GET /v1/verificar/L-000123</td><td>Prueba de que un dato no fue cambiado</td></tr>
+          <tr><td class="mono">GET /v1/analisis</td><td>Análisis de laboratorios con sus documentos y huellas</td></tr>
+          <tr><td class="mono">POST /v1/analisis</td><td>Carga de un análisis con informe firmado</td></tr>
           <tr><td class="mono">GET /v1/reclamos</td><td>Reclamos con sus respuestas</td></tr>
           <tr><td class="mono">WS /v1/tiempo-real</td><td>Datos en vivo apenas llegan</td></tr>
         </tbody></table></div>
@@ -327,6 +346,73 @@ footer .wrap{display:grid;gap:6px}
         <tr><td><b>Caudal</b> (cuánta agua pasa)</td><td>normal</td><td>menos de la mitad de lo habitual</td><td>no se usa</td><td>Provisorio, solo como aviso.</td></tr>
       </tbody></table></div>
     </div>
+  </section>
+
+  <!-- ANÁLISIS PROFESIONALES -->
+  <section data-view="analisis" class="stack" hidden style="gap:18px">
+    <div><h1>Análisis de laboratorios y profesionales</h1><p class="muted" style="margin-top:6px;max-width:66ch">Laboratorios, universidades, organismos públicos, empresas y profesionales pueden sumar sus análisis del agua del río Jáchal. Cada aporte trae su informe formal, sus pruebas y la firma de un responsable. Una revisión técnica lo valida antes de marcarlo como confiable, y todo queda a la vista y sellado.</p></div>
+    <div class="row"><a class="btn" href="#form-an" id="an-ir">Aportar un análisis</a><span class="small muted" id="an-cuenta"></span></div>
+    <div class="info-box small"><b>¿Cómo leer los colores?</b> Comparamos cada resultado con el límite para agua de bebida del Código Alimentario Argentino (artículo 982). El agua del río no es agua de red, pero ese límite ayuda a entender si un valor es preocupante.</div>
+    <div id="an-lista" class="stack" style="gap:16px"></div>
+
+    <form class="card stack" id="form-an" novalidate style="scroll-margin-top:80px">
+      <div><h2>Aportar un análisis</h2><p class="muted small" style="margin-top:4px">Completá los 5 pasos. Los campos con * son obligatorios. Tu correo no se publica.</p></div>
+
+      <fieldset class="fs"><legend>1. Quién aporta</legend>
+        <div class="campos">
+          <div><label class="lbl" for="an-tipo">Tipo de aportante *</label><select id="an-tipo">
+            <option>Laboratorio acreditado</option><option>Profesional independiente</option><option>Universidad o centro de investigación</option><option>Organismo público</option><option>Empresa</option><option>Organización de la comunidad</option></select></div>
+          <div><label class="lbl" for="an-org">Institución o empresa *</label><input type="text" id="an-org" placeholder="Ej.: Laboratorio de análisis de aguas"></div>
+          <div><label class="lbl" for="an-resp">Responsable técnico *</label><input type="text" id="an-resp" placeholder="Nombre y título"></div>
+          <div><label class="lbl" for="an-mat">Matrícula profesional o CUIT *</label><input type="text" id="an-mat" placeholder="Ej.: Mat. 1234 o 30-12345678-9"></div>
+          <div><label class="lbl" for="an-acred">N.º de acreditación ISO/IEC 17025</label><input type="text" id="an-acred" placeholder="Si el laboratorio está acreditado"><p class="help">Acreditación del Organismo Argentino de Acreditación (OAA). Sube el nivel de confianza.</p></div>
+          <div><label class="lbl" for="an-mail">Correo de contacto *</label><input type="text" id="an-mail" placeholder="No se publica" inputmode="email"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>2. La muestra</legend>
+        <div class="campos">
+          <div><label class="lbl" for="an-punto">Lugar *</label><select id="an-punto"></select></div>
+          <div><label class="lbl" for="an-fecha">Fecha y hora de la toma *</label><input type="datetime-local" id="an-fecha"></div>
+          <div><label class="lbl" for="an-motivo">Motivo</label><select id="an-motivo"><option>Monitoreo de rutina</option><option>Plan de monitoreo de la Declaración de Impacto Ambiental</option><option>Control de la autoridad</option><option>Investigación</option><option>Respuesta a un reclamo</option></select></div>
+          <div><label class="lbl" for="an-tipom">Tipo de muestra</label><select id="an-tipom"><option>Puntual</option><option>Compuesta</option></select></div>
+          <div><label class="lbl" for="an-tomo">Quién tomó la muestra</label><input type="text" id="an-tomo" placeholder="Nombre o equipo"></div>
+          <div><label class="lbl" for="an-cust">N.º de cadena de custodia</label><input type="text" id="an-cust" placeholder="Ej.: CC-2026-0458"><p class="help">El registro que prueba quién tuvo la muestra en cada momento.</p></div>
+        </div>
+        <div class="campos" id="an-otro" hidden>
+          <div><label class="lbl" for="an-lat">Latitud</label><input type="number" id="an-lat" step="0.0001" placeholder="-30.2208"></div>
+          <div><label class="lbl" for="an-lon">Longitud</label><input type="number" id="an-lon" step="0.0001" placeholder="-68.7571"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>3. Resultados</legend>
+        <p class="help" style="margin:0">Cargá cada valor como figura en el informe. Si el resultado está por debajo de lo que el método puede medir, marcá "menor al límite de detección".</p>
+        <div class="scroll"><table class="res-tabla"><thead><tr><th>Parámetro</th><th>Valor</th><th>Unidad</th><th>Método</th><th>Lím. detección</th><th>&lt; LD</th><th></th></tr></thead><tbody id="an-res"></tbody></table></div>
+        <div><button class="btn sec" type="button" id="an-add">Agregar parámetro</button></div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>4. Documentos de respaldo</legend>
+        <p class="help" style="margin:0">Calculamos la huella digital (SHA-256) de cada archivo en tu dispositivo. Si alguien cambia el archivo después, la huella deja de coincidir. En este prototipo los archivos no se suben a ningún servidor.</p>
+        <div class="campos">
+          <div><label class="lbl" for="an-f-informe">Informe firmado (PDF) *</label><input type="file" id="an-f-informe" data-doc="Informe firmado" accept=".pdf,application/pdf"></div>
+          <div><label class="lbl" for="an-f-protocolo">Protocolo del laboratorio</label><input type="file" id="an-f-protocolo" data-doc="Protocolo del laboratorio" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-custodia">Cadena de custodia</label><input type="file" id="an-f-custodia" data-doc="Cadena de custodia" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-acred">Certificado de acreditación</label><input type="file" id="an-f-acred" data-doc="Certificado de acreditación" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-fotos">Fotos del muestreo</label><input type="file" id="an-f-fotos" data-doc="Foto del muestreo" accept="image/*" multiple></div>
+        </div>
+        <div id="an-docs"></div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>5. Declaraciones</legend>
+        <div><label class="lbl" for="an-conf">Relación con la actividad minera de la zona *</label><select id="an-conf"><option value="">Elegí una opción</option><option>No tengo relación con empresas de la zona</option><option>Trabajo para o con la empresa operadora</option><option>Trabajo para un organismo de control</option><option>Otra relación (la explico abajo)</option></select></div>
+        <div><label class="lbl" for="an-obs">Observaciones</label><textarea id="an-obs" placeholder="Condiciones del muestreo, clima, algo que convenga saber."></textarea></div>
+        <label class="row" style="align-items:flex-start;gap:8px"><input type="checkbox" id="an-ddjj" style="margin-top:5px"><span>Declaro bajo juramento que los datos y documentos son auténticos y corresponden a la muestra indicada. *</span></label>
+        <label class="row" style="align-items:flex-start;gap:8px"><input type="checkbox" id="an-pub" style="margin-top:5px"><span>Acepto que los resultados se publiquen como datos abiertos, citando a mi institución. *</span></label>
+      </fieldset>
+
+      <p id="an-error" class="small" style="color:var(--bad)" hidden></p>
+      <div class="row"><button class="btn" type="submit">Enviar a revisión técnica</button><span class="small muted">Queda publicado como "En revisión" hasta que la autoridad lo valide.</span></div>
+    </form>
   </section>
 
   <!-- PRESENTACIÓN -->
@@ -705,11 +791,161 @@ $("#bench").addEventListener("click",async()=>{
   b.disabled=false;
 });
 
+/* ---------- Análisis de laboratorios y profesionales ---------- */
+/* Límites: Código Alimentario Argentino, art. 982 (agua potable), Res. Conjunta SCS-SAGyP 33/2023 */
+const PAR_AN=[
+ {id:"ph",n:"pH",u:"",rango:[6.5,8.5],q:"Ácido o alcalino."},
+ {id:"ce",n:"Conductividad",u:"µS/cm",q:"Sales disueltas. Sin límite en el Código; se compara con el sensor."},
+ {id:"sdt",n:"Sólidos disueltos totales",u:"mg/l",max:1500,q:"Todo lo que el agua lleva disuelto."},
+ {id:"turb",n:"Turbiedad",u:"NTU",max:3,q:"Qué tan turbia está el agua."},
+ {id:"temp",n:"Temperatura",u:"°C",q:"Influye en la vida del río."},
+ {id:"od",n:"Oxígeno disuelto",u:"mg/l",q:"Oxígeno para peces y otros seres vivos. Sin límite en el Código."},
+ {id:"sulf",n:"Sulfatos",u:"mg/l",max:400,q:"Pueden venir de rocas con minerales o del drenaje de una mina."},
+ {id:"nitr",n:"Nitratos",u:"mg/l",max:45,q:"Suelen venir de fertilizantes o desechos."},
+ {id:"clor",n:"Cloruros",u:"mg/l",max:350,q:"Sales que le dan gusto salado al agua."},
+ {id:"as",n:"Arsénico",u:"mg/l",max:0.01,q:"Aparece natural en suelos de la región. En exceso daña la salud a largo plazo."},
+ {id:"cn",n:"Cianuro",u:"mg/l",max:0.10,q:"Se usa para separar el oro. En exceso es muy tóxico."},
+ {id:"hg",n:"Mercurio",u:"mg/l",max:0.001,q:"Metal pesado muy tóxico."},
+ {id:"pb",n:"Plomo",u:"mg/l",max:0.05,q:"Metal pesado tóxico."},
+ {id:"cd",n:"Cadmio",u:"mg/l",max:0.005,q:"Metal pesado tóxico."},
+ {id:"cr",n:"Cromo",u:"mg/l",max:0.05,q:"Metal pesado."},
+ {id:"ni",n:"Níquel",u:"mg/l",max:0.02,q:"Metal pesado."},
+ {id:"se",n:"Selenio",u:"mg/l",max:0.01,q:"En exceso es tóxico."},
+ {id:"cu",n:"Cobre",u:"mg/l",max:1.0,q:"En exceso da mal gusto y afecta la salud."},
+ {id:"zn",n:"Zinc",u:"mg/l",max:5.0,q:"En exceso da mal gusto."},
+ {id:"fe",n:"Hierro total",u:"mg/l",max:0.30,q:"Mancha y da color al agua."},
+ {id:"mn",n:"Manganeso",u:"mg/l",max:0.10,q:"Mancha el agua; en exceso afecta la salud."},
+ {id:"al",n:"Aluminio",u:"mg/l",max:0.20,q:"Puede aumentar con aguas ácidas."},
+ {id:"q",n:"Caudal",u:"m³/s",q:"Cuánta agua pasa por segundo."},
+];
+const parAn=id=>PAR_AN.find(p=>p.id===id);
+function evalRes(r){
+  const p=parAn(r.p);
+  if(r.menorLD)return{e:"verde",t:"No detectado"};
+  if(p.rango){if(r.v>=p.rango[0]&&r.v<=p.rango[1])return{e:"verde",t:"Dentro del rango"};return{e:"rojo",t:"Fuera del rango"};}
+  if(p.max==null)return{e:"gris",t:"Sin límite de referencia"};
+  if(r.v>p.max)return{e:"rojo",t:"Supera el límite"};
+  if(r.v>=p.max*0.8)return{e:"amarillo",t:"Cerca del límite"};
+  return{e:"verde",t:"Dentro del límite"};
+}
+const limTxt=p=>p.rango?`${fmt(p.rango[0],1)} a ${fmt(p.rango[1],1)}`:(p.max!=null?`máx. ${String(p.max).replace(".",",")} ${p.u}`:"—");
+function confianza(a){
+  if(a.tipo==="Laboratorio acreditado"&&a.acred)return{c:"alta",t:"Confianza alta: laboratorio acreditado"};
+  if(a.mat&&a.docs.some(d=>d.tipo==="Informe firmado"))return{c:"media",t:"Confianza media: profesional matriculado con informe"};
+  return{c:"basica",t:"Confianza básica"};
+}
+S.aportes=[];S.an=0;
+async function sellarAporte(a){
+  const base=JSON.stringify({id:a.id,tipo:a.tipo,org:a.org,resp:a.resp,mat:a.mat,punto:a.punto,fecha:a.fecha,res:a.res,docs:a.docs.map(d=>d.hash)});
+  a.sello=await sha(base);
+}
+function eventoAn(a,quien,texto){a.eventos.push({t:Date.now(),quien,texto});}
+async function nuevoAporte(d){
+  const a={id:"AN-"+String(++S.an).padStart(4,"0"),creado:Date.now(),estado:"En revisión técnica",eventos:[],...d};
+  eventoAn(a,a.org,"Envió el análisis con "+a.docs.length+" documento(s) de respaldo.");
+  await sellarAporte(a);
+  S.aportes.unshift(a);return a;
+}
+function compararSensor(a){
+  const e=estById(a.punto);if(!e)return"";
+  const s=S.lect[e.id];if(!s)return"";
+  const out=[];
+  for(const r of a.res){
+    if(r.menorLD)continue;
+    if(r.p==="ph"){const dif=Math.abs(r.v-s.ph);out.push(`pH: análisis ${fmt(r.v,1)}, sensor ${fmt(s.ph,1)} → ${dif<=0.5?"coinciden":"no coinciden"}`);}
+    if(r.p==="ce"){const dif=Math.abs(r.v-s.ce)/s.ce;out.push(`Conductividad: análisis ${fmt(r.v)}, sensor ${fmt(s.ce)} µS/cm → ${dif<=0.25?"coinciden":"no coinciden"}`);}
+  }
+  return out.length?`<div class="info-box small"><b>Comparación con el sensor de ${esc(e.nombre)}</b> (valor actual del sensor):<br>${out.join("<br>")}</div>`:"";
+}
+function renderAnalisis(){
+  $("#an-cuenta").textContent=`${S.aportes.length} análisis aportados · ${S.aportes.filter(a=>a.estado==="Validado").length} validados`;
+  $("#an-lista").innerHTML=S.aportes.map(a=>{
+    const e=estById(a.punto),cf=confianza(a),cls=a.estado==="Validado"?"s-verde":a.estado==="Observado"?"s-rojo":"s-amarillo";
+    const peor=a.res.map(evalRes).reduce((m,x)=>ORDEN[x.e]>(ORDEN[m]??-1)?x.e:m,"verde");
+    return `<article class="card ticket">
+      <div class="head"><div><span class="tid">${a.id}</span> <span class="tag">${esc(a.tipo)}</span> <span class="conf ${cf.c}">${cf.t}</span>${a.ejemplo?' <span class="tag warn">Ejemplo</span>':""}
+        <h3 style="margin-top:6px">${esc(a.org)}</h3><p class="small muted">${e?esc(e.nombre):`Lat ${a.lat}, Lon ${a.lon}`} · muestra del ${fecha(new Date(a.fecha).getTime())} · ${esc(a.motivo)}</p></div>
+        <div class="stack" style="gap:6px;justify-items:end"><span class="pill ${cls}">${a.estado}</span><span class="pill s-${peor}" style="font-size:.8rem">${peor==="rojo"?"Hay valores que superan el límite":peor==="amarillo"?"Hay valores cerca del límite":"Valores dentro de lo normal"}</span></div></div>
+      <div class="meta"><div><b>Responsable técnico</b>${esc(a.resp)}</div><div><b>Matrícula o CUIT</b>${esc(a.mat)}</div>${a.acred?`<div><b>Acreditación</b>${esc(a.acred)}</div>`:""}${a.cust?`<div><b>Cadena de custodia</b>${esc(a.cust)}</div>`:""}<div><b>Relación con la minería</b>${esc(a.conflicto)}</div></div>
+      <div class="scroll"><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Límite de referencia</th><th>Qué significa</th><th>Método</th></tr></thead><tbody>
+        ${a.res.map(r=>{const p=parAn(r.p),ev=evalRes(r);return `<tr><td><b>${p.n}</b></td><td class="num">${r.menorLD?`&lt; ${String(r.ld).replace(".",",")}`:String(r.v).replace(".",",")} ${p.u}<br><span class="pill s-${ev.e}" style="font-size:.75rem;padding:2px 8px;margin-top:4px">${ev.t}</span></td><td class="num">${limTxt(p)}</td><td class="small muted">${p.q}</td><td class="small">${esc(r.met||"—")}</td></tr>`;}).join("")}
+      </tbody></table></div>
+      ${compararSensor(a)}
+      ${a.obs?`<p class="small"><b>Observaciones:</b> ${esc(a.obs)}</p>`:""}
+      <details class="extra"><summary>Documentos de respaldo (${a.docs.length}) y sello</summary>
+        <div style="margin-top:8px">${a.docs.map(d=>`<div class="doc"><span><b>${esc(d.tipo)}</b><br><span class="muted">${esc(d.nombre)} · ${fmt(d.kb)} KB</span></span><span class="mono" title="Huella SHA-256">${d.hash}</span></div>`).join("")}
+        <div class="doc"><span><b>Sello del aporte</b><br><span class="muted">Une los datos y las huellas de los documentos</span></span><span class="mono">${a.sello||"calculando…"}</span></div></div>
+      </details>
+      <div class="timeline">${a.eventos.map(ev=>`<div class="ev"><p><span class="quien">${esc(ev.quien)}</span> <span class="small muted">${fecha(ev.t)}</span></p><p>${esc(ev.texto)}</p></div>`).join("")}</div>
+      ${a.estado==="En revisión técnica"?`<div class="info-box stack"><span class="small"><b>Revisión técnica</b> (en la demo, como autoridad ambiental)</span><div class="row"><button class="btn" type="button" data-an="validar" data-id="${a.id}">Validar análisis</button><button class="btn sec" type="button" data-an="observar" data-id="${a.id}">Pedir correcciones</button></div></div>`:""}
+    </article>`;}).join("")||`<div class="card"><p class="muted">Todavía no hay análisis aportados.</p></div>`;
+  $$("[data-an]").forEach(b=>b.addEventListener("click",()=>{const a=S.aportes.find(x=>x.id===b.dataset.id);if(!a)return;
+    if(b.dataset.an==="validar"){a.estado="Validado";eventoAn(a,"Autoridad ambiental","Revisamos el informe, la cadena de custodia y los métodos. El análisis queda validado.");toast(`${a.id} validado.`);}
+    else{a.estado="Observado";eventoAn(a,"Autoridad ambiental","Falta el certificado de acreditación o el protocolo firmado. Se pidió al aportante que lo complete.");toast(`Se pidieron correcciones en ${a.id}.`);}
+    renderAnalisis();}));
+}
+/* Formulario */
+let anDocs=[];
+function filaRes(pid="",v="",met="",ld=""){
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><select class="r-p">${PAR_AN.map(p=>`<option value="${p.id}" ${p.id===pid?"selected":""}>${p.n}</option>`).join("")}</select></td><td><input type="number" class="r-v" step="any" value="${v}" style="width:110px"></td><td class="r-u small muted"></td><td><input type="text" class="r-m" value="${esc(met)}" placeholder="Ej.: SM 4500-H+ B" style="width:150px"></td><td><input type="number" class="r-ld" step="any" value="${ld}" style="width:90px"></td><td><input type="checkbox" class="r-lt" aria-label="Menor al límite de detección"></td><td><button type="button" class="btn sec r-x" style="padding:6px 10px" aria-label="Quitar parámetro">×</button></td>`;
+  const upd=()=>{tr.querySelector(".r-u").textContent=parAn(tr.querySelector(".r-p").value).u||"—";};
+  tr.querySelector(".r-p").addEventListener("change",upd);tr.querySelector(".r-x").addEventListener("click",()=>tr.remove());upd();
+  $("#an-res").appendChild(tr);
+}
+function prepararAnalisis(){
+  const sel=$("#an-punto");
+  if(!sel.options.length){sel.innerHTML=EST.map(e=>`<option value="${e.id}">${esc(e.nombre)}</option>`).join("")+`<option value="otro">Otro lugar (cargar coordenadas)</option>`;
+    sel.addEventListener("change",()=>{$("#an-otro").hidden=sel.value!=="otro";});}
+  if(!$("#an-res").children.length){filaRes("ph");filaRes("ce");filaRes("sulf");filaRes("as");}
+  renderAnalisis();
+}
+$("#an-add").addEventListener("click",()=>filaRes("cn"));
+$("#an-ir").addEventListener("click",ev=>{ev.preventDefault();$("#form-an").scrollIntoView({behavior:"smooth"});});
+$$("#form-an input[type=file]").forEach(inp=>inp.addEventListener("change",async()=>{
+  anDocs=anDocs.filter(d=>d.input!==inp.id);
+  for(const f of inp.files){const buf=await f.arrayBuffer();const h=await crypto.subtle.digest("SHA-256",buf);
+    anDocs.push({input:inp.id,tipo:inp.dataset.doc,nombre:f.name,kb:Math.max(1,Math.round(f.size/1024)),hash:Array.from(new Uint8Array(h),x=>x.toString(16).padStart(2,"0")).join("")});}
+  $("#an-docs").innerHTML=anDocs.map(d=>`<div class="doc"><span><b>${esc(d.tipo)}</b><br><span class="muted">${esc(d.nombre)} · ${fmt(d.kb)} KB</span></span><span class="mono" title="Huella SHA-256">${d.hash}</span></div>`).join("");
+}));
+$("#form-an").addEventListener("submit",async ev=>{
+  ev.preventDefault();
+  const val=id=>$(id).value.trim(),err=[];
+  if(!val("#an-org"))err.push("la institución");if(!val("#an-resp"))err.push("el responsable técnico");if(!val("#an-mat"))err.push("la matrícula o CUIT");
+  if(!/^\S+@\S+\.\S+$/.test(val("#an-mail")))err.push("un correo válido");if(!val("#an-fecha"))err.push("la fecha de la toma");
+  const punto=val("#an-punto");if(punto==="otro"&&(!val("#an-lat")||!val("#an-lon")))err.push("las coordenadas del lugar");
+  const res=$$("#an-res tr").map(tr=>({p:tr.querySelector(".r-p").value,v:tr.querySelector(".r-v").value===""?null:Number(tr.querySelector(".r-v").value),met:tr.querySelector(".r-m").value.trim(),ld:tr.querySelector(".r-ld").value===""?null:Number(tr.querySelector(".r-ld").value),menorLD:tr.querySelector(".r-lt").checked})).filter(r=>r.v!=null||r.menorLD);
+  if(!res.length)err.push("al menos un resultado");
+  if(res.some(r=>r.menorLD&&r.ld==null))err.push("el límite de detección de los valores marcados como “< LD”");
+  if(!anDocs.some(d=>d.tipo==="Informe firmado"))err.push("el informe firmado en PDF");
+  if(!val("#an-conf"))err.push("tu relación con la actividad minera");
+  if(!$("#an-ddjj").checked)err.push("la declaración jurada");if(!$("#an-pub").checked)err.push("la aceptación de publicar los datos");
+  const box=$("#an-error");
+  if(err.length){box.textContent="Falta completar: "+err.join(", ")+".";box.hidden=false;return;}
+  box.hidden=true;
+  const a=await nuevoAporte({tipo:val("#an-tipo"),org:val("#an-org"),resp:val("#an-resp"),mat:val("#an-mat"),acred:val("#an-acred"),punto:punto==="otro"?null:punto,lat:val("#an-lat"),lon:val("#an-lon"),fecha:val("#an-fecha"),motivo:val("#an-motivo"),tipom:val("#an-tipom"),tomo:val("#an-tomo"),cust:val("#an-cust"),res,docs:anDocs.map(({input,...d})=>d),conflicto:val("#an-conf"),obs:val("#an-obs")});
+  $("#form-an").reset();anDocs=[];$("#an-docs").innerHTML="";$("#an-res").innerHTML="";filaRes("ph");filaRes("ce");filaRes("sulf");filaRes("as");$("#an-otro").hidden=true;
+  renderAnalisis();window.scrollTo({top:0,behavior:"smooth"});toast(`Recibimos el análisis ${a.id}. Queda en revisión técnica.`);
+});
+/* Dos ejemplos para que la sección no arranque vacía (marcados como ejemplo) */
+(async()=>{
+  const dia=864e5,iso=t=>new Date(t).toISOString().slice(0,16);
+  const doc=async(tipo,nombre,kb)=>({tipo,nombre,kb,hash:await sha("ejemplo:"+nombre)});
+  const b=await nuevoAporte({ejemplo:true,tipo:"Empresa",org:"Empresa operadora (simulación)",resp:"Responsable de Medio Ambiente (ejemplo)",mat:"CUIT 30-00000000-0 (ejemplo)",acred:"",punto:"taguas-abajo",fecha:iso(Date.now()-6*dia),motivo:"Plan de monitoreo de la Declaración de Impacto Ambiental",tipom:"Compuesta",tomo:"Equipo de monitoreo de la empresa",cust:"CC-2026-0311",
+    res:[{p:"ph",v:7.2,met:"SM 4500-H+ B"},{p:"ce",v:560,met:"SM 2510 B"},{p:"sulf",v:180,met:"SM 4500-SO4 E"},{p:"as",v:0.006,met:"SM 3114 C"},{p:"cn",v:null,ld:0.005,menorLD:true,met:"SM 4500-CN E"},{p:"mn",v:0.08,met:"SM 3120 B"}],
+    docs:[await doc("Informe firmado","informe-trimestral-ejemplo.pdf",412),await doc("Cadena de custodia","cadena-custodia-ejemplo.pdf",96)],conflicto:"Trabajo para o con la empresa operadora",obs:"Muestreo trimestral exigido por la Declaración de Impacto Ambiental."});
+  const a=await nuevoAporte({ejemplo:true,tipo:"Laboratorio acreditado",org:"Laboratorio universitario (ejemplo)",resp:"Lic. en Química (ejemplo)",mat:"Mat. 0000 (ejemplo)",acred:"LE 000 (ejemplo)",punto:"jachal",fecha:iso(Date.now()-3*dia),motivo:"Investigación",tipom:"Puntual",tomo:"Equipo del laboratorio y monitores comunitarios",cust:"CC-2026-0458",
+    res:[{p:"ph",v:7.9,met:"SM 4500-H+ B"},{p:"ce",v:1380,met:"SM 2510 B"},{p:"sdt",v:980,met:"SM 2540 C"},{p:"sulf",v:310,met:"SM 4500-SO4 E"},{p:"as",v:0.008,met:"SM 3114 C"},{p:"cn",v:null,ld:0.005,menorLD:true,met:"SM 4500-CN E"}],
+    docs:[await doc("Informe firmado","informe-laboratorio-ejemplo.pdf",538),await doc("Protocolo del laboratorio","protocolo-ejemplo.pdf",210),await doc("Certificado de acreditación","acreditacion-ejemplo.pdf",120)],conflicto:"No tengo relación con empresas de la zona",obs:"Muestra tomada junto a monitores comunitarios de Jáchal."});
+  a.estado="Validado";eventoAn(a,"Autoridad ambiental","Revisamos el informe, la cadena de custodia y los métodos. El análisis queda validado.");
+  if(ruta()==="analisis")renderAnalisis();
+})();
+
 /* ---------- Copiar ---------- */
 $("#copiar").addEventListener("click",()=>{const t=$("#json").textContent;navigator.clipboard?.writeText(t).then(()=>toast("Datos copiados."),()=>{const r=document.createRange();r.selectNodeContents($("#json"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Seleccioné los datos: copialos con Ctrl+C.");});});
 
 /* ---------- Navegación ---------- */
-const VISTAS=["inicio","reportar","reclamos","verificar","datos","presentacion"];
+const VISTAS=["inicio","reportar","reclamos","verificar","analisis","datos","presentacion"];
 function ruta(){const h=location.hash.replace("#","");return VISTAS.includes(h)?h:"inicio";}
 function navegar(){
   const v=ruta();
@@ -719,6 +955,7 @@ function navegar(){
   if(v==="reclamos")renderReclamos();
   if(v==="verificar"){llenarSelectVerif(false);renderLotes();const id=$("#v-sel").value;if(id)dibujarQR(id);if(S.verifId)setTimeout(()=>verificar(false),50);}
   if(v==="presentacion")renderHistoria();
+  if(v==="analisis")prepararAnalisis();
   renderVivo();
   window.scrollTo({top:0});
 }
