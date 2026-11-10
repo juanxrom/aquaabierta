@@ -334,6 +334,7 @@ footer .wrap{display:grid;gap:6px}
   <!-- DATOS ABIERTOS -->
   <section data-view="datos" class="stack" hidden style="gap:18px">
     <div><h1>Datos abiertos</h1><p class="muted" style="margin-top:6px;max-width:64ch">Todos los datos son públicos. Periodistas, universidades, municipios o cualquier persona pueden usarlos con nuestra API abierta, sin pedir permiso.</p></div>
+    <div class="card row" id="api-estado" style="gap:10px;align-items:center"></div>
     <div class="grid2">
       <div class="card stack">
         <h2>Cómo pedir los datos</h2>
@@ -567,7 +568,7 @@ function tick(){
     const vj=VIAJE[e.id];if(S.anom&&vj){const f=factorAnom(S.anom,now-vj[0]);const k=1+(f-1)/1.2*(vj[1]-1);ce*=k;ph-=(k-1)*1.25;}
     const r={id:"L-"+String(++S.n).padStart(6,"0"),est:e.id,t:new Date(now).toISOString(),ph:+ph.toFixed(2),ce:Math.round(ce),q:+q.toFixed(1)};
     S.lect[e.id]=r; const h=S.hist[e.id]; h.push(r); if(h.length>90)h.shift();
-    S.pend.push(r); S.byId.set(r.id,{r});
+    S.pend.push(r); S.byId.set(r.id,{r}); if(S.api)S.apiPend.push(r);
     if(e.id==="taguas-abajo"&&S.anom){const p=S.picoId&&S.byId.get(S.picoId);if(!p||r.ce>p.r.ce)S.picoId=r.id;}
   }
   revisarAlertas();
@@ -632,6 +633,7 @@ async function crearAvisoVecino({est,chips,desc,foto,ph,ce,nombre}){
   }
   const tk=nuevoTicket({tipo:"vecino",est,titulo:chips.length?chips.join(", "):"Aviso de la comunidad",desc,foto,autor:nombre||"Vecino/a (anónimo)",medicion});
   evento(tk,tk.autor,"Envió el aviso.");
+  reclamoAPI(tk,chips,nombre&&/WhatsApp/.test(nombre)?"whatsapp":"web");
   const alerta=S.tickets.find(t=>t.tipo==="alerta"&&abierto(t)&&estById(t.est).cuenca===e.cuenca);
   if(alerta){vincular(tk,alerta);evento(tk,"Sistema AquaAbierta",`Tu aviso coincide con una alerta del sensor (reclamo ${alerta.id}). Quedan unidos.`);}
   if(medicion?.discrepa)evento(tk,"Sistema AquaAbierta","La medición comunitaria no coincide con el sensor. Se marcó para revisión de la autoridad.");
@@ -710,7 +712,7 @@ function renderVivo(){
     ${["ph","ce","q"].map(p=>{const ps=estadoParam(p,r[p],e),P=PARAMS[p];return `<div class="param"><div><b>${P.nombre}</b> <span class="pill s-${ps}" style="font-size:.78rem;padding:2px 8px;margin-left:4px">${TXT[ps]}</span></div><div class="v num">${fmt(r[p],P.dec)} <small>${P.unidad}</small></div><p class="que">${P.que}</p></div>`;}).join("")}
     <div style="border-top:1px solid var(--line);padding-top:10px"><p class="small"><b>Sales en los últimos 3 minutos</b> <span class="muted">· línea gris: lo habitual · línea roja: alerta</span></p>${spark(e)}</div>
     <div class="row" style="margin-top:12px"><a class="btn" href="#reportar" data-lugar="${e.id}" id="f-rep">Avisar algo en este lugar</a><a class="btn sec" href="#verificar" id="f-ver">Comprobar este dato</a></div>
-    <p class="small muted num" style="margin-top:8px">Último dato ${hora(r.t)} · código ${r.id}</p>`;
+    <p class="small muted num" style="margin-top:8px">Último dato ${hora(r.t)} · código ${r.id}${(()=>{const ra=[...S.hist[e.id]].reverse().find(x=>x.apiCod);return ra?` · <a href="${esc(API_URL)}/v1/verificar/${ra.apiCod}" target="_blank" rel="noopener">comprobar en la API (${ra.apiCod})</a>`:"";})()}</p>`;
   const fr=$("#f-rep");if(fr)fr.addEventListener("click",()=>{S.preLugar=e.id;});
   const fv=$("#f-ver");if(fv)fv.addEventListener("click",()=>{S.verifId=r.id;});
   const rojos=EST.filter(x=>estadoEst(x)==="rojo");
@@ -1215,10 +1217,30 @@ let toastT;function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;
 window.addEventListener("hashchange",navegar);
 
 /* ---------- Arranque: historial de 3 minutos para que no empiece vacío ---------- */
+/* ---------- Conexión con la API real (si no responde, todo sigue funcionando en el navegador) ---------- */
+const API_URL=(()=>{try{const q=new URLSearchParams(location.search).get("api");if(q)return q.replace(/\/$/,"");}catch(_){}
+  return /github\.io$/.test(location.hostname)?"https://aquaabierta-api.onrender.com":null;})();
+S.api=null;S.apiPend=[];
+async function pedirAPI(ruta,opts={},ms=8000){const c=new AbortController();const to=setTimeout(()=>c.abort(),ms);
+  try{const r=await fetch(API_URL+ruta,{...opts,signal:c.signal,headers:{"content-type":"application/json",...(opts.headers||{})}});if(!r.ok)throw new Error(r.status);return await r.json();}finally{clearTimeout(to);}}
+function estadoAPI(){const el=$("#api-estado");if(!el)return;
+  el.innerHTML=S.api?`<span class="pill s-verde" style="font-size:.85rem">Conectado</span> <span class="small">Los datos de esta página también se guardan y sellan en la API pública: <a class="mono" href="${esc(API_URL)}/docs" target="_blank" rel="noopener" style="display:inline;padding:1px 5px">${esc(API_URL)}</a></span>`
+  :`<span class="pill s-gris" style="font-size:.85rem">Sin conexión</span> <span class="small muted">${API_URL?"La API no respondió todavía (si estuvo dormida tarda unos 30 segundos). Mientras tanto, todo funciona dentro de tu navegador.":"Esta copia funciona sola dentro de tu navegador. Para usar la API, abrí la página con <span class='mono' style='display:inline;padding:1px 5px'>?api=https://tu-api</span>."}</span>`;}
+async function conectarAPI(){if(!API_URL){estadoAPI();return;}
+  for(let i=0;i<3&&!S.api;i++){try{await pedirAPI("/v1/estaciones",{},45000);S.api=API_URL;}catch(_){}}
+  estadoAPI();if(S.api)toast("Conectado a la API pública de AquaAbierta.");}
+async function enviarLecturasAPI(){if(!S.api||!S.apiPend.length)return;const lote=S.apiPend.splice(0);
+  try{const r=await pedirAPI("/v1/lecturas/lote",{method:"POST",body:JSON.stringify({lecturas:lote.map(x=>({est:x.est,t:x.t,ph:x.ph,ce:x.ce,q:x.q}))})});
+    const m=/^L-(\d+)$/.exec(r.primera||"");if(m&&!r.rechazadas?.length){const n0=+m[1],w=r.primera.length-2;lote.forEach((x,i)=>{x.apiCod="L-"+String(n0+i).padStart(w,"0");});}}
+  catch(_){S.api=null;estadoAPI();setTimeout(conectarAPI,30000);}}
+async function reclamoAPI(tk,chips,canal){if(!S.api)return;
+  try{const r=await pedirAPI("/v1/reclamos",{method:"POST",body:JSON.stringify({est:tk.est,chips,desc:tk.desc||"",autor:tk.autor,canal})});tk.apiId=r.id;
+    evento(tk,"Sistema AquaAbierta",`También quedó guardado en la API pública como ${r.id}.`);}catch(_){}}
+setInterval(enviarLecturasAPI,4000);
 construirMapa();renderMinas();
 (function precargar(){const ahora=Date.now();for(let k=89;k>=1;k--){const t=ahora-k*2000;for(const e of EST){const s=Math.sin(t/45000+e.fase);const r={id:"L-"+String(++S.n).padStart(6,"0"),est:e.id,t:new Date(t).toISOString(),ph:+(e.base.ph+0.08*s+rnd(.04)).toFixed(2),ce:Math.round(e.base.ce*(1+0.04*s+rnd(.015))),q:+(e.base.q*(1+0.05*s+rnd(.02))).toFixed(1)};S.hist[e.id].push(r);S.lect[e.id]=r;S.byId.set(r.id,{r});S.pend.push(r);}}})();
 tick();navegar();cerrarLote();
-setInterval(tick,2000);setInterval(cerrarLote,10000);
+setInterval(tick,2000);setInterval(cerrarLote,10000);conectarAPI();
 })();
 </script>
 </body></html>
