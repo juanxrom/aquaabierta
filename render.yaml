@@ -1,0 +1,32 @@
+# Publicación en Render (https://render.com) con un clic: New → Blueprint → elegir este repo.
+services:
+  - type: web
+    name: aquaabierta-api
+    runtime: node
+    rootDir: api
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: CLAVE_EMPRESA
+        generateValue: true
+      - key: CLAVE_AUTORIDAD
+        generateValue: true
+  - type: web
+    name: aquaabierta-whatsapp
+    runtime: node
+    rootDir: bot-whatsapp
+    buildCommand: echo "sin dependencias"
+    startCommand: node servidor.js
+    healthCheckPath: /salud
+    envVars:
+      - key: AQUA_API_URL
+        value: https://aquaabierta-api.onrender.com
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_ID
+        sync: false
+      - key: WHATSAPP_VERIFY_TOKEN
+        sync: false
+      - key: WHATSAPP_APP_SECRET
+        sync: false

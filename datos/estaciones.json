@@ -1,0 +1,8 @@
+[
+ {"id":"taguas-arriba","nombre":"Río de las Taguas (aguas arriba)","cuenca":"jachal","rio":"Río de las Taguas","lat":-29.4579,"lon":-69.9034,"base":{"ph":7.4,"ce":500,"q":1.2}},
+ {"id":"taguas-abajo","nombre":"Río de las Taguas (aguas abajo)","cuenca":"jachal","rio":"Río de las Taguas","lat":-29.3467,"lon":-69.9066,"base":{"ph":7.3,"ce":550,"q":1.5}},
+ {"id":"palca","nombre":"Río de la Palca","cuenca":"jachal","rio":"Río de la Palca","lat":-29.3306,"lon":-69.5135,"base":{"ph":7.6,"ce":700,"q":3}},
+ {"id":"angualasto","nombre":"Río Blanco en Angualasto","cuenca":"jachal","rio":"Río Blanco","lat":-30.0533,"lon":-69.1688,"base":{"ph":7.6,"ce":900,"q":4.5}},
+ {"id":"rodeo","nombre":"Río Jáchal cerca de Rodeo","cuenca":"jachal","rio":"Río Jáchal","lat":-30.1938,"lon":-69.0657,"base":{"ph":7.8,"ce":1000,"q":7}},
+ {"id":"jachal","nombre":"Río Jáchal en San José de Jáchal","cuenca":"jachal","rio":"Río Jáchal","lat":-30.2208,"lon":-68.7571,"base":{"ph":7.9,"ce":1400,"q":6}}
+]

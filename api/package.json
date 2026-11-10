@@ -1,0 +1,25 @@
+{
+  "name": "aquaabierta-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "API abierta de AquaAbierta: lecturas de sensores, sellado verificable, reclamos y análisis",
+  "type": "commonjs",
+  "main": "src/servidor.js",
+  "scripts": {
+    "start": "node src/servidor.js",
+    "simulador": "node src/simulador.js",
+    "velocidad": "node src/velocidad.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/swagger": "^9.5.2",
+    "@fastify/swagger-ui": "^5.2.3",
+    "@fastify/websocket": "^11.2.0",
+    "better-sqlite3": "^11.10.0",
+    "fastify": "^5.6.1"
+  }
+}
