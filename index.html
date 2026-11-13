@@ -15,7 +15,7 @@
   --celeste:#29A8E0; --azul:#0A5FAE; --azul-ink:#FFFFFF; --accent:#0A5FAE;
   --water:#7CC6EC; --land:#EAF2F7; --hill:#D6E6F0; --s4:#7A5CC7;
   --ok:#1C9A57; --ok-bg:#E3F6EC; --warn:#A87300; --warn-bg:#FFF4D6; --warn-dot:#E0A030; --bad:#D23B3B; --bad-bg:#FDE7E7;
-  --chat-bg:#ECE5DD; --chat-yo:#D9FDD3;
+  
   --font-display:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;
   --font-body:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;
   --font-mono:ui-monospace,Menlo,Consolas,monospace;
@@ -27,7 +27,6 @@
   --celeste:#4CC0F2; --azul:#4AA3F0; --azul-ink:#06192A; --accent:#4AA3F0;
   --water:#2E7FAF; --land:#0F2234; --hill:#163049; --s4:#A994F0;
   --ok:#3CCB7F; --ok-bg:#123527; --warn:#F1B935; --warn-bg:#3A2E0E; --warn-dot:#F1B935; --bad:#FF6B6B; --bad-bg:#3C1719;
-  --chat-bg:#0B141A; --chat-yo:#005C4B;
     color-scheme:dark;
   }
 }
@@ -36,7 +35,6 @@
   --celeste:#4CC0F2; --azul:#4AA3F0; --azul-ink:#06192A; --accent:#4AA3F0;
   --water:#2E7FAF; --land:#0F2234; --hill:#163049; --s4:#A994F0;
   --ok:#3CCB7F; --ok-bg:#123527; --warn:#F1B935; --warn-bg:#3A2E0E; --warn-dot:#F1B935; --bad:#FF6B6B; --bad-bg:#3C1719;
-  --chat-bg:#0B141A; --chat-yo:#005C4B;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -227,7 +225,11 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
 #map3d-wrap.far .mk.small .lbl{display:none}
 .maplibregl-popup-content{font:13px/1.45 var(--font-body);color:#13212C;max-width:260px}
 .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.ev-grid label{font-size:13px;font-weight:600;display:grid;gap:4px}
+.ev-grid label{font-size:13px;font-weight:700;display:grid;gap:4px;min-width:0}
+.ev-grid select{width:100%;min-width:0}
+.cmp-box{display:grid;gap:10px;max-width:860px;width:100%}
+.cmp{cursor:ew-resize;touch-action:pan-y;user-select:none}
+.cmp .cmp-handle{position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:#fff;color:#0B2E4A;display:grid;place-items:center;font-weight:900;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.5);pointer-events:none}
 .cmp{position:relative;width:100%;max-width:860px;aspect-ratio:1086/695;border-radius:12px;overflow:hidden;background:#0d1418}
 .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cmp .cmp-b{clip-path:inset(0 0 0 50%)}
@@ -283,7 +285,7 @@ nav.menu{flex-basis:100%;justify-content:flex-start;padding-bottom:2px}
 .demo-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--warn-bg);border-color:transparent}
 .demo-bar p{color:var(--warn);font-weight:700}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;z-index:20;max-width:calc(100% - 32px)}
-/* Análisis y WhatsApp (de la versión anterior de AquaAbierta) */
+/* Análisis (de la versión anterior de AquaAbierta) */
 .aa .muted{color:var(--muted)}
 .aa .small{font-size:.88rem}
 .aa .num{font-variant-numeric:tabular-nums}
@@ -339,21 +341,6 @@ nav.menu{flex-basis:100%;justify-content:flex-start;padding-bottom:2px}
 .aa .conf.media{background:var(--warn-bg);color:var(--warn)}
 .aa .conf.basica{background:var(--soft);color:var(--muted)}
 .aa .help{font-size:.85rem;color:var(--muted);margin-top:4px}
-/* Chat de WhatsApp (simulación) */
-.aa .tel{max-width:400px;width:100%;margin:0 auto;border:10px solid var(--ink);border-radius:34px;overflow:hidden;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;height:640px}
-.aa .tel-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#0F6E5C;color:#fff}
-.aa .tel-top svg{width:30px;height:30px;flex:none}
-.aa .chat{overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:8px;background:var(--chat-bg)}
-.aa .burb{max-width:85%;padding:8px 11px;border-radius:12px;font-size:.92rem;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 1px 1px rgba(0,0,0,.12)}
-.aa .burb.bot{background:var(--surface);color:var(--ink);align-self:flex-start;border-top-left-radius:3px}
-.aa .burb.yo{background:var(--chat-yo);color:var(--ink);align-self:flex-end;border-top-right-radius:3px}
-.aa .burb .h{display:block;text-align:right;font-size:.68rem;color:var(--muted);margin-top:2px}
-.aa .rapidas{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
-.aa .rapidas button{flex:none;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;font-size:.85rem}
-.aa .tel-input{display:flex;gap:8px;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
-.aa .tel-input input{flex:1;min-width:0;border-radius:999px}
-.aa .tel-input button{border-radius:999px;padding:10px 16px}
-@media (max-width:560px){.aa .tel{height:560px;border-width:6px}}
 @keyframes pulse{0%{r:9;opacity:.6}100%{r:22;opacity:0}}
 .ring{animation:pulse 1.6s ease-out infinite}
 @media (prefers-reduced-motion: reduce){.ring{animation:none;opacity:0}}
@@ -375,7 +362,6 @@ nav.menu{flex-basis:100%;justify-content:flex-start;padding-bottom:2px}
       <a href="#alertas">Alertas</a>
       <a href="#reportes">Reportes</a>
       <a href="#analisis">Análisis</a>
-      <a href="#whatsapp">WhatsApp</a>
       <a href="#datos">Datos abiertos</a>
       <a href="#minas">Minas y pueblos</a>
     </nav>
@@ -473,8 +459,8 @@ nav.menu{flex-basis:100%;justify-content:flex-start;padding-bottom:2px}
       <div class="ev-grid">
         <label for="ev-mine">Proyecto<select id="ev-mine"></select></label>
         <label for="ev-prod">Producto<select id="ev-prod"><option value="truecolor">Color natural</option><option value="ndwi">NDWI · agua superficial</option><option value="ndsi">NDSI · nieve y hielo</option></select></label>
-        <label for="ev-a">Fecha A<input type="date" id="ev-a" value="2025-04-02"></label>
-        <label for="ev-b">Fecha B<input type="date" id="ev-b" value="2025-12-28"></label>
+        <label for="ev-a">Imagen A (antes)<select id="ev-a"></select></label>
+        <label for="ev-b">Imagen B (después)<select id="ev-b"></select></label>
       </div>
       <p class="sub" id="ev-desc"></p>
       <div id="ev-body" style="display:grid;gap:10px"></div>
@@ -653,30 +639,7 @@ nav.menu{flex-basis:100%;justify-content:flex-start;padding-bottom:2px}
     </form>
   </section>
 
-  <!-- WHATSAPP -->
-  <section data-tab="whatsapp" class="aa">
-    <div class="grid2">
-      <div class="stack">
-        <div class="tel" aria-label="Simulación del chat de WhatsApp">
-          <div class="tel-top"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#fff"/><path d="M20 7C20 7 10 18 10 24.5a10 10 0 0 0 20 0C30 18 20 7 20 7Z" fill="#29A8E0"/><path d="M14 25.5q3-2.7 6 0t6 0" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg><div><b>AquaAbierta</b><br><span class="small" style="opacity:.85">cuenta oficial · simulación</span></div></div>
-          <div class="chat" id="chat" aria-live="polite"></div>
-          <div class="rapidas" id="rapidas"></div>
-          <form class="tel-input" id="chat-form"><input type="text" id="chat-in" placeholder="Escribí un mensaje" autocomplete="off" aria-label="Mensaje"><button class="btn" type="submit">Enviar</button></form>
-        </div>
-      </div>
-      <div class="card stack">
-        <h2 style="font-size:1.7rem;font-weight:900">AquaAbierta por WhatsApp</h2>
-        <p class="muted">Mucha gente no va a entrar a una página. Por eso todo lo importante también funciona por WhatsApp, la app que ya usan todos.</p>
-        <div class="pasos">
-          <div class="paso"><p><b>Consultar:</b> escribí <b>1</b> o mandá tu ubicación y te dice cómo está el punto más cercano.</p></div>
-          <div class="paso"><p><b>Avisar:</b> escribí <b>2</b>, contá qué viste y mandá una foto. Se abre un reclamo con número y plazo.</p></div>
-          <div class="paso"><p><b>Seguir el reclamo:</b> escribí <b>3</b> y el número. Cuando la empresa o la autoridad responden, te llega el aviso.</p></div>
-          <div class="paso"><p><b>Comprobar un dato:</b> escribí <b>4</b> y el código del dato.</p></div>
-        </div>
-        <div class="info-box small">Esto es una simulación en la página, con la misma conversación que el bot real. El bot real usa la API oficial de WhatsApp (Meta) y está en la carpeta <code>bot-whatsapp</code> del proyecto. Los avisos que mandes acá aparecen en <a href="#reportes">Reportes</a>, con el mismo número.</div>
-      </div>
-    </div>
-  </section>
+
 
 
 </main>
@@ -1047,7 +1010,7 @@ function renderMine(){
   $("v-mine").innerHTML=`<h2 class="v-h">Mis avisos</h2>`+mine.map(t=>`<div class="v-aviso"><div style="display:flex;gap:12px;align-items:center">${ico(t.icon,44,3.5)}<div><strong>Aviso <span class="code">${esc(t.id)}</span></strong><br><span class="v-note">${esc(t.label)} · ${dayhm(t.t)}${t.saved?" · guardado":""}</span></div></div>${t.src?`<img src="${esc(t.src)}" alt="Foto del aviso" style="max-width:180px;border-radius:10px">`:""}
     <div class="v-prog">${steps.map((s,i)=>`<div class="${t.estado>=i?"on":""}"><i></i>${s}</div>`).join("")}</div>${t.saved?(t.resp?`<p class="v-answer-txt"><strong>Respuesta:</strong> ${esc(t.resp)}</p>`:""):(t.estado===2?`<p class="v-answer-txt">${SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown}</p>`:"")}</div>`).join("");
 }
-function ageMyTickets(){for(const t of tickets){if(t.wa&&t.estado<2){t.age++;if(t.estado===0&&t.age>=3)advanceTicket(t);else if(t.estado===1&&t.age>=7){advanceTicket(t);t.respuesta="Respuesta formal de la Mesa de Monitoreo: "+(SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown);waAviso(t)}continue}if(!t.mine)continue;t.age++;if(t.estado===0&&t.age>=3)advanceTicket(t);else if(t.estado===1&&t.age>=7){advanceTicket(t);t.respuesta="Respuesta formal de la Mesa de Monitoreo, en lenguaje simple para el vecino: "+(SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown)}}}
+function ageMyTickets(){for(const t of tickets){if(!t.mine)continue;t.age++;if(t.estado===0&&t.age>=3)advanceTicket(t);else if(t.estado===1&&t.age>=7){advanceTicket(t);t.respuesta="Respuesta formal de la Mesa de Monitoreo, en lenguaje simple para el vecino: "+(SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown)}}}
 
 /* ---------- Provincia ---------- */
 const LV_FILL=["var(--ok)","var(--warn-dot)","var(--bad)"];
@@ -1406,18 +1369,30 @@ let evTouched=false,taTouched=false;
 const dDiff=(a,b)=>Math.abs((new Date(a))-(new Date(b)))/864e5;
 function closestCap(p,date){const l=CAPTURES.filter(c=>c.p===p);if(!l.length)return null;return l.reduce((b,c)=>dDiff(c.d,date)<dDiff(b.d,date)?c:b,l[0])}
 function copUrl(ll,layer,date){const f=encodeURIComponent(date+"T00:00:00.000Z"),t=encodeURIComponent(date+"T23:59:59.999Z");return `https://browser.dataspace.copernicus.eu/?zoom=13&lat=${ll[1]}&lng=${ll[0]}&datasetId=S2_L2A_CDAS&layerId=${encodeURIComponent(layer)}&fromTime=${f}&toTime=${t}&dateMode=SINGLE`}
+const fechaCorta=d=>new Date(d+"T12:00:00").toLocaleDateString("es-AR",{day:"numeric",month:"short",year:"numeric"}).replace(".","");
+const fechaLarga=d=>new Date(d+"T12:00:00").toLocaleDateString("es-AR",{day:"numeric",month:"long",year:"numeric"});
+function evDates(){const p=$("ev-prod").value;const ds=CAPTURES.filter(c=>c.p===p).map(c=>c.d).sort();
+  ["ev-a","ev-b"].forEach((id,k)=>{const sel=$(id);const prev=sel.value;sel.innerHTML=ds.map(d=>`<option value="${d}">${fechaLarga(d)}</option>`).join("");
+    sel.value=ds.includes(prev)?prev:(k===0?ds[0]:ds[ds.length-1])});
+  if($("ev-a").value===$("ev-b").value&&ds.length>1){$("ev-a").value=ds[0];$("ev-b").value=ds[ds.length-1]}}
 function renderEvidence(){
-  const m=$("ev-mine").value||"veladero",p=$("ev-prod").value,A=$("ev-a").value||"2025-04-02",B=$("ev-b").value||"2025-12-28";const meta=PRODUCT_META[p];const M=MINES[m];
+  if(!$("ev-a").options.length)evDates();
+  const m=$("ev-mine").value||"veladero",p=$("ev-prod").value,A=$("ev-a").value,B=$("ev-b").value;const meta=PRODUCT_META[p];const M=MINES[m];
   const ll=(m==="veladero"&&p==="ndsi")?GEO.guanaco:GEO.mines[m];
   $("ev-desc").textContent=meta.desc;
-  const links=`<div class="controls"><a href="${copUrl(ll,meta.layer,A)}" target="_blank" rel="noopener">Abrir A (${A}) en Copernicus</a><span class="sub">·</span><a href="${copUrl(ll,meta.layer,B)}" target="_blank" rel="noopener">Abrir B (${B}) en Copernicus</a></div>`;
-  if(m!=="veladero"){$("ev-body").innerHTML=`<p>Todavía no hay capturas guardadas de <strong>${esc(M.name)}</strong>. Abrí la escena real de Sentinel-2 para cada fecha:</p>${links}<p class="sub">Si en esa fecha no aparece imagen, probá con días cercanos: el satélite pasa por la zona cada 5 días aproximadamente. En la versión final, las capturas de cada proyecto se guardan solas en cada pasada.</p>`;return}
-  const a=closestCap(p,A),b=closestCap(p,B);
-  $("ev-body").innerHTML=`<p class="sub">${p==="ndsi"?"Zona del glaciar Guanaco, cerca de Veladero.":"Zona de Veladero."} Se muestran las capturas guardadas más cercanas a cada fecha: A = ${a.d}, B = ${b.d}.${a.d===b.d?" Las dos fechas usan la misma captura: elegí fechas más separadas.":""}</p>
-   <div class="cmp" id="ev-cmp"><img src="${a.src}" alt="${esc(meta.label)} ${a.d}"><img class="cmp-b" id="ev-imgb" src="${b.src}" alt="${esc(meta.label)} ${b.d}"><div class="cmp-line" id="ev-line"></div><span class="cmp-tag" style="left:8px">A · ${a.d}</span><span class="cmp-tag" style="right:8px">B · ${b.d}</span></div>
-   <label class="sub" for="ev-slider" style="display:flex;gap:10px;align-items:center">Mover el corte<input type="range" id="ev-slider" min="0" max="100" value="50" style="flex:1"></label>
+  const links=`<div class="controls"><a href="${copUrl(ll,meta.layer,A)}" target="_blank" rel="noopener">Ver A (${fechaLarga(A)}) en Copernicus</a><span class="sub">·</span><a href="${copUrl(ll,meta.layer,B)}" target="_blank" rel="noopener">Ver B (${fechaLarga(B)}) en Copernicus</a></div>`;
+  if(m!=="veladero"){$("ev-body").innerHTML=`<p>Todavía no hay capturas guardadas de <strong>${esc(M.name)}</strong>. Abrí la escena real de Sentinel-2 de cada fecha en Copernicus Browser:</p>${links}<p class="sub">Si en esa fecha no aparece imagen (por nubes), probá con días cercanos: el satélite pasa por la zona cada 5 días aproximadamente. En la versión final, las capturas de cada proyecto se guardan solas en cada pasada.</p>`;return}
+  const a=CAPTURES.find(c=>c.p===p&&c.d===A),b=CAPTURES.find(c=>c.p===p&&c.d===B);
+  $("ev-body").innerHTML=`<p class="sub">${p==="ndsi"?"Zona del glaciar Guanaco, cerca de Veladero.":"Zona de Veladero."} Arrastrá la línea blanca (o el control de abajo) para comparar la imagen A con la B.${A===B?" Elegiste la misma fecha en A y en B.":""}</p>
+   <div class="cmp-box"><div class="cmp" id="ev-cmp"><img src="${a.src}" alt="${esc(meta.label)}, ${fechaLarga(a.d)}" draggable="false"><img class="cmp-b" id="ev-imgb" src="${b.src}" alt="${esc(meta.label)}, ${fechaLarga(b.d)}" draggable="false"><div class="cmp-line" id="ev-line"></div><div class="cmp-handle" id="ev-handle" aria-hidden="true">⇆</div><span class="cmp-tag" style="left:8px">A · ${fechaCorta(a.d)}</span><span class="cmp-tag" style="right:8px">B · ${fechaCorta(b.d)}</span></div>
+   <label class="sub" for="ev-slider" style="display:flex;gap:10px;align-items:center">Mover el corte<input type="range" id="ev-slider" min="0" max="100" value="50" style="flex:1"></label></div>
    <div class="controls"><a href="${a.src}" download="${p}-${a.d}.jpg">Descargar A</a><span class="sub">·</span><a href="${b.src}" download="${p}-${b.d}.jpg">Descargar B</a></div>${links}`;
-  $("ev-slider").addEventListener("input",e=>{const v=e.target.value;$("ev-imgb").style.clipPath=`inset(0 0 0 ${v}%)`;$("ev-line").style.left=v+"%"});
+  const setCut=v=>{v=Math.max(0,Math.min(100,v));$("ev-imgb").style.clipPath=`inset(0 0 0 ${v}%)`;$("ev-line").style.left=v+"%";$("ev-handle").style.left=v+"%";$("ev-slider").value=v};
+  $("ev-slider").addEventListener("input",e=>setCut(+e.target.value));
+  const cmp=$("ev-cmp");let drag=false;const at=e=>{const r=cmp.getBoundingClientRect();setCut((e.clientX-r.left)/r.width*100)};
+  cmp.addEventListener("pointerdown",e=>{drag=true;cmp.setPointerCapture(e.pointerId);at(e)});
+  cmp.addEventListener("pointermove",e=>{if(drag)at(e)});
+  ["pointerup","pointercancel"].forEach(t=>cmp.addEventListener(t,()=>{drag=false}));
 }
 /* ---------- Ingreso del equipo técnico ---------- */
 function renderTechAuth(){
@@ -1488,7 +1463,7 @@ function bindCsv(){
 }
 function initUnified(){
   $("ev-mine").innerHTML=Object.entries(MINES).map(([k,M])=>`<option value="${k}">${esc(M.name)}${k==="veladero"?" · con capturas guardadas":""}</option>`).join("");
-  ["ev-mine","ev-prod","ev-a","ev-b"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="ev-mine")evTouched=true;renderEvidence()}));
+  ["ev-mine","ev-prod","ev-a","ev-b"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="ev-mine")evTouched=true;if(id==="ev-prod")evDates();renderEvidence()}));
   renderEvidence();fillTaStations();bindTechAlerts();bindStored();bindCsv();renderFlyButtons();renderTechAuth();
 }
 
@@ -1522,7 +1497,7 @@ $("v-com-mine").addEventListener("click",()=>{comAll=false;renderCommunity()});
 $("v-com-all").addEventListener("click",()=>{comAll=true;renderCommunity()});
 $("v-change").addEventListener("click",()=>{myLoc=null;try{localStorage.removeItem("aa-loc")}catch(e){}renderVecino();window.scrollTo(0,0)});
 
-/* ---------- Ayudas para Análisis y WhatsApp ---------- */
+/* ---------- Ayudas para Análisis ---------- */
 const q=sel=>document.querySelector(sel),qq=sel=>[...document.querySelectorAll(sel)];
 const ORDEN={gris:-1,verde:0,amarillo:1,rojo:2};
 const fecha=t=>new Date(t).toLocaleString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
@@ -1676,207 +1651,9 @@ q("#form-an").addEventListener("submit",async ev=>{
   a.estado="Validado";eventoAn(a,"Autoridad ambiental","Revisamos el informe, la cadena de custodia y los métodos. El análisis queda validado.");
   if(view==="tecnico"&&curTab==="analisis")renderAnalisis();
 })();
-/* ---------- Bot de WhatsApp (simulación con la misma conversación que el bot real) ---------- */
-const BOT=(()=>{const module={exports:{}};
-/*BOT-INICIO*/
-// Lógica de la conversación del bot de AquaAbierta (sin dependencias).
-// Recibe el estado de la charla y el mensaje del vecino, devuelve el nuevo estado y las respuestas.
-// La usan el servidor de WhatsApp (servidor.js) y las pruebas (prueba.js).
-
-const MENU =
-  "Hola, soy *AquaAbierta* 💧\n" +
-  "Te cuento cómo está el agua de los ríos de San Juan.\n\n" +
-  "Respondé con un número:\n" +
-  "*1* Ver cómo está el agua\n" +
-  "*2* Avisar algo raro en el agua\n" +
-  "*3* Seguir mi reclamo\n" +
-  "*4* Comprobar que un dato es real\n\n" +
-  "También podés mandarme tu *ubicación* 📍 y te digo cómo está el punto más cercano.";
-
-const SEMAFORO = { verde: "🟢 Normal", amarillo: "🟡 Atención", rojo: "🔴 Alerta" };
-const QUE_VISTE = ["Color raro", "Olor feo", "Espuma", "Peces o animales muertos", "Poca agua", "Otra cosa"];
-
-function distanciaKm(a, b) {
-  const R = 6371, rad = (x) => (x * Math.PI) / 180;
-  const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(h));
-}
-
-function fichaEstacion(e) {
-  const r = e.ultima_lectura || {};
-  let t = `*${e.nombre}*\n${SEMAFORO[e.estado] || "Sin datos"}\n`;
-  if (r.ph != null) t += `• pH: ${r.ph} (normal entre 6,5 y 8,5)\n`;
-  if (r.ce != null) t += `• Sales: ${r.ce} µS/cm\n`;
-  if (r.q != null) t += `• Caudal: ${r.q} m³/s\n`;
-  if (e.estado === "rojo") t += "\n⚠️ Hay un valor fuera de lo normal. Por precaución no uses esta agua para tomar ni para los animales.";
-  if (e.estado === "amarillo") t += "\nHay un valor que conviene mirar de cerca.";
-  if (r.id) t += `\n\nCódigo del dato: ${r.id}`;
-  return t;
-}
-
-/**
- * @param {object} estado  estado guardado de esta charla ({paso, borrador})
- * @param {object} msg     {tipo:'texto'|'ubicacion'|'imagen', texto, lat, lon, imagenId, de}
- * @param {object} datos   funciones para leer/escribir datos: estaciones(), crearReclamo(d), verReclamo(id), verificar(id)
- * @returns {Promise<{estado:object, respuestas:string[]}>}
- */
-async function responder(estado, msg, datos) {
-  estado = estado || { paso: "inicio" };
-  const txt = (msg.texto || "").trim();
-  const t = txt.toLowerCase();
-  const out = [];
-
-  if (["menu", "menú", "hola", "inicio", "0", "volver"].includes(t)) {
-    return { estado: { paso: "inicio" }, respuestas: [MENU] };
-  }
-
-  if (msg.tipo === "ubicacion") {
-    const est = await datos.estaciones();
-    const cerca = est
-      .map((e) => ({ e, d: distanciaKm({ lat: msg.lat, lon: msg.lon }, e) }))
-      .sort((a, b) => a.d - b.d)[0];
-    if (estado.paso === "aviso_lugar") {
-      estado.borrador.est = cerca.e.id;
-      estado.paso = "aviso_que";
-      out.push(`Anotado: cerca de *${cerca.e.nombre}* (a ${cerca.d.toFixed(1)} km).`);
-      out.push(preguntaQueViste());
-      return { estado, respuestas: out };
-    }
-    out.push(`El punto de control más cercano está a ${cerca.d.toFixed(1)} km:\n\n${fichaEstacion(cerca.e)}`);
-    out.push("Escribí *menu* para volver.");
-    return { estado: { paso: "inicio" }, respuestas: out };
-  }
-
-  switch (estado.paso) {
-    case "inicio": {
-      if (t === "1") {
-        const est = await datos.estaciones();
-        const lista = est.map((e, i) => `*${i + 1}* ${SEMAFORO[e.estado] || "⚪"} ${e.nombre}`).join("\n");
-        return { estado: { paso: "elegir_estacion" }, respuestas: [`Estos son los puntos de control:\n\n${lista}\n\nRespondé con el número para ver el detalle.`] };
-      }
-      if (t === "2") {
-        const est = await datos.estaciones();
-        const lista = est.map((e, i) => `*${i + 1}* ${e.nombre}`).join("\n");
-        return { estado: { paso: "aviso_lugar", borrador: {} }, respuestas: [`Vamos a cargar tu aviso. ¿Dónde fue?\n\n${lista}\n\nRespondé con el número o mandame tu *ubicación* 📍`] };
-      }
-      if (t === "3") return { estado: { paso: "seguir" }, respuestas: ["Escribí el número de tu reclamo. Por ejemplo: *RA-2026-0041*"] };
-      if (t === "4") return { estado: { paso: "verificar" }, respuestas: ["Escribí el código del dato que querés comprobar. Por ejemplo: *B-12-JB4*"] };
-      return { estado: { paso: "inicio" }, respuestas: [MENU] };
-    }
-    case "elegir_estacion": {
-      const est = await datos.estaciones();
-      const e = est[Number(t) - 1];
-      if (!e) return { estado, respuestas: ["No encontré ese número. Probá de nuevo o escribí *menu*."] };
-      return { estado: { paso: "inicio" }, respuestas: [fichaEstacion(e), "Escribí *menu* para volver."] };
-    }
-    case "aviso_lugar": {
-      const est = await datos.estaciones();
-      const e = est[Number(t) - 1];
-      if (!e) return { estado, respuestas: ["Respondé con el número del lugar o mandame tu ubicación 📍"] };
-      estado.borrador.est = e.id;
-      estado.paso = "aviso_que";
-      return { estado, respuestas: [preguntaQueViste()] };
-    }
-    case "aviso_que": {
-      const n = Number(t);
-      estado.borrador.chips = n >= 1 && n <= QUE_VISTE.length ? [QUE_VISTE[n - 1]] : [];
-      if (!estado.borrador.chips.length) estado.borrador.desc = txt;
-      estado.paso = "aviso_desc";
-      return { estado, respuestas: ["Contame con tus palabras qué viste. Si tenés una *foto*, mandala ahora. Cuando termines escribí *listo*."] };
-    }
-    case "aviso_desc": {
-      if (msg.tipo === "imagen") {
-        estado.borrador.fotos = [...(estado.borrador.fotos || []), msg.imagenId];
-        return { estado, respuestas: ["📷 Foto recibida. Podés mandar otra o escribir *listo*."] };
-      }
-      if (t !== "listo") {
-        estado.borrador.desc = [estado.borrador.desc, txt].filter(Boolean).join(" ");
-        return { estado, respuestas: ["Anotado. Si querés agregar algo más, escribilo. Si no, escribí *listo*."] };
-      }
-      const tk = await datos.crearReclamo({ ...estado.borrador, canal: "whatsapp", contacto: msg.de });
-      let r = `✅ Tu reclamo es el *${tk.id}*.\nLa empresa tiene plazo hasta el *${tk.vence_texto}* para responder por escrito. La autoridad ambiental controla el plazo.`;
-      if (tk.vinculado) r += `\n\nTu aviso coincide con una alerta del sensor (${tk.vinculado}). Quedaron unidos.`;
-      r += "\n\nTe aviso por acá cuando haya una respuesta. Escribí *menu* para volver.";
-      return { estado: { paso: "inicio" }, respuestas: [r] };
-    }
-    case "seguir": {
-      const tk = await datos.verReclamo(txt.toUpperCase());
-      if (!tk) return { estado, respuestas: ["No encontré ese reclamo. Revisá el número o escribí *menu*."] };
-      const ult = tk.eventos[tk.eventos.length - 1];
-      return {
-        estado: { paso: "inicio" },
-        respuestas: [`*${tk.id}* · ${tk.estado}\n${tk.titulo}\n\nÚltima novedad (${ult.quien}):\n${ult.texto}\n\nEscribí *menu* para volver.`],
-      };
-    }
-    case "verificar": {
-      const v = await datos.verificar(txt.toUpperCase());
-      if (!v) return { estado, respuestas: ["No encontré ese dato o todavía se está sellando. Probá en unos segundos."] };
-      return {
-        estado: { paso: "inicio" },
-        respuestas: [v.ok ? `✅ El dato *${v.id}* es real. Coincide con el sello del lote #${v.lote}.` : `❌ El dato *${v.id}* no coincide con su sello.`],
-      };
-    }
-    default:
-      return { estado: { paso: "inicio" }, respuestas: [MENU] };
-  }
-}
-
-function preguntaQueViste() {
-  return "¿Qué viste?\n\n" + QUE_VISTE.map((q, i) => `*${i + 1}* ${q}`).join("\n") + "\n\nRespondé con el número o escribilo.";
-}
-
-module.exports = { responder, MENU, distanciaKm };
-
-/*BOT-FIN*/
-return module.exports;})();
-const charla={estado:null};
-const NIVEL=["verde","amarillo","rojo"];
-function selladaDe(id){for(let i=blocks.length-1;i>=0;i--){const d=blocks[i].data;for(let k=d.length-1;k>=0;k--){const x=d[k];if(x.est===id&&x.ph!==undefined&&!x.fuente)return {b:blocks[i],r:x}}}return null}
-const datosBot={
-  estaciones:async()=>STATIONS.map(e=>{const sel=selladaDe(e.id);const r=sel?sel.r:last(e.id);
-    return {id:e.id,nombre:e.name,lat:GEO.st[e.id][1],lon:GEO.st[e.id][0],estado:NIVEL[evaluate(last(e.id)).level],
-      ultima_lectura:{id:sel?`B-${sel.b.n}-${e.id}`:null,ph:fmt(r.ph,1),ce:fmtInt(r.ce),q:fmt(r.q,1)}}}),
-  crearReclamo:async d=>{const s=ST[d.est];ticketSeq++;const id=`RA-2026-${String(ticketSeq).padStart(4,"0")}`;
-    const a=attribution(s);const kind=a?(a.kind==="early"?"mine":a.kind):"unknown";
-    const desc=[d.chips&&d.chips.length?d.chips.join(", "):"",d.desc||""].filter(Boolean).join(": ")||"Sin descripción";
-    tickets.unshift({id,t:simTime,tipo:"Aviso por WhatsApp",st:s.id,desc:`Aviso de un vecino por WhatsApp: ${desc}.`,estado:0,resp:"Mesa de monitoreo de la cuenca",foto:d.fotos&&d.fotos.length?`${d.fotos.length} por WhatsApp`:null,wa:true,age:0,kind,loc:"WhatsApp"});
-    pending.push({tipo:"reporte",id,estado:"Recibido",t:simTime});renderTickets();
-    return {id,vence_texto:dayhm(simTime+72*3600000),vinculado:null}},
-  verReclamo:async id=>{const tk=tickets.find(t=>t.id===id);if(!tk)return null;
-    return {id:tk.id,estado:ST_TXT[tk.estado],titulo:`${tk.tipo} · ${ST[tk.st].name}`,eventos:[{quien:tk.resp,texto:tk.estado===2?tk.respuesta:tk.estado===1?tk.nota:tk.desc}]}},
-  verificar:async code=>{const m=/^B-(\d+)-([A-Z0-9]+)$/.exec(code);if(!m)return null;const b=blocks[+m[1]];if(!b||!b.data.some(x=>x.est===m[2]))return null;
-    const bad=verifyChain();return {id:code,ok:bad<0||bad>b.n,lote:b.n}},
-};
-const fmtWA=t=>esc(t).replace(/\*([^*\n]+)\*/g,"<b>$1</b>");
-function burbuja(txt,yo){const d=document.createElement("div");d.className="burb "+(yo?"yo":"bot");d.innerHTML=fmtWA(txt)+`<span class="h">${hhmm(Date.now())}</span>`;$("chat").appendChild(d);$("chat").scrollTop=$("chat").scrollHeight}
-async function hablar(msg,mostrar){
-  burbuja(mostrar??msg.texto,true);
-  const {estado,respuestas}=await BOT.responder(charla.estado,msg,datosBot);charla.estado=estado;
-  for(const r of respuestas){await new Promise(z=>setTimeout(z,350));burbuja(r,false)}
-  rapidas();
-}
-function waAviso(tk){if(!$("chat").children.length)return;burbuja(`🔔 Novedad en tu reclamo *${tk.id}*: ya está *Respondido*.\n\n${tk.respuesta}`,false)}
-function rapidas(){
-  const p=charla.estado?.paso||"inicio";let b=[];
-  if(p==="inicio")b=[["1","Ver el agua"],["2","Avisar algo"],["3","Seguir reclamo"],["4","Comprobar dato"],["ubic","📍 Mandar ubicación"]];
-  else if(p==="aviso_lugar")b=[["ubic","📍 Mandar ubicación"],...STATIONS.slice(0,4).map((e,i)=>[String(i+1),e.name])];
-  else if(p==="aviso_que")b=[["1","Color raro"],["2","Olor feo"],["3","Espuma"],["5","Poca agua"]];
-  else if(p==="aviso_desc")b=[["foto","📷 Mandar foto"],["listo","listo"]];
-  else if(p==="seguir")b=tickets.slice(0,3).map(t=>[t.id,t.id]);
-  else if(p==="verificar"){const sel=selladaDe("JB4");if(sel)b=[[`B-${sel.b.n}-JB4`,`B-${sel.b.n}-JB4`]]}
-  b.push(["menu","menú"]);
-  $("rapidas").innerHTML=b.map(([v,t])=>`<button type="button" data-v="${esc(v)}">${esc(t)}</button>`).join("");
-  $("rapidas").querySelectorAll("button").forEach(x=>x.addEventListener("click",()=>{const v=x.dataset.v;
-    if(v==="ubic"){const g=GEO.st.JB4;hablar({tipo:"ubicacion",lat:g[1]+0.004,lon:g[0]+0.004},"📍 Ubicación enviada (cerca de Angualasto)")}
-    else if(v==="foto")hablar({tipo:"imagen",imagenId:"foto-demo"},"📷 Foto");
-    else hablar({tipo:"texto",texto:v})}));
-}
-$("chat-form").addEventListener("submit",ev=>{ev.preventDefault();const v=$("chat-in").value.trim();if(!v)return;$("chat-in").value="";hablar({tipo:"texto",texto:v})});
-function prepararWA(){if(!$("chat").children.length){burbuja(BOT.MENU,false);rapidas()}}
 /* ---------- Rutas y ciclo ---------- */
 let view="vecino";
-const TABS=["mapa","estaciones","satelite","alertas","reportes","analisis","whatsapp","datos","minas"];
+const TABS=["mapa","estaciones","satelite","alertas","reportes","analisis","datos","minas"];
 let curTab="mapa";
 function route(){let h=location.hash.replace("#","");if(h==="tecnico"||h==="provincia")h="mapa";
   view=TABS.includes(h)?"tecnico":"vecino";if(view==="tecnico")curTab=h;
@@ -1888,7 +1665,6 @@ function route(){let h=location.hash.replace("#","");if(h==="tecnico"||h==="prov
   if(view==="tecnico"&&curTab==="mapa"){placeMap("p-map3d-slot");flyTo3d(VIEWS.prov())}
   lastSub=null;
   if(view==="tecnico"&&curTab==="analisis")prepararAnalisis();
-  if(view==="tecnico"&&curTab==="whatsapp")prepararWA();
   renderAll();window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);
 function renderClock(){$("clock").textContent=`Hora simulada ${dayhm(simTime-STEP)}${paused?" · en pausa":""}`}

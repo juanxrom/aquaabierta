@@ -11,11 +11,10 @@ Una sola página (`index.html`), con el estilo de AquaAbierta (celeste y azul, l
 - **Mi agua**: para vecinos. Elegís tu departamento y localidad y te dice en palabras simples si podés usar el agua, de dónde viene y cómo avisar algo raro.
 - **Mapa**: mapa 3D de la cordillera (relieve real, nieve, glaciares, minas, estaciones, pueblos y avisos), mapa 2D de cuencas y subsistemas.
 - **Estaciones**: datos técnicos por subsistema, control contra después de la mina y empresa contra red independiente.
-- **Satélite**: evidencia Sentinel-2 (color natural, NDWI y NDSI) en `img/sentinel/`.
+- **Satélite**: evidencia Sentinel-2 (color natural, NDWI y NDSI) en `img/sentinel/`, con comparador antes/después que se arrastra.
 - **Alertas**: alertas de toda la provincia y alertas técnicas registradas.
 - **Reportes**: avisos de vecinos con número, responsable, plazo y respuesta pública.
 - **Análisis**: laboratorios y profesionales suben sus análisis con informe firmado, huellas SHA-256 y revisión técnica.
-- **WhatsApp**: simulación del bot, con la misma conversación que el bot real.
 - **Datos abiertos**: cadena de integridad SHA-256, qué está medido y qué no, CSV, API e ingesta.
 - **Minas y pueblos**: minas y proyectos (en producción o en proyecto), departamentos, localidades y fuentes.
 
@@ -25,7 +24,7 @@ Publicada en GitHub Pages: https://juanxrom.github.io/aquaabierta/. También se 
 
 ### Cómo editarlo
 
-Se edita `index.html` directamente. Si cambia la conversación del bot (`bot-whatsapp/conversacion.js`), correr `python3 herramientas/copiar-bot.py` para copiarla en la página.
+Se edita `index.html` directamente.
 
 ## Próximos pasos (versión final)
 
