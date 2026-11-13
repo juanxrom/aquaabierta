@@ -1290,6 +1290,12 @@ const isoDay=d=>{const x=new Date(Date.now()-d*864e5);return x.toISOString().sli
 let gibsDate=isoDay(3);
 function gibsUrl(k){return k==="snow"?`https://gibs.earthdata.nasa.gov/wmts/epsg3857/all/MODIS_Terra_L3_NDSI_Snow_Cover_Daily_v6_STD/default/${gibsDate}/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png`:`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${gibsDate}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`}
 function setLayerVis(id,on){if(!map3d)return;const go=()=>{try{map3d.setLayoutProperty(id,"visibility",on?"visible":"none")}catch(e){}};if(map3dReady)go();else map3d.once("load",go)}
+/* Imagen reciente de Sentinel-2 en el mapa 3D: mismo servicio público que la pestaña Satélite */
+function s2TileUrl(fecha){const fin=new Date(fecha+"T23:59:59Z").getTime(),ini=fin-45*864e5;
+  const mr={mosaicMethod:"esriMosaicAttribute",sortField:"acquisitiondate",sortValue:fecha.replace(/-/g,"/"),ascending:false,where:"category = 1 AND cloudcover <= 0.2"};
+  return "https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer/exportImage?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=jpg&time="+ini+","+fin+"&mosaicRule="+encodeURIComponent(JSON.stringify(mr))+"&renderingRule="+encodeURIComponent(JSON.stringify({rasterFunction:"Natural Color"}))+"&f=image"}
+function setS2Date(){if(!map3d)return;const redo=()=>{try{const vis=map3d.getLayoutProperty("s2","visibility")||"visible";if(map3d.getLayer("s2"))map3d.removeLayer("s2");if(map3d.getSource("s2"))map3d.removeSource("s2");
+  map3d.addSource("s2",{type:"raster",tiles:[s2TileUrl(gibsDate)],tileSize:512,minzoom:5,maxzoom:14,attribution:"Imagen reciente: Sentinel-2 (ESA) vía Esri"});map3d.addLayer({id:"s2",type:"raster",source:"s2",layout:{visibility:vis},paint:{"raster-fade-duration":200}},"day")}catch(e){}};if(map3dReady)redo();else map3d.once("load",redo)}
 function setGibsDate(){if(!map3d)return;const redo=()=>{[["day","hs",0.95,9],["snow",undefined,0.72,8]].forEach(([k,before,op,mz])=>{try{const vis=map3d.getLayoutProperty(k,"visibility")||"visible";if(map3d.getLayer(k))map3d.removeLayer(k);if(map3d.getSource(k))map3d.removeSource(k);map3d.addSource(k,{type:"raster",tiles:[gibsUrl(k)],tileSize:256,maxzoom:mz,attribution:k==="day"?"Imagen del día y nieve: NASA GIBS / MODIS Terra":undefined});map3d.addLayer({id:k,type:"raster",source:k,layout:{visibility:vis},paint:{"raster-opacity":op}},before&&map3d.getLayer(before)?before:undefined)}catch(e){}})};if(map3dReady)redo();else map3d.once("load",redo);const n=$("m3-note");if(n)n.textContent=`Nieve e imagen del día del ${gibsDate}. Si no aparece nada, probá con una fecha anterior: las nubes tapan la nieve y la NASA publica con unos días de demora.`}
 let map3d=null,map3dReady=false,map3dMk=false,map3dTileErr=0,pendingFly=null;const MK={st:{},mine:{},loc:{},av:{},glac:{}};const SHOW={st:true,mine:true,loc:true,av:true,glac:true};let avSig="";
 function mkEl(kind,label,extra){const el=document.createElement("div");el.className="mk"+(extra?" "+extra:"");const sh=document.createElement("span");sh.className=kind;el.appendChild(sh);if(label){const l=document.createElement("span");l.className="lbl";l.textContent=label;el.appendChild(l)}return el}
@@ -1297,14 +1303,18 @@ function popNode(title,lines,img){const d=document.createElement("div");const h=
 function ensureMapWrap(){let w=$("map3d-wrap");if(w)return w;w=document.createElement("div");w.id="map3d-wrap";
   w.innerHTML=`<div id="map3d"></div><div class="map3d-tools" role="group" aria-label="Capas del mapa">
    <label><input type="checkbox" id="m3-terrain" checked> Relieve 3D</label>
-   <hr><label><input type="checkbox" id="m3-snow" checked> Nieve (NASA MODIS)</label><div class="m3-legend"><span>poca</span><i></i><span>mucha</span></div>
+   <hr><strong style="font-size:12px">Imagen de fondo</strong>
+   <label><input type="radio" name="m3-base" id="m3-s2" checked> Reciente (Sentinel-2, 10 m)</label>
+   <label><input type="radio" name="m3-base" id="m3-hd"> Alta definición (Esri, más vieja)</label>
+   <hr><label><input type="checkbox" id="m3-snow"> Nieve (NASA MODIS)</label><div class="m3-legend"><span>poca</span><i></i><span>mucha</span></div>
    <label><input type="checkbox" id="m3-day"> Imagen del día (NASA MODIS)</label>
-   <label for="m3-date" style="gap:6px">Fecha <input type="date" id="m3-date"></label>
+   <label for="m3-date" style="gap:6px">Fecha de la imagen <input type="date" id="m3-date"></label>
    <label><input type="checkbox" id="m3-glac" checked> Glaciares</label><hr><label><input type="checkbox" id="m3-st" checked> Estaciones</label><label><input type="checkbox" id="m3-mine" checked> Minas y proyectos</label><label><input type="checkbox" id="m3-loc" checked> Pueblos</label><label><input type="checkbox" id="m3-av" checked> Avisos de vecinos</label></div>
    <div class="map3d-note" id="m3-note">Ubicaciones aproximadas de referencia. Arrastrá con clic derecho o Ctrl para girar e inclinar.</div>`;
   setTimeout(()=>{["st","mine","loc","av","glac"].forEach(k=>$("m3-"+k).addEventListener("change",e=>{SHOW[k]=e.target.checked;Object.values(MK[k]).forEach(m=>m.getElement().style.display=SHOW[k]?"flex":"none")}));
     $("m3-date").value=gibsDate;$("m3-date").max=isoDay(1);
-    $("m3-date").addEventListener("change",e=>{if(!e.target.value)return;gibsDate=e.target.value;setGibsDate()});
+    $("m3-date").addEventListener("change",e=>{if(!e.target.value)return;gibsDate=e.target.value;setGibsDate();setS2Date()});
+    $("m3-s2").addEventListener("change",()=>setLayerVis("s2",true));$("m3-hd").addEventListener("change",()=>setLayerVis("s2",false));
     $("m3-snow").addEventListener("change",e=>setLayerVis("snow",e.target.checked));
     $("m3-day").addEventListener("change",e=>setLayerVis("day",e.target.checked));
     $("m3-terrain").addEventListener("change",e=>{if(!map3d)return;try{map3d.setTerrain(e.target.checked?{source:"dem",exaggeration:1.4}:null);map3d.easeTo({pitch:e.target.checked?55:0,duration:700})}catch(err){}})},0);
@@ -1316,16 +1326,18 @@ function initMap3d(){
   try{
     map3d=new maplibregl.Map({container:"map3d",style:{version:8,sources:{
       sat:{type:"raster",tiles:["https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],tileSize:256,maxzoom:19,attribution:"Imagen © Esri, Maxar, Earthstar Geographics"},
+      s2:{type:"raster",tiles:[s2TileUrl(gibsDate)],tileSize:512,minzoom:5,maxzoom:14,attribution:"Imagen reciente: Sentinel-2 (ESA) vía Esri"},
       day:{type:"raster",tiles:[gibsUrl("day")],tileSize:256,maxzoom:9,attribution:"Imagen del día y nieve: NASA GIBS / MODIS Terra"},
       snow:{type:"raster",tiles:[gibsUrl("snow")],tileSize:256,maxzoom:8},
       dem:{type:"raster-dem",tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],tileSize:256,encoding:"terrarium",maxzoom:15,attribution:"Relieve: AWS Terrain Tiles"}},
-      layers:[{id:"sat",type:"raster",source:"sat"},{id:"day",type:"raster",source:"day",layout:{visibility:"none"},paint:{"raster-opacity":0.95}},{id:"hs",type:"hillshade",source:"dem",paint:{"hillshade-exaggeration":0.15}},{id:"snow",type:"raster",source:"snow",paint:{"raster-opacity":0.72}}]},
+      layers:[{id:"sat",type:"raster",source:"sat"},{id:"s2",type:"raster",source:"s2",paint:{"raster-fade-duration":200}},{id:"day",type:"raster",source:"day",layout:{visibility:"none"},paint:{"raster-opacity":0.95}},{id:"hs",type:"hillshade",source:"dem",paint:{"hillshade-exaggeration":0.08}},{id:"snow",type:"raster",source:"snow",layout:{visibility:"none"},paint:{"raster-opacity":0.72}}]},
       center:[-69.3,-30.4],zoom:6.2,pitch:50,bearing:0,maxPitch:85,renderWorldCopies:false,attributionControl:true});
     map3d.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-right");
     map3d.addControl(new maplibregl.ScaleControl({unit:"metric"}),"bottom-right");
     window.__aqMap=map3d;map3dMk=true;buildMarkers();
     const farUpd=()=>{const w=$("map3d-wrap");if(w)w.classList.toggle("far",map3d.getZoom()<8.3)};farUpd();map3d.on("zoom",farUpd);
-    map3d.on("load",()=>{map3dReady=true;try{map3d.setTerrain({source:"dem",exaggeration:1.4})}catch(e){}if(pendingFly){const t=pendingFly;pendingFly=null;setTimeout(()=>flyTo3d(t),50)}});
+    map3d.on("load",()=>{map3dReady=true;try{map3d.setTerrain({source:"dem",exaggeration:1.4})}catch(e){}
+      try{map3d.setSky({"sky-color":"#6fa8dc","horizon-color":"#dbe9f4","fog-color":"#e6eef4","sky-horizon-blend":0.5,"horizon-fog-blend":0.6,"fog-ground-blend":0.85})}catch(e){}if(pendingFly){const t=pendingFly;pendingFly=null;setTimeout(()=>flyTo3d(t),50)}});
     map3d.on("error",e=>{map3dTileErr++;if(map3dTileErr===6){const n=$("m3-note");if(n)n.textContent="La imagen satelital no carga en esta vista (por ejemplo, dentro de claude.ai, que bloquea imágenes externas). Abrí la versión publicada para verla. Los puntos sí funcionan."}});
   }catch(e){mapFallback("Este navegador no pudo iniciar el mapa 3D (WebGL). El resto de la página funciona igual.")}
 }
