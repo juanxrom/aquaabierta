@@ -1,32 +1,32 @@
 <title>AquaAbierta</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: una sola columna amable; en pantallas anchas, mapa a la izquierda y ficha del lugar a la derecha */
 :root{
-  --bg:#F2F8FC; --surface:#FFFFFF; --soft:#E6F3FB; --ink:#0B2E4A; --muted:#4D6A80; --line:#D3E5F1;
-  --celeste:#29A8E0; --azul:#0A5FAE; --azul-ink:#FFFFFF;
-  --ok:#1C9A57; --ok-bg:#E3F6EC; --warn:#C98A00; --warn-bg:#FFF4D6; --bad:#D23B3B; --bad-bg:#FDE7E7;
+  --bg:#F2F5F7; --surface:#FFFFFF; --soft:#E9EEF3; --ink:#13212C; --muted:#56687A; --line:#D7DFE6;
+  --celeste:#6FA6D8; --azul:#1F5FA8; --azul-ink:#FFFFFF;
+  --ok:#1C8048; --ok-bg:#E3F3E9; --warn:#9A6410; --warn-bg:#FBF0DA; --bad:#B8322A; --bad-bg:#FBE6E3;
   --rio:#7CC6EC; --tierra:#EAF2F7; --chat-bg:#ECE5DD; --chat-yo:#D9FDD3;
-  --font:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;
+  --font:"Public Sans","Segoe UI",system-ui,sans-serif; --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0A1A27; --surface:#10273A; --soft:#14324A; --ink:#E8F4FC; --muted:#9DB8CC; --line:#1F4260;
-  --celeste:#4CC0F2; --azul:#4AA3F0; --azul-ink:#06192A;
-  --ok:#3CCB7F; --ok-bg:#123527; --warn:#F1B935; --warn-bg:#3A2E0E; --bad:#FF6B6B; --bad-bg:#3C1719;
+  --bg:#0E151B; --surface:#16202A; --soft:#1C2935; --ink:#E4ECF2; --muted:#93A5B4; --line:#2A3946;
+  --celeste:#5E95CC; --azul:#7AAEE8; --azul-ink:#0E151B;
+  --ok:#56C98A; --ok-bg:#12301F; --warn:#E8B45A; --warn-bg:#36290F; --bad:#F2776D; --bad-bg:#3A1917;
   --rio:#2E7FAF; --tierra:#0F2234; --chat-bg:#0B141A; --chat-yo:#005C4B; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0A1A27; --surface:#10273A; --soft:#14324A; --ink:#E8F4FC; --muted:#9DB8CC; --line:#1F4260;
-  --celeste:#4CC0F2; --azul:#4AA3F0; --azul-ink:#06192A;
-  --ok:#3CCB7F; --ok-bg:#123527; --warn:#F1B935; --warn-bg:#3A2E0E; --bad:#FF6B6B; --bad-bg:#3C1719;
+  --bg:#0E151B; --surface:#16202A; --soft:#1C2935; --ink:#E4ECF2; --muted:#93A5B4; --line:#2A3946;
+  --celeste:#5E95CC; --azul:#7AAEE8; --azul-ink:#0E151B;
+  --ok:#56C98A; --ok-bg:#12301F; --warn:#E8B45A; --warn-bg:#36290F; --bad:#F2776D; --bad-bg:#3A1917;
   --rio:#2E7FAF; --tierra:#0F2234; --chat-bg:#0B141A; --chat-yo:#005C4B; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.5;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;margin:0}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
 .wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-h1,h2,h3{line-height:1.2;text-wrap:balance;margin:0}
+h1,h2,h3{line-height:1.2;text-wrap:balance;margin:0;font-family:var(--font-display)}
 h1{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:900}
 h2{font-size:1.45rem;font-weight:800}
 h3{font-size:1.1rem;font-weight:800}
@@ -44,7 +44,7 @@ header.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px;fle
 .brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-weight:900;font-size:1.35rem;letter-spacing:-.01em}
 .brand svg{width:34px;height:34px}
 .brand .b2{color:var(--celeste)}
-nav.menu{display:flex;gap:4px;overflow-x:auto;flex:1;min-width:0;justify-content:flex-end}
+nav.menu{display:flex;flex-wrap:wrap;gap:4px;flex-basis:100%;min-width:0;justify-content:flex-start}
 nav.menu a{white-space:nowrap;text-decoration:none;color:var(--ink);font-weight:700;padding:8px 12px;border-radius:999px;font-size:.98rem}
 nav.menu a[aria-current="page"]{background:var(--azul);color:var(--azul-ink)}
 nav.menu a:hover{background:var(--soft)}
@@ -196,18 +196,28 @@ footer .wrap{display:grid;gap:6px}
 .tel-input input{flex:1;min-width:0;border-radius:999px}
 .tel-input button{border-radius:999px;padding:10px 16px}
 @media (max-width:560px){.tel{height:560px;border-width:6px}}
+header.top2{background:var(--surface);border-bottom:1px solid var(--line)}
+.top2-inner{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding-top:12px;padding-bottom:12px}
+.brand2{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--ink)}
+.brand2 b{display:block;font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1.1}
+.sub2{display:block;color:var(--muted);font-size:14px}
+.logo2{width:38px;height:38px;border-radius:10px;background:var(--azul);display:grid;place-items:center;flex:none}
+nav.menu a{font-size:14px!important;font-weight:500!important;padding:6px 10px!important;border-radius:8px!important;border:1px solid var(--line)}
+nav.menu a[aria-current="page"],nav.menu a[aria-current="page"]:hover{background:var(--surface)!important;color:var(--azul)!important;border-color:var(--azul);font-weight:600!important}
+.simbar2{background:var(--warn-bg);color:var(--warn);font-size:13px;padding:7px 0}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;z-index:20;max-width:calc(100% - 32px)}
 </style>
 
-<header class="top">
-  <div class="wrap">
-    <a class="brand" href="#inicio" aria-label="AquaAbierta, inicio">
-      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3C20 3 7 17.5 7 26a13 13 0 0 0 26 0C33 17.5 20 3 20 3Z" fill="var(--celeste)"/><path d="M12 27.5q4-3.6 8 0t8 0" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/><circle cx="20" cy="18" r="2.6" fill="#fff"/></svg>
-      <span>Aqua<span class="b2">Abierta</span></span>
+<header class="top2">
+  <div class="wrap top2-inner">
+    <a class="brand2" href="index.html#vecino" aria-label="AquaAbierta, Mi agua">
+      <span class="logo2" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3c3 4.2 6 7.6 6 11a6 6 0 0 1-12 0c0-3.4 3-6.8 6-11Z" fill="#fff"/></svg></span>
+      <span><b>AquaAbierta</b><span class="sub2">El agua es de todos, la información también · San Juan</span></span>
     </a>
-    <span class="demo-tag">Datos de prueba</span>
     <nav class="menu" aria-label="Secciones">
-      <a href="#inicio">El agua hoy</a>
+      <a href="index.html#vecino">Mi agua</a>
+      <a href="index.html#tecnico">Datos técnicos</a>
+      <a href="#inicio">Ríos y sensores</a>
       <a href="#reportar">Avisar algo</a>
       <a href="#reclamos">Reclamos</a>
       <a href="#verificar">Comprobar</a>
@@ -218,6 +228,7 @@ footer .wrap{display:grid;gap:6px}
     </nav>
   </div>
 </header>
+<div class="simbar2"><div class="wrap"><strong>Prototipo con datos simulados.</strong> Los ríos, pueblos, minas y proyectos son reales. Las mediciones, alertas y reportes son inventados para la demostración.</div></div>
 
 <div class="wrap">
 <main id="app">

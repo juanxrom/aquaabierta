@@ -1,0 +1,1257 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="logo/aquaabierta-icono.svg">
+<title>AquaAbierta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: una sola columna amable; en pantallas anchas, mapa a la izquierda y ficha del lugar a la derecha */
+:root{
+  --bg:#F2F5F7; --surface:#FFFFFF; --soft:#E9EEF3; --ink:#13212C; --muted:#56687A; --line:#D7DFE6;
+  --celeste:#6FA6D8; --azul:#1F5FA8; --azul-ink:#FFFFFF;
+  --ok:#1C8048; --ok-bg:#E3F3E9; --warn:#9A6410; --warn-bg:#FBF0DA; --bad:#B8322A; --bad-bg:#FBE6E3;
+  --rio:#7CC6EC; --tierra:#EAF2F7; --chat-bg:#ECE5DD; --chat-yo:#D9FDD3;
+  --font:"Public Sans","Segoe UI",system-ui,sans-serif; --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E151B; --surface:#16202A; --soft:#1C2935; --ink:#E4ECF2; --muted:#93A5B4; --line:#2A3946;
+  --celeste:#5E95CC; --azul:#7AAEE8; --azul-ink:#0E151B;
+  --ok:#56C98A; --ok-bg:#12301F; --warn:#E8B45A; --warn-bg:#36290F; --bad:#F2776D; --bad-bg:#3A1917;
+  --rio:#2E7FAF; --tierra:#0F2234; --chat-bg:#0B141A; --chat-yo:#005C4B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E151B; --surface:#16202A; --soft:#1C2935; --ink:#E4ECF2; --muted:#93A5B4; --line:#2A3946;
+  --celeste:#5E95CC; --azul:#7AAEE8; --azul-ink:#0E151B;
+  --ok:#56C98A; --ok-bg:#12301F; --warn:#E8B45A; --warn-bg:#36290F; --bad:#F2776D; --bad-bg:#3A1917;
+  --rio:#2E7FAF; --tierra:#0F2234; --chat-bg:#0B141A; --chat-yo:#005C4B; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{line-height:1.2;text-wrap:balance;margin:0;font-family:var(--font-display)}
+h1{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:900}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.1rem;font-weight:800}
+p{margin:0}
+a{color:var(--azul)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--celeste);outline-offset:2px}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.num{font-variant-numeric:tabular-nums}
+
+/* Encabezado */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-weight:900;font-size:1.35rem;letter-spacing:-.01em}
+.brand svg{width:34px;height:34px}
+.brand .b2{color:var(--celeste)}
+nav.menu{display:flex;flex-wrap:wrap;gap:4px;flex-basis:100%;min-width:0;justify-content:flex-start}
+nav.menu a{white-space:nowrap;text-decoration:none;color:var(--ink);font-weight:700;padding:8px 12px;border-radius:999px;font-size:.98rem}
+nav.menu a[aria-current="page"]{background:var(--azul);color:var(--azul-ink)}
+nav.menu a:hover{background:var(--soft)}
+nav.menu a[aria-current="page"]:hover{background:var(--azul)}
+@media (max-width:860px){nav.menu{flex-basis:100%;justify-content:flex-start}}
+.demo-tag{font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--warn-bg);color:var(--warn);padding:3px 8px;border-radius:6px}
+
+main{padding-block:24px 48px;display:grid;gap:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;border-radius:12px;padding:12px 18px;font-weight:800;text-decoration:none;background:var(--azul);color:var(--azul-ink);font-size:1rem}
+.btn.sec{background:var(--soft);color:var(--ink)}
+.btn.warn{background:var(--bad);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stack{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+
+/* Semáforo */
+.pill{display:inline-flex;align-items:center;gap:8px;font-weight:800;border-radius:999px;padding:5px 12px;font-size:.95rem}
+.pill::before{content:"";width:11px;height:11px;border-radius:50%;background:currentColor}
+.s-verde{background:var(--ok-bg);color:var(--ok)}
+.s-amarillo{background:var(--warn-bg);color:var(--warn)}
+.s-rojo{background:var(--bad-bg);color:var(--bad)}
+.s-gris{background:var(--soft);color:var(--muted)}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.summary .pill{font-size:1rem;padding:8px 14px}
+
+.alerta{display:flex;gap:14px;align-items:flex-start;background:var(--bad-bg);border:2px solid var(--bad);border-radius:16px;padding:16px 18px}
+.alerta .ic{flex:none;width:36px;height:36px;border-radius:50%;background:var(--bad);color:#fff;display:grid;place-items:center;font-weight:900;font-size:1.3rem}
+.alerta b{color:var(--bad)}
+
+/* Mapa */
+/* Leaflet 1.9.4 (BSD-2) */
+ .leaflet-pane, .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow, .leaflet-tile-container, .leaflet-pane > svg, .leaflet-pane > canvas, .leaflet-zoom-box, .leaflet-image-layer, .leaflet-layer { position: absolute; left: 0; top: 0; } .leaflet-container { overflow: hidden; } .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow { -webkit-user-select: none; -moz-user-select: none; user-select: none; -webkit-user-drag: none; } .leaflet-tile::selection { background: transparent; } .leaflet-safari .leaflet-tile { image-rendering: -webkit-optimize-contrast; } .leaflet-safari .leaflet-tile-container { width: 1600px; height: 1600px; -webkit-transform-origin: 0 0; } .leaflet-marker-icon, .leaflet-marker-shadow { display: block; } .leaflet-container .leaflet-overlay-pane svg { max-width: none !important; max-height: none !important; } .leaflet-container .leaflet-marker-pane img, .leaflet-container .leaflet-shadow-pane img, .leaflet-container .leaflet-tile-pane img, .leaflet-container img.leaflet-image-layer, .leaflet-container .leaflet-tile { max-width: none !important; max-height: none !important; width: auto; padding: 0; } .leaflet-container img.leaflet-tile { mix-blend-mode: plus-lighter; } .leaflet-container.leaflet-touch-zoom { -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; } .leaflet-container.leaflet-touch-drag { -ms-touch-action: pinch-zoom; touch-action: none; touch-action: pinch-zoom; } .leaflet-container.leaflet-touch-drag.leaflet-touch-zoom { -ms-touch-action: none; touch-action: none; } .leaflet-container { -webkit-tap-highlight-color: transparent; } .leaflet-container a { -webkit-tap-highlight-color: rgba(51, 181, 229, 0.4); } .leaflet-tile { filter: inherit; visibility: hidden; } .leaflet-tile-loaded { visibility: inherit; } .leaflet-zoom-box { width: 0; height: 0; -moz-box-sizing: border-box; box-sizing: border-box; z-index: 800; } .leaflet-overlay-pane svg { -moz-user-select: none; } .leaflet-pane { z-index: 400; } .leaflet-tile-pane { z-index: 200; } .leaflet-overlay-pane { z-index: 400; } .leaflet-shadow-pane { z-index: 500; } .leaflet-marker-pane { z-index: 600; } .leaflet-tooltip-pane { z-index: 650; } .leaflet-popup-pane { z-index: 700; } .leaflet-map-pane canvas { z-index: 100; } .leaflet-map-pane svg { z-index: 200; } .leaflet-vml-shape { width: 1px; height: 1px; } .lvml { behavior: url(#default#VML); display: inline-block; position: absolute; } .leaflet-control { position: relative; z-index: 800; pointer-events: visiblePainted; pointer-events: auto; } .leaflet-top, .leaflet-bottom { position: absolute; z-index: 1000; pointer-events: none; } .leaflet-top { top: 0; } .leaflet-right { right: 0; } .leaflet-bottom { bottom: 0; } .leaflet-left { left: 0; } .leaflet-control { float: left; clear: both; } .leaflet-right .leaflet-control { float: right; } .leaflet-top .leaflet-control { margin-top: 10px; } .leaflet-bottom .leaflet-control { margin-bottom: 10px; } .leaflet-left .leaflet-control { margin-left: 10px; } .leaflet-right .leaflet-control { margin-right: 10px; } .leaflet-fade-anim .leaflet-popup { opacity: 0; -webkit-transition: opacity 0.2s linear; -moz-transition: opacity 0.2s linear; transition: opacity 0.2s linear; } .leaflet-fade-anim .leaflet-map-pane .leaflet-popup { opacity: 1; } .leaflet-zoom-animated { -webkit-transform-origin: 0 0; -ms-transform-origin: 0 0; transform-origin: 0 0; } svg.leaflet-zoom-animated { will-change: transform; } .leaflet-zoom-anim .leaflet-zoom-animated { -webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1); -moz-transition: -moz-transform 0.25s cubic-bezier(0,0,0.25,1); transition: transform 0.25s cubic-bezier(0,0,0.25,1); } .leaflet-zoom-anim .leaflet-tile, .leaflet-pan-anim .leaflet-tile { -webkit-transition: none; -moz-transition: none; transition: none; } .leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; } .leaflet-interactive { cursor: pointer; } .leaflet-grab { cursor: -webkit-grab; cursor: -moz-grab; cursor: grab; } .leaflet-crosshair, .leaflet-crosshair .leaflet-interactive { cursor: crosshair; } .leaflet-popup-pane, .leaflet-control { cursor: auto; } .leaflet-dragging .leaflet-grab, .leaflet-dragging .leaflet-grab .leaflet-interactive, .leaflet-dragging .leaflet-marker-draggable { cursor: move; cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing; } .leaflet-marker-icon, .leaflet-marker-shadow, .leaflet-image-layer, .leaflet-pane > svg path, .leaflet-tile-container { pointer-events: none; } .leaflet-marker-icon.leaflet-interactive, .leaflet-image-layer.leaflet-interactive, .leaflet-pane > svg path.leaflet-interactive, svg.leaflet-image-layer.leaflet-interactive path { pointer-events: visiblePainted; pointer-events: auto; } .leaflet-container { background: #ddd; outline-offset: 1px; } .leaflet-container a { color: #0078A8; } .leaflet-zoom-box { border: 2px dotted #38f; background: rgba(255,255,255,0.5); } .leaflet-container { font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; font-size: 12px; font-size: 0.75rem; line-height: 1.5; } .leaflet-bar { box-shadow: 0 1px 5px rgba(0,0,0,0.65); border-radius: 4px; } .leaflet-bar a { background-color: #fff; border-bottom: 1px solid #ccc; width: 26px; height: 26px; line-height: 26px; display: block; text-align: center; text-decoration: none; color: black; } .leaflet-bar a, .leaflet-control-layers-toggle { background-position: 50% 50%; background-repeat: no-repeat; display: block; } .leaflet-bar a:hover, .leaflet-bar a:focus { background-color: #f4f4f4; } .leaflet-bar a:first-child { border-top-left-radius: 4px; border-top-right-radius: 4px; } .leaflet-bar a:last-child { border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-bottom: none; } .leaflet-bar a.leaflet-disabled { cursor: default; background-color: #f4f4f4; color: #bbb; } .leaflet-touch .leaflet-bar a { width: 30px; height: 30px; line-height: 30px; } .leaflet-touch .leaflet-bar a:first-child { border-top-left-radius: 2px; border-top-right-radius: 2px; } .leaflet-touch .leaflet-bar a:last-child { border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; } .leaflet-control-zoom-in, .leaflet-control-zoom-out { font: bold 18px 'Lucida Console', Monaco, monospace; text-indent: 1px; } .leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out { font-size: 22px; } .leaflet-control-layers { box-shadow: 0 1px 5px rgba(0,0,0,0.4); background: #fff; border-radius: 5px; } .leaflet-control-layers-toggle { background-image: url(images/layers.png); width: 36px; height: 36px; } .leaflet-retina .leaflet-control-layers-toggle { background-image: url(images/layers-2x.png); background-size: 26px 26px; } .leaflet-touch .leaflet-control-layers-toggle { width: 44px; height: 44px; } .leaflet-control-layers .leaflet-control-layers-list, .leaflet-control-layers-expanded .leaflet-control-layers-toggle { display: none; } .leaflet-control-layers-expanded .leaflet-control-layers-list { display: block; position: relative; } .leaflet-control-layers-expanded { padding: 6px 10px 6px 6px; color: #333; background: #fff; } .leaflet-control-layers-scrollbar { overflow-y: scroll; overflow-x: hidden; padding-right: 5px; } .leaflet-control-layers-selector { margin-top: 2px; position: relative; top: 1px; } .leaflet-control-layers label { display: block; font-size: 13px; font-size: 1.08333em; } .leaflet-control-layers-separator { height: 0; border-top: 1px solid #ddd; margin: 5px -10px 5px -6px; } .leaflet-default-icon-path { background-image: url(images/marker-icon.png); } .leaflet-container .leaflet-control-attribution { background: #fff; background: rgba(255, 255, 255, 0.8); margin: 0; } .leaflet-control-attribution, .leaflet-control-scale-line { padding: 0 5px; color: #333; line-height: 1.4; } .leaflet-control-attribution a { text-decoration: none; } .leaflet-control-attribution a:hover, .leaflet-control-attribution a:focus { text-decoration: underline; } .leaflet-attribution-flag { display: inline !important; vertical-align: baseline !important; width: 1em; height: 0.6669em; } .leaflet-left .leaflet-control-scale { margin-left: 5px; } .leaflet-bottom .leaflet-control-scale { margin-bottom: 5px; } .leaflet-control-scale-line { border: 2px solid #777; border-top: none; line-height: 1.1; padding: 2px 5px 1px; white-space: nowrap; -moz-box-sizing: border-box; box-sizing: border-box; background: rgba(255, 255, 255, 0.8); text-shadow: 1px 1px #fff; } .leaflet-control-scale-line:not(:first-child) { border-top: 2px solid #777; border-bottom: none; margin-top: -2px; } .leaflet-control-scale-line:not(:first-child):not(:last-child) { border-bottom: 2px solid #777; } .leaflet-touch .leaflet-control-attribution, .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar { box-shadow: none; } .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar { border: 2px solid rgba(0,0,0,0.2); background-clip: padding-box; } .leaflet-popup { position: absolute; text-align: center; margin-bottom: 20px; } .leaflet-popup-content-wrapper { padding: 1px; text-align: left; border-radius: 12px; } .leaflet-popup-content { margin: 13px 24px 13px 20px; line-height: 1.3; font-size: 13px; font-size: 1.08333em; min-height: 1px; } .leaflet-popup-content p { margin: 17px 0; margin: 1.3em 0; } .leaflet-popup-tip-container { width: 40px; height: 20px; position: absolute; left: 50%; margin-top: -1px; margin-left: -20px; overflow: hidden; pointer-events: none; } .leaflet-popup-tip { width: 17px; height: 17px; padding: 1px; margin: -10px auto 0; pointer-events: auto; -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg); } .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: white; color: #333; box-shadow: 0 3px 14px rgba(0,0,0,0.4); } .leaflet-container a.leaflet-popup-close-button { position: absolute; top: 0; right: 0; border: none; text-align: center; width: 24px; height: 24px; font: 16px/24px Tahoma, Verdana, sans-serif; color: #757575; text-decoration: none; background: transparent; } .leaflet-container a.leaflet-popup-close-button:hover, .leaflet-container a.leaflet-popup-close-button:focus { color: #585858; } .leaflet-popup-scrolled { overflow: auto; } .leaflet-oldie .leaflet-popup-content-wrapper { -ms-zoom: 1; } .leaflet-oldie .leaflet-popup-tip { width: 24px; margin: 0 auto; -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)"; filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678); } .leaflet-oldie .leaflet-control-zoom, .leaflet-oldie .leaflet-control-layers, .leaflet-oldie .leaflet-popup-content-wrapper, .leaflet-oldie .leaflet-popup-tip { border: 1px solid #999; } .leaflet-div-icon { background: #fff; border: 1px solid #666; } .leaflet-tooltip { position: absolute; padding: 6px; background-color: #fff; border: 1px solid #fff; border-radius: 3px; color: #222; white-space: nowrap; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; pointer-events: none; box-shadow: 0 1px 3px rgba(0,0,0,0.4); } .leaflet-tooltip.leaflet-interactive { cursor: pointer; pointer-events: auto; } .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { position: absolute; pointer-events: none; border: 6px solid transparent; background: transparent; content: ""; } .leaflet-tooltip-bottom { margin-top: 6px; } .leaflet-tooltip-top { margin-top: -6px; } .leaflet-tooltip-bottom:before, .leaflet-tooltip-top:before { left: 50%; margin-left: -6px; } .leaflet-tooltip-top:before { bottom: 0; margin-bottom: -12px; border-top-color: #fff; } .leaflet-tooltip-bottom:before { top: 0; margin-top: -12px; margin-left: -6px; border-bottom-color: #fff; } .leaflet-tooltip-left { margin-left: -6px; } .leaflet-tooltip-right { margin-left: 6px; } .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { top: 50%; margin-top: -6px; } .leaflet-tooltip-left:before { right: 0; margin-right: -12px; border-left-color: #fff; } .leaflet-tooltip-right:before { left: 0; margin-left: -12px; border-right-color: #fff; } @media print { .leaflet-control { -webkit-print-color-adjust: exact; print-color-adjust: exact; } } 
+#mapa{height:760px;border-radius:14px;overflow:hidden;background:var(--tierra);z-index:0}
+@media (max-width:560px){#mapa{height:520px}}
+.leaflet-interactive:focus{outline:none}
+.leaflet-container{font-family:var(--font);background:var(--tierra)}
+.leaflet-popup-content{font-size:.92rem;line-height:1.4;margin:12px 14px}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink)}
+.leaflet-tooltip{font-family:var(--font);font-weight:800;font-size:.85rem;background:var(--surface);color:var(--ink);border-color:var(--line)}
+.leaflet-control-attribution{font-size:.7rem}
+@keyframes pulsoL{0%{stroke-width:3;stroke-opacity:.9}100%{stroke-width:22;stroke-opacity:0}}
+.est-rojo{animation:pulsoL 1.4s ease-out infinite}
+@media (prefers-reduced-motion:reduce){.est-rojo{animation:none}}
+.mina-ic{width:18px;height:18px;transform:rotate(45deg);border-radius:3px;border:2px solid var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.mina-ic.prod{background:#5B4B3A}
+.mina-ic.pre,.mina-ic.lat{background:transparent;border:2.5px dashed #5B4B3A}
+.minas{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.mina{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:4px;align-content:start}
+.leyenda{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+.leyenda span{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;color:var(--muted)}
+.leyenda i{width:12px;height:12px;border-radius:50%;display:inline-block}
+
+/* Ficha */
+.param{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-top:1px solid var(--line)}
+.param .v{font-size:1.5rem;font-weight:900;text-align:right}
+.param .v small{font-size:.85rem;font-weight:700;color:var(--muted)}
+.param .que{grid-column:1/-1;font-size:.92rem;color:var(--muted)}
+.lista{display:grid;gap:8px;max-height:560px;overflow:auto;padding-right:4px}
+.lista button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700}
+.lista button[aria-pressed="true"]{border-color:var(--azul);box-shadow:inset 0 0 0 1px var(--azul)}
+.spark{width:100%;height:70px;display:block}
+
+/* Formularios */
+.lbl{font-weight:800;display:block;margin-bottom:6px}
+input[type=text],input[type=number],select,textarea{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 12px;font-size:1rem}
+textarea{min-height:90px;resize:vertical}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips label{cursor:pointer}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips span{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:700;background:var(--surface)}
+.chips input:checked+span{background:var(--azul);color:var(--azul-ink);border-color:var(--azul)}
+.chips input:focus-visible+span{outline:3px solid var(--celeste)}
+.foto-prev{max-width:180px;border-radius:12px;border:1px solid var(--line)}
+details.extra{border:1.5px dashed var(--line);border-radius:14px;padding:12px 14px}
+details.extra summary{cursor:pointer;font-weight:800}
+.ok-box{background:var(--ok-bg);border:2px solid var(--ok);border-radius:16px;padding:16px}
+.bad-box{background:var(--bad-bg);border:2px solid var(--bad);border-radius:16px;padding:16px}
+.info-box{background:var(--soft);border-radius:14px;padding:14px 16px}
+
+/* Reclamos */
+.roles{display:flex;gap:6px;flex-wrap:wrap;background:var(--soft);padding:6px;border-radius:14px;width:fit-content;max-width:100%}
+.roles button{border:0;background:transparent;padding:8px 14px;border-radius:10px;font-weight:800;cursor:pointer}
+.roles button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ticket{display:grid;gap:12px}
+.ticket .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.tid{font-weight:900;color:var(--azul);font-variant-numeric:tabular-nums}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 16px;font-size:.93rem}
+.meta b{display:block;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.timeline{display:grid;gap:10px;border-left:3px solid var(--line);padding-left:14px;margin-left:4px}
+.ev .quien{font-weight:800}
+.ev .hash{font-family:ui-monospace,Menlo,monospace;font-size:.75rem;color:var(--muted);word-break:break-all}
+.tag{display:inline-block;font-size:.8rem;font-weight:800;padding:3px 9px;border-radius:7px;background:var(--soft)}
+.tag.bad{background:var(--bad-bg);color:var(--bad)}
+.tag.warn{background:var(--warn-bg);color:var(--warn)}
+
+/* Verificar */
+.pasos{display:grid;gap:10px;counter-reset:p}
+.paso{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start}
+.paso::before{counter-increment:p;content:counter(p);width:30px;height:30px;border-radius:50%;background:var(--azul);color:var(--azul-ink);display:grid;place-items:center;font-weight:900}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;word-break:break-all;background:var(--soft);padding:6px 8px;border-radius:8px;display:block}
+#qr{background:#fff;padding:10px;border-radius:12px;width:fit-content}
+#qr img,#qr canvas{display:block}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.scroll{overflow-x:auto}
+pre.code{background:var(--soft);border-radius:12px;padding:14px;overflow-x:auto;font-size:.82rem;margin:0;max-height:340px}
+
+/* Presentación */
+.historia{display:grid;gap:12px}
+.historia .h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.historia .n{width:40px;height:40px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-weight:900;color:var(--azul);font-size:1.2rem}
+.historia .h.hecho .n{background:var(--ok);color:#fff}
+@media (max-width:560px){.historia .h{grid-template-columns:auto minmax(0,1fr)}.historia .h .btn{grid-column:1/-1}}
+.big-num{font-size:2.2rem;font-weight:900;color:var(--azul)}
+footer{border-top:1px solid var(--line);padding-block:20px 32px;font-size:.88rem;color:var(--muted)}
+footer .wrap{display:grid;gap:6px}
+/* Análisis profesionales */
+.fs{min-width:0;border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:12px;grid-template-columns:minmax(0,1fr);margin:0}
+.fs legend{font-weight:900;font-size:1.05rem;padding:0 6px}
+.campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.campos>*{min-width:0}
+.campos input[type=file]{max-width:100%;width:100%}
+.res-tabla input,.res-tabla select{padding:8px;font-size:.95rem}
+.res-tabla td{padding:6px 4px}
+.res-tabla td:first-child{min-width:170px}
+.doc{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--line);font-size:.92rem}
+.doc .mono{font-size:.72rem}
+.conf{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:.8rem;padding:3px 10px;border-radius:999px}
+.conf.alta{background:var(--ok-bg);color:var(--ok)}
+.conf.media{background:var(--warn-bg);color:var(--warn)}
+.conf.basica{background:var(--soft);color:var(--muted)}
+.help{font-size:.85rem;color:var(--muted);margin-top:4px}
+/* Chat de WhatsApp (simulación) */
+.tel{max-width:400px;width:100%;margin:0 auto;border:10px solid var(--ink);border-radius:34px;overflow:hidden;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;height:640px}
+.tel-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#0F6E5C;color:#fff}
+.tel-top svg{width:30px;height:30px;flex:none}
+.chat{overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:8px;background:var(--chat-bg)}
+.burb{max-width:85%;padding:8px 11px;border-radius:12px;font-size:.92rem;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.burb.bot{background:var(--surface);color:var(--ink);align-self:flex-start;border-top-left-radius:3px}
+.burb.yo{background:var(--chat-yo);color:var(--ink);align-self:flex-end;border-top-right-radius:3px}
+.burb .h{display:block;text-align:right;font-size:.68rem;color:var(--muted);margin-top:2px}
+.rapidas{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
+.rapidas button{flex:none;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;font-size:.85rem}
+.tel-input{display:flex;gap:8px;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
+.tel-input input{flex:1;min-width:0;border-radius:999px}
+.tel-input button{border-radius:999px;padding:10px 16px}
+@media (max-width:560px){.tel{height:560px;border-width:6px}}
+header.top2{background:var(--surface);border-bottom:1px solid var(--line)}
+.top2-inner{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding-top:12px;padding-bottom:12px}
+.brand2{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--ink)}
+.brand2 b{display:block;font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1.1}
+.sub2{display:block;color:var(--muted);font-size:14px}
+.logo2{width:38px;height:38px;border-radius:10px;background:var(--azul);display:grid;place-items:center;flex:none}
+nav.menu a{font-size:14px!important;font-weight:500!important;padding:6px 10px!important;border-radius:8px!important;border:1px solid var(--line)}
+nav.menu a[aria-current="page"],nav.menu a[aria-current="page"]:hover{background:var(--surface)!important;color:var(--azul)!important;border-color:var(--azul);font-weight:600!important}
+.simbar2{background:var(--warn-bg);color:var(--warn);font-size:13px;padding:7px 0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;z-index:20;max-width:calc(100% - 32px)}
+</style>
+</head><body>
+
+<header class="top2">
+  <div class="wrap top2-inner">
+    <a class="brand2" href="index.html#vecino" aria-label="AquaAbierta, Mi agua">
+      <span class="logo2" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3c3 4.2 6 7.6 6 11a6 6 0 0 1-12 0c0-3.4 3-6.8 6-11Z" fill="#fff"/></svg></span>
+      <span><b>AquaAbierta</b><span class="sub2">El agua es de todos, la información también · San Juan</span></span>
+    </a>
+    <nav class="menu" aria-label="Secciones">
+      <a href="index.html#vecino">Mi agua</a>
+      <a href="index.html#tecnico">Datos técnicos</a>
+      <a href="#inicio">Ríos y sensores</a>
+      <a href="#reportar">Avisar algo</a>
+      <a href="#reclamos">Reclamos</a>
+      <a href="#verificar">Comprobar</a>
+      <a href="#whatsapp">WhatsApp</a>
+      <a href="#analisis">Análisis</a>
+      <a href="#datos">Datos</a>
+      <a href="#presentacion">Demo</a>
+    </nav>
+  </div>
+</header>
+<div class="simbar2"><div class="wrap"><strong>Prototipo con datos simulados.</strong> Los ríos, pueblos, minas y proyectos son reales. Las mediciones, alertas y reportes son inventados para la demostración.</div></div>
+
+<div class="wrap">
+<main id="app">
+  <div id="alerta-global"></div>
+
+  <!-- INICIO -->
+  <section data-view="inicio" class="stack" style="gap:20px">
+    <div>
+      <h1>¿Cómo están los ríos de San Juan hoy?</h1>
+      <p class="muted" style="margin-top:8px;max-width:62ch">Seguí en vivo el agua que baja de las minas de la cordillera hasta los pueblos y el Dique de Ullum. Cada punto del mapa es un sensor sobre un río. Verde es normal, amarillo pide atención y rojo es alerta. Tocá un punto del mapa para ver el detalle.</p>
+      <div class="summary" id="resumen"></div>
+    </div>
+    <div class="grid2">
+      <div class="card mapa">
+        <div class="row" style="justify-content:space-between"><h2>Los ríos y sus sensores</h2><span class="small muted" id="reloj"></span></div>
+        <div id="mapa" style="margin-top:10px"></div>
+        <div class="leyenda">
+          <span><i style="background:var(--ok)"></i>Normal</span>
+          <span><i style="background:var(--warn)"></i>Atención</span>
+          <span><i style="background:var(--bad)"></i>Alerta</span>
+          <span><i style="background:#5B4B3A;border-radius:2px;transform:rotate(45deg)"></i>Mina en producción</span><span><i style="border:2px dashed #5B4B3A;border-radius:2px;transform:rotate(45deg)"></i>Mina en proyecto</span><span><i style="background:var(--azul);border-radius:2px;height:4px;width:18px"></i>Río analizado (baja de una mina)</span>
+        </div>
+        <p class="small muted" style="margin-top:6px" id="mapa-nota">Trazado real de los ríos según OpenStreetMap. Solo se muestran los ríos analizados: el camino que hace el agua desde cada mina. Hay sensores antes de cada mina (para comparar), justo después, donde entra a cada río más grande y en los pueblos.</p>
+      </div>
+      <div class="stack">
+        <div class="card" id="ficha"></div>
+        <div class="card"><h3 style="margin-bottom:10px">Todos los puntos</h3><div class="lista" id="lista"></div></div>
+      </div>
+    </div>
+    <div class="card stack">
+      <div><h2>Minería de San Juan y los ríos que puede afectar</h2><p class="muted small" style="margin-top:4px">Datos públicos de noviembre de 2026. Las mediciones y alertas de esta página son simuladas y no corresponden a ninguna empresa.</p></div>
+      <div class="minas" id="minas"></div>
+      <p class="small muted">Fuentes: <a href="https://aceroyroca.com/2026/09/15/noticias-reloj-minero-san-juan/" target="_blank" rel="noopener">Acero y Roca (catastro minero, ago. 2026)</a>, <a href="https://www.redaccionsanjuan.com.ar/los-gigantes-mineros-que-aceleran-en-san-juan/" target="_blank" rel="noopener">Redacción San Juan (sep. 2026)</a>, <a href="https://en.wikipedia.org/wiki/Veladero_mine" target="_blank" rel="noopener">Wikipedia</a>, <a href="https://www.mindat.org/" target="_blank" rel="noopener">Mindat</a> (Casposo) y trazado de ríos de <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.</p>
+    </div>
+  </section>
+
+  <!-- REPORTAR -->
+  <section data-view="reportar" hidden>
+    <div class="grid2">
+      <form class="card stack" id="form-rep" novalidate>
+        <div><h1>Avisar algo raro en el agua</h1><p class="muted" style="margin-top:6px">Tu aviso se convierte en un reclamo con número, responsable y plazo para responder. Todo queda a la vista.</p></div>
+        <div><label class="lbl" for="r-lugar">¿Dónde?</label><select id="r-lugar"></select></div>
+        <div><span class="lbl">¿Qué viste?</span>
+          <div class="chips" id="r-chips">
+            <label><input type="checkbox" value="Color raro"><span>Color raro</span></label>
+            <label><input type="checkbox" value="Olor feo"><span>Olor feo</span></label>
+            <label><input type="checkbox" value="Espuma"><span>Espuma</span></label>
+            <label><input type="checkbox" value="Peces o animales muertos"><span>Peces o animales muertos</span></label>
+            <label><input type="checkbox" value="Poca agua"><span>Poca agua</span></label>
+            <label><input type="checkbox" value="Otra cosa"><span>Otra cosa</span></label>
+          </div></div>
+        <div><label class="lbl" for="r-desc">Contalo con tus palabras</label><textarea id="r-desc" placeholder="Por ejemplo: el agua del canal bajó amarillenta desde la mañana."></textarea></div>
+        <div><label class="lbl" for="r-foto">Foto (si tenés)</label><input type="file" id="r-foto" accept="image/*"><div id="r-foto-prev" style="margin-top:8px"></div></div>
+        <details class="extra"><summary>Soy monitor comunitario y medí el agua</summary>
+          <div class="row" style="margin-top:10px;align-items:flex-start">
+            <div style="flex:1;min-width:140px"><label class="lbl" for="r-ph">pH</label><input type="number" id="r-ph" step="0.1" min="0" max="14" placeholder="7.5"></div>
+            <div style="flex:1;min-width:140px"><label class="lbl" for="r-ce">Sales (µS/cm)</label><input type="number" id="r-ce" step="10" min="0" placeholder="900"></div>
+          </div>
+          <p class="small muted" style="margin-top:8px">Comparamos tu medición con el sensor más cercano. Si no coinciden, lo marcamos para que lo revise la autoridad.</p>
+        </details>
+        <div><label class="lbl" for="r-nombre">Tu nombre (opcional)</label><input type="text" id="r-nombre" placeholder="Podés dejarlo vacío"></div>
+        <p id="r-error" class="small" style="color:var(--bad)" hidden></p>
+        <button class="btn" type="submit">Enviar aviso</button>
+      </form>
+      <div class="stack">
+        <div id="r-resultado"></div>
+        <div class="card stack">
+          <h3>¿Qué pasa después?</h3>
+          <div class="pasos">
+            <div class="paso"><p><b>Recibimos tu aviso</b> y le damos un número de reclamo.</p></div>
+            <div class="paso"><p><b>Lo cruzamos con los sensores</b> de esa zona. Si hay una alerta, quedan unidos.</p></div>
+            <div class="paso"><p><b>La empresa tiene 5 días</b> para responder por escrito. La autoridad ambiental controla el plazo.</p></div>
+            <div class="paso"><p><b>Todo queda público</b> y sellado, para que nadie lo pueda borrar.</p></div>
+          </div>
+          <p class="small muted">También podés avisar por Telegram (próximamente).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECLAMOS -->
+  <section data-view="reclamos" class="stack" hidden style="gap:18px">
+    <div><h1>Reclamos y respuestas</h1><p class="muted" style="margin-top:6px;max-width:62ch">Cada aviso tiene un número, un responsable y un plazo. Las respuestas de la empresa y de la autoridad quedan escritas y a la vista de todos.</p></div>
+    <div class="row" style="justify-content:space-between">
+      <div><span class="small muted" style="display:block;margin-bottom:4px">Ver como (demo):</span>
+      <div class="roles" id="roles">
+        <button type="button" data-rol="vecino">Vecino/a</button>
+        <button type="button" data-rol="empresa">Empresa</button>
+        <button type="button" data-rol="autoridad">Autoridad ambiental</button>
+      </div></div>
+      <span id="r-cuenta" class="muted small"></span>
+    </div>
+    <div id="tickets" class="stack" style="gap:16px"></div>
+  </section>
+
+  <!-- VERIFICAR -->
+  <section data-view="verificar" hidden>
+    <div class="grid2">
+      <div class="card stack">
+        <div><h1>Comprobá que un dato es real</h1><p class="muted" style="margin-top:6px">Cada pocos segundos juntamos las mediciones y les ponemos un sello digital. Si alguien cambia un número después, aunque sea un poquito, el sello deja de coincidir.</p></div>
+        <div><label class="lbl" for="v-sel">Elegí una medición</label><select id="v-sel"></select></div>
+        <div class="row"><button class="btn" id="v-go" type="button">Comprobar</button><button class="btn warn" id="v-trucho" type="button">Probar: alguien cambia el dato</button></div>
+        <div id="v-res"></div>
+      </div>
+      <div class="stack">
+        <div class="card stack"><h3>Código QR de esta medición</h3><p class="small muted">En la versión final cada medición tiene su QR. Lo escaneás con el celular y ves esta misma comprobación.</p><div id="qr"></div><span class="mono" id="qr-txt"></span></div>
+        <div class="card stack"><h3>Últimos sellos</h3><p class="small muted">Cada sello incluye al anterior, como los eslabones de una cadena.</p><div class="scroll"><table><thead><tr><th>Lote</th><th>Datos</th><th>Sello</th><th>Estado</th></tr></thead><tbody id="lotes"></tbody></table></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATOS ABIERTOS -->
+  <section data-view="datos" class="stack" hidden style="gap:18px">
+    <div><h1>Datos abiertos</h1><p class="muted" style="margin-top:6px;max-width:64ch">Todos los datos son públicos. Periodistas, universidades, municipios o cualquier persona pueden usarlos con nuestra API abierta, sin pedir permiso.</p></div>
+    <div class="card row" id="api-estado" style="gap:10px;align-items:center"></div>
+    <div class="grid2">
+      <div class="card stack">
+        <h2>Cómo pedir los datos</h2>
+        <div class="scroll"><table><thead><tr><th>Pedido</th><th>Qué devuelve</th></tr></thead><tbody>
+          <tr><td class="mono">GET /v1/estaciones</td><td>Lista de puntos de control con su estado</td></tr>
+          <tr><td class="mono">GET /v1/lecturas?estacion=taguas-abajo</td><td>Mediciones de un punto, por fecha</td></tr>
+          <tr><td class="mono">POST /v1/lecturas/lote</td><td>Carga de miles de mediciones de una vez (sensores)</td></tr>
+          <tr><td class="mono">GET /v1/verificar/L-000123</td><td>Prueba de que un dato no fue cambiado</td></tr>
+          <tr><td class="mono">GET /v1/analisis</td><td>Análisis de laboratorios con sus documentos y huellas</td></tr>
+          <tr><td class="mono">POST /v1/analisis</td><td>Carga de un análisis con informe firmado</td></tr>
+          <tr><td class="mono">GET /v1/reclamos</td><td>Reclamos con sus respuestas</td></tr>
+          <tr><td class="mono">WS /v1/tiempo-real</td><td>Datos en vivo apenas llegan</td></tr>
+        </tbody></table></div>
+        <p class="small muted">Esta es la API de la versión final. En este boceto los datos se generan en tu navegador.</p>
+      </div>
+      <div class="card stack">
+        <div class="row" style="justify-content:space-between"><h2>Últimos datos (en vivo)</h2><button class="btn sec" id="copiar" type="button">Copiar</button></div>
+        <pre class="code num" id="json"></pre>
+      </div>
+    </div>
+    <div class="card stack">
+      <h2>Cómo decidimos el color del semáforo</h2>
+      <p class="muted small">Los límites se pueden cambiar. Los marcados como provisorios hay que definirlos con la autoridad ambiental.</p>
+      <div class="scroll"><table><thead><tr><th>Qué medimos</th><th>Verde</th><th>Amarillo</th><th>Rojo</th><th>De dónde sale</th></tr></thead><tbody>
+        <tr><td><b>pH</b> (ácido o alcalino)</td><td>6,5 a 8,5</td><td>6,0 a 6,5 o 8,5 a 9,0</td><td>menos de 6,0 o más de 9,0</td><td>Código Alimentario Argentino, agua de bebida (6,5 a 8,5). Amarillo y rojo: provisorio.</td></tr>
+        <tr><td><b>Sales disueltas</b> (conductividad)</td><td>hasta 30% más que lo habitual del lugar</td><td>30% a 60% más</td><td>más de 60% más</td><td>Provisorio. Cada río tiene sus propias sales naturales, por eso comparamos con lo habitual de cada punto.</td></tr>
+        <tr><td><b>Caudal</b> (cuánta agua pasa)</td><td>normal</td><td>menos de la mitad de lo habitual</td><td>no se usa</td><td>Provisorio, solo como aviso.</td></tr>
+      </tbody></table></div>
+    </div>
+  </section>
+
+  <!-- WHATSAPP -->
+  <section data-view="whatsapp" hidden>
+    <div class="grid2">
+      <div class="stack">
+        <div class="tel" aria-label="Simulación del chat de WhatsApp">
+          <div class="tel-top"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#fff"/><path d="M20 7C20 7 10 18 10 24.5a10 10 0 0 0 20 0C30 18 20 7 20 7Z" fill="#29A8E0"/><path d="M14 25.5q3-2.7 6 0t6 0" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg><div><b>AquaAbierta</b><br><span class="small" style="opacity:.85">cuenta oficial · simulación</span></div></div>
+          <div class="chat" id="chat" aria-live="polite"></div>
+          <div class="rapidas" id="rapidas"></div>
+          <form class="tel-input" id="chat-form"><input type="text" id="chat-in" placeholder="Escribí un mensaje" autocomplete="off" aria-label="Mensaje"><button class="btn" type="submit">Enviar</button></form>
+        </div>
+      </div>
+      <div class="card stack">
+        <h1>AquaAbierta por WhatsApp</h1>
+        <p class="muted">Mucha gente no va a entrar a una página. Por eso todo lo importante también funciona por WhatsApp, la app que ya usan todos.</p>
+        <div class="pasos">
+          <div class="paso"><p><b>Consultar:</b> escribí <b>1</b> o mandá tu ubicación y te dice cómo está el punto más cercano.</p></div>
+          <div class="paso"><p><b>Avisar:</b> escribí <b>2</b>, contá qué viste y mandá una foto. Se abre un reclamo con número y plazo.</p></div>
+          <div class="paso"><p><b>Seguir el reclamo:</b> escribí <b>3</b> y el número. Cuando la empresa o la autoridad responden, te llega el aviso.</p></div>
+          <div class="paso"><p><b>Comprobar un dato:</b> escribí <b>4</b> y el código del dato.</p></div>
+        </div>
+        <div class="info-box small">Esto es una simulación en la página, con la misma conversación que el bot real. El bot real usa la API oficial de WhatsApp (Meta) y está en la carpeta <span class="mono" style="display:inline;padding:1px 5px">bot-whatsapp</span> del proyecto. Los avisos que mandes acá aparecen en <a href="#reclamos">Reclamos</a>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANÁLISIS PROFESIONALES -->
+  <section data-view="analisis" class="stack" hidden style="gap:18px">
+    <div><h1>Análisis de laboratorios y profesionales</h1><p class="muted" style="margin-top:6px;max-width:66ch">Laboratorios, universidades, organismos públicos, empresas y profesionales pueden sumar sus análisis del agua de los ríos de San Juan. Cada aporte trae su informe formal, sus pruebas y la firma de un responsable. Una revisión técnica lo valida antes de marcarlo como confiable, y todo queda a la vista y sellado.</p></div>
+    <div class="row"><a class="btn" href="#form-an" id="an-ir">Aportar un análisis</a><span class="small muted" id="an-cuenta"></span></div>
+    <div class="info-box small"><b>¿Cómo leer los colores?</b> Comparamos cada resultado con el límite para agua de bebida del Código Alimentario Argentino (artículo 982). El agua del río no es agua de red, pero ese límite ayuda a entender si un valor es preocupante.</div>
+    <div id="an-lista" class="stack" style="gap:16px"></div>
+
+    <form class="card stack" id="form-an" novalidate style="scroll-margin-top:80px">
+      <div><h2>Aportar un análisis</h2><p class="muted small" style="margin-top:4px">Completá los 5 pasos. Los campos con * son obligatorios. Tu correo no se publica.</p></div>
+
+      <fieldset class="fs"><legend>1. Quién aporta</legend>
+        <div class="campos">
+          <div><label class="lbl" for="an-tipo">Tipo de aportante *</label><select id="an-tipo">
+            <option>Laboratorio acreditado</option><option>Profesional independiente</option><option>Universidad o centro de investigación</option><option>Organismo público</option><option>Empresa</option><option>Organización de la comunidad</option></select></div>
+          <div><label class="lbl" for="an-org">Institución o empresa *</label><input type="text" id="an-org" placeholder="Ej.: Laboratorio de análisis de aguas"></div>
+          <div><label class="lbl" for="an-resp">Responsable técnico *</label><input type="text" id="an-resp" placeholder="Nombre y título"></div>
+          <div><label class="lbl" for="an-mat">Matrícula profesional o CUIT *</label><input type="text" id="an-mat" placeholder="Ej.: Mat. 1234 o 30-12345678-9"></div>
+          <div><label class="lbl" for="an-acred">N.º de acreditación ISO/IEC 17025</label><input type="text" id="an-acred" placeholder="Si el laboratorio está acreditado"><p class="help">Acreditación del Organismo Argentino de Acreditación (OAA). Sube el nivel de confianza.</p></div>
+          <div><label class="lbl" for="an-mail">Correo de contacto *</label><input type="text" id="an-mail" placeholder="No se publica" inputmode="email"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>2. La muestra</legend>
+        <div class="campos">
+          <div><label class="lbl" for="an-punto">Lugar *</label><select id="an-punto"></select></div>
+          <div><label class="lbl" for="an-fecha">Fecha y hora de la toma *</label><input type="datetime-local" id="an-fecha"></div>
+          <div><label class="lbl" for="an-motivo">Motivo</label><select id="an-motivo"><option>Monitoreo de rutina</option><option>Plan de monitoreo de la Declaración de Impacto Ambiental</option><option>Control de la autoridad</option><option>Investigación</option><option>Respuesta a un reclamo</option></select></div>
+          <div><label class="lbl" for="an-tipom">Tipo de muestra</label><select id="an-tipom"><option>Puntual</option><option>Compuesta</option></select></div>
+          <div><label class="lbl" for="an-tomo">Quién tomó la muestra</label><input type="text" id="an-tomo" placeholder="Nombre o equipo"></div>
+          <div><label class="lbl" for="an-cust">N.º de cadena de custodia</label><input type="text" id="an-cust" placeholder="Ej.: CC-2026-0458"><p class="help">El registro que prueba quién tuvo la muestra en cada momento.</p></div>
+        </div>
+        <div class="campos" id="an-otro" hidden>
+          <div><label class="lbl" for="an-lat">Latitud</label><input type="number" id="an-lat" step="0.0001" placeholder="-30.2208"></div>
+          <div><label class="lbl" for="an-lon">Longitud</label><input type="number" id="an-lon" step="0.0001" placeholder="-68.7571"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>3. Resultados</legend>
+        <p class="help" style="margin:0">Cargá cada valor como figura en el informe. Si el resultado está por debajo de lo que el método puede medir, marcá "menor al límite de detección".</p>
+        <div class="scroll"><table class="res-tabla"><thead><tr><th>Parámetro</th><th>Valor</th><th>Unidad</th><th>Método</th><th>Lím. detección</th><th>&lt; LD</th><th></th></tr></thead><tbody id="an-res"></tbody></table></div>
+        <div><button class="btn sec" type="button" id="an-add">Agregar parámetro</button></div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>4. Documentos de respaldo</legend>
+        <p class="help" style="margin:0">Calculamos la huella digital (SHA-256) de cada archivo en tu dispositivo. Si alguien cambia el archivo después, la huella deja de coincidir. En este prototipo los archivos no se suben a ningún servidor.</p>
+        <div class="campos">
+          <div><label class="lbl" for="an-f-informe">Informe firmado (PDF) *</label><input type="file" id="an-f-informe" data-doc="Informe firmado" accept=".pdf,application/pdf"></div>
+          <div><label class="lbl" for="an-f-protocolo">Protocolo del laboratorio</label><input type="file" id="an-f-protocolo" data-doc="Protocolo del laboratorio" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-custodia">Cadena de custodia</label><input type="file" id="an-f-custodia" data-doc="Cadena de custodia" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-acred">Certificado de acreditación</label><input type="file" id="an-f-acred" data-doc="Certificado de acreditación" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-fotos">Fotos del muestreo</label><input type="file" id="an-f-fotos" data-doc="Foto del muestreo" accept="image/*" multiple></div>
+        </div>
+        <div id="an-docs"></div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>5. Declaraciones</legend>
+        <div><label class="lbl" for="an-conf">Relación con la actividad minera de la zona *</label><select id="an-conf"><option value="">Elegí una opción</option><option>No tengo relación con empresas de la zona</option><option>Trabajo para o con la empresa operadora</option><option>Trabajo para un organismo de control</option><option>Otra relación (la explico abajo)</option></select></div>
+        <div><label class="lbl" for="an-obs">Observaciones</label><textarea id="an-obs" placeholder="Condiciones del muestreo, clima, algo que convenga saber."></textarea></div>
+        <label class="row" style="align-items:flex-start;gap:8px"><input type="checkbox" id="an-ddjj" style="margin-top:5px"><span>Declaro bajo juramento que los datos y documentos son auténticos y corresponden a la muestra indicada. *</span></label>
+        <label class="row" style="align-items:flex-start;gap:8px"><input type="checkbox" id="an-pub" style="margin-top:5px"><span>Acepto que los resultados se publiquen como datos abiertos, citando a mi institución. *</span></label>
+      </fieldset>
+
+      <p id="an-error" class="small" style="color:var(--bad)" hidden></p>
+      <div class="row"><button class="btn" type="submit">Enviar a revisión técnica</button><span class="small muted">Queda publicado como "En revisión" hasta que la autoridad lo valide.</span></div>
+    </form>
+  </section>
+
+  <!-- PRESENTACIÓN -->
+  <section data-view="presentacion" class="stack" hidden style="gap:18px">
+    <div><h1>Modo demo</h1><p class="muted" style="margin-top:6px;max-width:62ch">La historia completa en 5 pasos, para contarla en el pitch. Cada botón hace que pase algo en la plataforma.</p></div>
+    <div class="historia" id="historia"></div>
+    <div class="card stack">
+      <h2>Prueba de velocidad</h2>
+      <p class="muted">Generamos 10.000 mediciones, las revisamos y les ponemos el sello digital. Medido en tu navegador; el servidor final es más rápido.</p>
+      <div class="row"><button class="btn" id="bench" type="button">Probar con 10.000 mediciones</button><span id="bench-res" class="num"></span></div>
+    </div>
+  </section>
+</main>
+</div>
+
+<footer><div class="wrap">
+  <p><b>AquaAbierta</b>. El agua es de todos, la información también.</p>
+  <p>Prototipo para la hackatón minera de San Juan. Las minas y el mapa son reales. Las mediciones, alertas, reclamos y respuestas son simulados y no corresponden a ninguna empresa.</p><p>Mapa: límites de <a href="https://www.geoboundaries.org/" target="_blank" rel="noopener">geoBoundaries</a>; ríos y fondo © colaboradores de <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.</p>
+  <p>Hecho con ayuda de inteligencia artificial y revisado por el equipo.</p>
+</div></footer>
+<div id="toast" class="toast" hidden role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(()=>{
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=(n,d=0)=>Number(n).toLocaleString("es-AR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const hora=t=>new Date(t).toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+const fecha=t=>new Date(t).toLocaleString("es-AR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+const rnd=a=>(Math.random()*2-1)*a;
+const enc=new TextEncoder();
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",enc.encode(s));return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,"0")).join("");}
+const corto=h=>h?h.slice(0,10)+"…":"…";
+
+/* ---------- Puntos de control (ubicaciones aproximadas, datos simulados) ---------- */
+const CUENCAS={jachal:"Cuenca del río Jáchal",ullum:"Cuenca del río San Juan",bermejo:"Cuenca del río Bermejo"};
+const EST=[{"id":"taguas-arriba","nombre":"Río de las Taguas (aguas arriba de la zona minera)","cuenca":"jachal","lat":-29.4493,"lon":-69.9016,"base":{"ph":7.3,"ce":480,"q":1.2},"nota":"Punto de comparación: muestra cómo viene el agua antes de la zona minera de Veladero y Pascua-Lama","minas":["veladero","pascua-lama"],"rol":"control"},
+{"id":"taguas-abajo","nombre":"Río de las Taguas (aguas abajo de la zona minera)","cuenca":"jachal","lat":-29.358,"lon":-69.9153,"base":{"ph":7.3,"ce":510,"q":1.9},"nota":"Primer punto después de la zona minera de Veladero y Pascua-Lama","minas":["veladero","pascua-lama"],"rol":"abajo"},
+{"id":"palca","nombre":"Río de la Palca (río abajo de Veladero)","cuenca":"jachal","lat":-29.3407,"lon":-69.5874,"base":{"ph":7.5,"ce":740,"q":7.1},"nota":"Unos 71 km río abajo de Veladero","minas":["veladero","pascua-lama"],"rol":"confluencia"},
+{"id":"lavadero","nombre":"Río Lavadero (río abajo de Veladero)","cuenca":"jachal","lat":-29.545,"lon":-69.2289,"base":{"ph":7.6,"ce":940,"q":11.9},"nota":"Unos 129 km río abajo de Veladero","minas":["veladero","pascua-lama"],"rol":"confluencia"},
+{"id":"vicuna-arriba","nombre":"Cabecera del río de los Mogotes (aguas arriba de la zona minera)","cuenca":"jachal","lat":-28.4605,"lon":-69.6469,"base":{"ph":7.3,"ce":480,"q":1.2},"nota":"Punto de comparación: muestra cómo viene el agua antes de la zona minera de Vicuña (Filo del Sol)","minas":["vicuna"],"rol":"control"},
+{"id":"vicuna-abajo","nombre":"Río de los Mogotes (aguas abajo de la zona minera)","cuenca":"jachal","lat":-28.5484,"lon":-69.6069,"base":{"ph":7.3,"ce":510,"q":1.9},"nota":"Primer punto después de la zona minera de Vicuña (Filo del Sol)","minas":["vicuna"],"rol":"abajo"},
+{"id":"vicuna-roblanco","nombre":"Río Blanco (río abajo de Vicuña)","cuenca":"jachal","lat":-28.3934,"lon":-69.2695,"base":{"ph":7.5,"ce":750,"q":7.5},"nota":"Unos 75 km río abajo de Vicuña (Filo del Sol)","minas":["vicuna"],"rol":"confluencia"},
+{"id":"angualasto","nombre":"Río Blanco en Angualasto","cuenca":"jachal","lat":-30.0533,"lon":-69.1688,"base":{"ph":7.6,"ce":900,"q":4.5},"nota":"Primer pueblo río abajo de Veladero, Pascua-Lama y Vicuña","minas":["pascua-lama","veladero","vicuna"],"rol":"pueblo"},
+{"id":"rodeo","nombre":"Río Jáchal cerca de Rodeo","cuenca":"jachal","lat":-30.1948,"lon":-69.0649,"base":{"ph":7.8,"ce":1000,"q":7},"nota":"Pueblo de Rodeo","minas":["pascua-lama","veladero","vicuna"],"rol":"pueblo"},
+{"id":"jachal","nombre":"Río Jáchal en San José de Jáchal (toma de riego)","cuenca":"jachal","lat":-30.2208,"lon":-68.7571,"base":{"ph":7.9,"ce":1400,"q":6},"nota":"Toma de agua para riego de Jáchal","minas":["pascua-lama","veladero","vicuna"],"rol":"pueblo"},
+{"id":"el-pachon-abajo","nombre":"Río Santa Cruz (aguas abajo de la zona minera)","cuenca":"ullum","lat":-31.6109,"lon":-70.2943,"base":{"ph":7.3,"ce":510,"q":1.9},"nota":"Primer punto después de la zona minera de El Pachón","minas":["el-pachon"],"rol":"abajo"},
+{"id":"el-pachon-roblanco","nombre":"Río Blanco (río abajo de El Pachón)","cuenca":"ullum","lat":-31.5269,"lon":-70.233,"base":{"ph":7.4,"ce":560,"q":3.1},"nota":"Unos 23 km río abajo de El Pachón","minas":["el-pachon"],"rol":"confluencia"},
+{"id":"el-pachon-rocolorado","nombre":"Río Colorado (río abajo de El Pachón)","cuenca":"ullum","lat":-31.8927,"lon":-69.7536,"base":{"ph":7.6,"ce":850,"q":9.9},"nota":"Unos 104 km río abajo de El Pachón","minas":["el-pachon"],"rol":"confluencia"},
+{"id":"barreal","nombre":"Río de los Patos en Barreal","cuenca":"ullum","lat":-31.65,"lon":-69.4722,"base":{"ph":7.7,"ce":600,"q":10},"nota":"Pueblo de Barreal","minas":["casposo","el-pachon"],"rol":"pueblo"},
+{"id":"el-pachon-rodelospatos","nombre":"Río de Los Patos (río abajo de El Pachón)","cuenca":"ullum","lat":-31.3782,"lon":-69.4312,"base":{"ph":7.8,"ce":1140,"q":16.4},"nota":"Unos 182 km río abajo de El Pachón","minas":["el-pachon"],"rol":"confluencia"},
+{"id":"casposo-abajo","nombre":"Río Castaño (aguas abajo de la zona minera)","cuenca":"ullum","lat":-31.1501,"lon":-69.4578,"base":{"ph":7.3,"ce":510,"q":1.9},"nota":"Primer punto después de la zona minera de Casposo","minas":["casposo"],"rol":"abajo"},
+{"id":"casposo-rosanjuan","nombre":"Río San Juan (río abajo de Casposo)","cuenca":"ullum","lat":-31.2685,"lon":-69.399,"base":{"ph":7.4,"ce":570,"q":3.4},"nota":"Unos 26 km río abajo de Casposo","minas":["casposo"],"rol":"confluencia"},
+{"id":"ullum","nombre":"Río San Juan en el Dique de Ullum (agua para la ciudad)","cuenca":"ullum","lat":-31.4634,"lon":-68.6529,"base":{"ph":7.8,"ce":800,"q":40},"nota":"De acá sale el agua para la ciudad de San Juan","minas":["casposo","el-pachon"],"rol":"pueblo"},
+{"id":"gualcamayo-arriba","nombre":"Río Gualcamayo (aguas arriba de la zona minera)","cuenca":"bermejo","lat":-29.7488,"lon":-68.6297,"base":{"ph":7.3,"ce":480,"q":1.2},"nota":"Punto de comparación: muestra cómo viene el agua antes de la zona minera de Gualcamayo","minas":["gualcamayo"],"rol":"control"},
+{"id":"gualcamayo-abajo","nombre":"Río Gualcamayo (aguas abajo de la zona minera)","cuenca":"bermejo","lat":-29.6727,"lon":-68.6342,"base":{"ph":7.3,"ce":510,"q":1.9},"nota":"Primer punto después de la zona minera de Gualcamayo","minas":["gualcamayo"],"rol":"abajo"},
+{"id":"gualcamayo-rodelospiojos","nombre":"Río de Los Piojos (río abajo de Gualcamayo)","cuenca":"bermejo","lat":-29.6476,"lon":-68.5153,"base":{"ph":7.4,"ce":560,"q":3.1},"nota":"Unos 23 km río abajo de Gualcamayo","minas":["gualcamayo"],"rol":"confluencia"},
+{"id":"gualcamayo-roguandacol","nombre":"Río Guandacol (río abajo de Gualcamayo)","cuenca":"bermejo","lat":-29.6696,"lon":-68.4331,"base":{"ph":7.4,"ce":600,"q":4.0},"nota":"Unos 33 km río abajo de Gualcamayo","minas":["gualcamayo"],"rol":"confluencia"},
+{"id":"gualcamayo-robermejo","nombre":"Río Bermejo (río abajo de Gualcamayo)","cuenca":"bermejo","lat":-29.8034,"lon":-68.355,"base":{"ph":7.5,"ce":700,"q":6.2},"nota":"Unos 60 km río abajo de Gualcamayo","minas":["gualcamayo"],"rol":"confluencia"}];
+/* Cómo viaja una mancha río abajo en la demo: retraso (ms) y cuánto sube como máximo (se diluye) */
+const VIAJE={"taguas-abajo":[0,2.2],"palca":[10000,1.7],"lavadero":[16000,1.55],"angualasto":[22000,1.4],"rodeo":[29000,1.2],"jachal":[36000,1.1]};
+const MINAS=[{"id":"veladero","n":"Veladero","tipo":"prod","lat":-29.4092,"lon":-69.895,"dep":"Iglesia","min":"Oro y plata","emp":"Barrick y Shandong Gold (50% cada una)","est":"En producción","llega":"Río Jáchal","cu":"jachal","cuenca":"El agua de la zona baja por el río de las Taguas, el río de la Palca, el río Lavadero, el río Blanco y llega al río Jáchal.","dir":"left"},
+{"id":"pascua-lama","n":"Pascua-Lama","tipo":"lat","lat":-29.3284,"lon":-69.9793,"dep":"Iglesia","min":"Oro y plata","emp":"Barrick","est":"Proyecto latente (sin obras activas)","llega":"Río Jáchal","cu":"jachal","cuenca":"El agua de la zona baja por el río de las Taguas, el río de la Palca, el río Lavadero, el río Blanco y llega al río Jáchal. Comparte el río con Veladero.","dir":"right"},
+{"id":"gualcamayo","n":"Gualcamayo","tipo":"prod","lat":-29.7188,"lon":-68.5969,"dep":"Jáchal","min":"Oro","emp":"Minas Argentinas","est":"En producción","llega":"Río Bermejo","cu":"bermejo","cuenca":"El agua de la zona baja por el río Gualcamayo, el río de Los Piojos, el río Guandacol y llega al río Bermejo. No llega al río Jáchal: baja hacia el río Bermejo por el río Guandacol.","dir":"left"},
+{"id":"casposo","n":"Casposo","tipo":"prod","lat":-31.2033,"lon":-69.6386,"dep":"Calingasta","min":"Oro","emp":"Austral Gold","est":"En producción (reabrió en octubre de 2025)","llega":"Río San Juan (Dique de Ullum)","cu":"ullum","cuenca":"El agua de la zona baja por el río Castaño y llega al río San Juan. En OpenStreetMap falta un tramo de unos 14 km entre la mina y el río; esa parte es aproximada.","dir":"left"},
+{"id":"el-pachon","n":"El Pachón","tipo":"pre","lat":-31.753,"lon":-70.4266,"dep":"Calingasta","min":"Cobre","emp":"Glencore","est":"Preproducción","llega":"Río San Juan (Dique de Ullum)","cu":"ullum","cuenca":"El agua de la zona baja por el río Santa Cruz, el río de la Pantanosa, el río de Las Lagunas, el río Blanco, el río Colorado, el río Los Patos, el río de Los Patos, el río Calingasta, el río Castaño y llega al río San Juan. En OpenStreetMap falta un tramo de unos 15 km entre la mina y el río; esa parte es aproximada.","dir":"left"},
+{"id":"vicuna","n":"Vicuña (Filo del Sol)","tipo":"pre","lat":-28.4906,"lon":-69.6572,"dep":"Iglesia","min":"Cobre, oro y plata","emp":"BHP y Lundin Mining","est":"Preproducción","llega":"Río Jáchal","cu":"jachal","cuenca":"El agua de la zona baja por el río de los Mogotes, el río Blanco, el río de La Peña Negra, el río Salado, el río del Carnerito Arriba y llega al río Jáchal.","dir":"left"},
+{"n":"Hualilán","tipo":"sin","dep":"Ullum","min":"Oro","emp":"Challenger Gold","est":"Estado discutido: producción comercial prevista para 2029","cuenca":"No encontramos coordenadas públicas confiables de esta mina, por eso no está en el mapa."},
+{"n":"Los Azules","tipo":"sin","dep":"Calingasta","min":"Cobre","emp":"McEwen Copper","est":"Preproducción (producción prevista para 2030)","cuenca":"No encontramos coordenadas públicas confiables de esta mina, por eso no está en el mapa."},
+{"n":"Altar","tipo":"sin","dep":"Calingasta","min":"Cobre y oro","emp":"Aldebaran Resources","est":"Exploración avanzada","cuenca":"No encontramos coordenadas públicas confiables de esta mina, por eso no está en el mapa."}];
+const GEO={"dep":{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"n":"Iglesia"},"geometry":{"type":"Polygon","coordinates":[[[-68.948,-28.971],[-68.96,-28.954],[-68.961,-28.939],[-68.933,-28.908],[-68.921,-28.866],[-68.908,-28.861],[-69.162,-28.761],[-69.171,-28.736],[-69.199,-28.71],[-69.21,-28.682],[-69.218,-28.648],[-69.217,-28.606],[-69.202,-28.596],[-69.316,-28.412],[-69.331,-28.429],[-69.376,-28.448],[-69.425,-28.452],[-69.452,-28.436],[-69.47,-28.416],[-69.498,-28.417],[-69.513,-28.432],[-69.555,-28.406],[-69.571,-28.405],[-69.606,-28.419],[-69.637,-28.389],[-69.649,-28.396],[-69.648,-28.405],[-69.656,-28.413],[-69.633,-28.429],[-69.639,-28.442],[-69.662,-28.447],[-69.673,-28.468],[-69.681,-28.471],[-69.665,-28.482],[-69.666,-28.498],[-69.657,-28.503],[-69.664,-28.52],[-69.65,-28.539],[-69.66,-28.54],[-69.669,-28.555],[-69.671,-28.573],[-69.663,-28.584],[-69.695,-28.596],[-69.687,-28.604],[-69.704,-28.62],[-69.698,-28.629],[-69.702,-28.64],[-69.73,-28.678],[-69.732,-28.701],[-69.725,-28.708],[-69.731,-28.721],[-69.724,-28.728],[-69.729,-28.738],[-69.703,-28.749],[-69.693,-28.77],[-69.707,-28.781],[-69.705,-28.803],[-69.714,-28.825],[-69.728,-28.846],[-69.744,-28.849],[-69.741,-28.865],[-69.75,-28.869],[-69.746,-28.881],[-69.764,-28.895],[-69.767,-28.922],[-69.754,-28.936],[-69.754,-28.958],[-69.763,-28.973],[-69.754,-28.984],[-69.768,-28.99],[-69.777,-29.013],[-69.785,-29.015],[-69.781,-29.02],[-69.793,-29.05],[-69.797,-29.081],[-69.785,-29.101],[-69.792,-29.114],[-69.787,-29.131],[-69.792,-29.135],[-69.84,-29.129],[-69.876,-29.139],[-69.924,-29.186],[-69.953,-29.189],[-69.945,-29.204],[-69.952,-29.216],[-69.941,-29.231],[-69.938,-29.25],[-69.952,-29.267],[-69.994,-29.283],[-70.001,-29.293],[-69.997,-29.305],[-70.019,-29.322],[-70.01,-29.354],[-70.022,-29.359],[-70.012,-29.369],[-70.021,-29.384],[-69.967,-29.414],[-69.967,-29.428],[-69.982,-29.452],[-69.956,-29.467],[-69.96,-29.47],[-69.947,-29.49],[-69.954,-29.5],[-69.946,-29.519],[-69.956,-29.535],[-69.936,-29.565],[-69.932,-29.586],[-69.941,-29.611],[-69.94,-29.654],[-69.909,-29.698],[-69.893,-29.694],[-69.882,-29.707],[-69.887,-29.719],[-69.879,-29.725],[-69.88,-29.734],[-69.897,-29.754],[-69.893,-29.768],[-69.914,-29.792],[-69.913,-29.807],[-69.894,-29.819],[-69.899,-29.848],[-69.877,-29.862],[-69.897,-29.878],[-69.889,-29.886],[-69.896,-29.896],[-69.889,-29.905],[-69.909,-29.929],[-69.907,-29.939],[-69.897,-29.937],[-69.898,-29.958],[-69.926,-29.999],[-69.916,-30.026],[-69.935,-30.052],[-69.962,-30.069],[-69.958,-30.078],[-69.964,-30.085],[-69.945,-30.093],[-69.945,-30.114],[-69.936,-30.12],[-69.9,-30.106],[-69.872,-30.112],[-69.848,-30.13],[-69.817,-30.128],[-69.809,-30.153],[-69.829,-30.162],[-69.817,-30.179],[-69.833,-30.217],[-69.843,-30.22],[-69.869,-30.211],[-69.888,-30.224],[-69.887,-30.248],[-69.879,-30.258],[-69.884,-30.272],[-69.876,-30.281],[-69.849,-30.284],[-69.83,-30.296],[-69.823,-30.321],[-69.827,-30.369],[-69.813,-30.403],[-69.781,-30.42],[-69.782,-30.434],[-69.751,-30.47],[-69.759,-30.494],[-69.747,-30.528],[-69.735,-30.537],[-69.713,-30.538],[-69.728,-30.541],[-69.719,-30.577],[-69.726,-30.592],[-69.722,-30.601],[-69.704,-30.608],[-69.703,-30.615],[-69.671,-30.602],[-69.667,-30.609],[-69.638,-30.62],[-69.604,-30.664],[-69.534,-30.675],[-69.479,-30.655],[-69.435,-30.682],[-69.322,-30.769],[-69.244,-30.77],[-69.216,-30.789],[-69.145,-30.779],[-69.102,-30.796],[-69.089,-30.729],[-69.121,-30.65],[-69.116,-30.627],[-69.055,-30.618],[-69.062,-30.58],[-68.993,-30.575],[-69.057,-30.495],[-69.062,-30.468],[-69.063,-30.394],[-69.05,-30.344],[-69.066,-30.328],[-69.039,-30.295],[-69.042,-30.249],[-69.072,-30.072],[-69.067,-30.052],[-69.03,-29.986],[-69.04,-29.95],[-69.014,-29.881],[-69.028,-29.871],[-69.023,-29.847],[-69.03,-29.836],[-69.02,-29.817],[-69.022,-29.783],[-69.03,-29.784],[-69.032,-29.762],[-69.019,-29.74],[-69.023,-29.723],[-69.015,-29.699],[-69.023,-29.694],[-69.027,-29.677],[-69.014,-29.66],[-69.023,-29.594],[-69.032,-29.585],[-69.034,-29.533],[-69.009,-29.495],[-69.0,-29.467],[-68.986,-29.477],[-68.975,-29.456],[-68.978,-29.427],[-68.997,-29.415],[-69.002,-29.4],[-68.99,-29.376],[-68.975,-29.364],[-68.984,-29.324],[-68.973,-29.315],[-68.958,-29.317],[-68.963,-29.308],[-68.958,-29.285],[-68.989,-29.274],[-68.992,-29.253],[-68.979,-29.231],[-69.001,-29.187],[-68.97,-29.146],[-68.959,-29.164],[-68.938,-29.168],[-68.934,-29.149],[-68.912,-29.128],[-68.913,-29.111],[-68.924,-29.106],[-68.925,-29.089],[-68.919,-29.073],[-68.908,-29.073],[-68.909,-29.042],[-68.914,-29.029],[-68.932,-29.018],[-68.933,-28.985],[-68.948,-28.971]]]}},{"type":"Feature","properties":{"n":"Pocito"},"geometry":{"type":"Polygon","coordinates":[[[-68.454,-31.818],[-68.491,-31.79],[-68.52,-31.673],[-68.505,-31.638],[-68.532,-31.63],[-68.516,-31.596],[-68.608,-31.569],[-68.632,-31.604],[-68.632,-31.621],[-68.695,-31.621],[-68.711,-31.646],[-68.691,-31.702],[-68.674,-31.708],[-68.664,-31.739],[-68.669,-31.754],[-68.671,-31.857],[-68.686,-31.9],[-68.541,-31.873],[-68.446,-31.875],[-68.433,-31.888],[-68.436,-31.853],[-68.454,-31.818]]]}},{"type":"Feature","properties":{"n":"25 de Mayo"},"geometry":{"type":"Polygon","coordinates":[[[-67.318,-32.382],[-67.264,-32.382],[-67.266,-32.339],[-67.278,-32.292],[-67.37,-32.246],[-67.38,-32.224],[-67.384,-32.125],[-67.365,-31.976],[-67.379,-31.868],[-67.239,-31.88],[-68.347,-31.695],[-68.343,-31.697],[-68.352,-31.704],[-68.35,-31.714],[-68.368,-31.727],[-68.364,-31.732],[-68.376,-31.747],[-68.363,-31.755],[-68.373,-31.765],[-68.369,-31.775],[-68.379,-31.776],[-68.374,-31.79],[-68.386,-31.791],[-68.378,-31.805],[-68.385,-31.817],[-68.411,-31.834],[-68.398,-31.837],[-68.39,-31.859],[-68.358,-31.859],[-68.361,-31.869],[-68.355,-31.872],[-68.346,-31.915],[-68.313,-31.938],[-68.303,-31.952],[-68.308,-31.965],[-68.286,-31.978],[-68.283,-31.986],[-68.283,-32.042],[-68.332,-32.11],[-68.334,-32.124],[-68.319,-32.136],[-68.304,-32.138],[-68.248,-32.092],[-68.207,-32.121],[-68.187,-32.113],[-68.176,-32.119],[-68.168,-32.113],[-68.154,-32.119],[-68.137,-32.111],[-68.136,-32.104],[-68.125,-32.107],[-68.123,-32.1],[-68.095,-32.102],[-68.098,-32.093],[-68.079,-32.085],[-68.078,-32.098],[-68.073,-32.099],[-68.065,-32.09],[-68.066,-32.08],[-68.054,-32.072],[-68.05,-32.088],[-68.034,-32.076],[-68.03,-32.086],[-68.004,-32.08],[-67.989,-32.093],[-67.982,-32.089],[-67.957,-32.093],[-67.956,-32.113],[-67.964,-32.118],[-67.928,-32.122],[-67.936,-32.129],[-67.932,-32.134],[-67.935,-32.14],[-67.923,-32.148],[-67.928,-32.154],[-67.918,-32.173],[-67.905,-32.173],[-67.87,-32.19],[-67.875,-32.197],[-67.846,-32.215],[-67.847,-32.222],[-67.839,-32.215],[-67.831,-32.226],[-67.818,-32.228],[-67.797,-32.22],[-67.777,-32.235],[-67.77,-32.235],[-67.769,-32.226],[-67.751,-32.229],[-67.736,-32.224],[-67.724,-32.242],[-67.71,-32.246],[-67.704,-32.236],[-67.683,-32.238],[-67.675,-32.234],[-67.676,-32.227],[-67.668,-32.227],[-67.637,-32.241],[-67.618,-32.242],[-67.605,-32.233],[-67.594,-32.246],[-67.58,-32.237],[-67.561,-32.243],[-67.544,-32.24],[-67.521,-32.221],[-67.523,-32.228],[-67.51,-32.238],[-67.511,-32.244],[-67.5,-32.239],[-67.486,-32.263],[-67.482,-32.294],[-67.471,-32.308],[-67.464,-32.306],[-67.451,-32.319],[-67.424,-32.328],[-67.382,-32.331],[-67.355,-32.352],[-67.331,-32.351],[-67.318,-32.382]]]}},{"type":"Feature","properties":{"n":"Calingasta"},"geometry":{"type":"Polygon","coordinates":[[[-69.884,-30.272],[-69.895,-30.273],[-69.895,-30.288],[-69.908,-30.318],[-69.903,-30.343],[-69.893,-30.352],[-69.898,-30.356],[-69.919,-30.35],[-69.935,-30.358],[-69.956,-30.386],[-69.995,-30.379],[-70.02,-30.397],[-70.053,-30.388],[-70.063,-30.394],[-70.084,-30.374],[-70.103,-30.368],[-70.107,-30.352],[-70.137,-30.341],[-70.155,-30.347],[-70.156,-30.361],[-70.143,-30.373],[-70.117,-30.43],[-70.136,-30.459],[-70.195,-30.492],[-70.179,-30.512],[-70.196,-30.536],[-70.191,-30.551],[-70.207,-30.559],[-70.208,-30.571],[-70.221,-30.583],[-70.222,-30.599],[-70.238,-30.613],[-70.247,-30.634],[-70.25,-30.661],[-70.24,-30.668],[-70.253,-30.678],[-70.259,-30.7],[-70.246,-30.729],[-70.27,-30.747],[-70.273,-30.781],[-70.288,-30.787],[-70.291,-30.799],[-70.277,-30.812],[-70.28,-30.832],[-70.295,-30.846],[-70.307,-30.898],[-70.323,-30.928],[-70.314,-30.955],[-70.293,-30.97],[-70.303,-30.997],[-70.294,-31.008],[-70.297,-31.021],[-70.277,-31.021],[-70.269,-31.043],[-70.275,-31.048],[-70.321,-31.043],[-70.328,-31.063],[-70.339,-31.068],[-70.367,-31.106],[-70.36,-31.134],[-70.375,-31.153],[-70.386,-31.154],[-70.397,-31.165],[-70.408,-31.166],[-70.414,-31.139],[-70.424,-31.128],[-70.432,-31.102],[-70.456,-31.084],[-70.476,-31.114],[-70.497,-31.122],[-70.496,-31.136],[-70.508,-31.146],[-70.524,-31.19],[-70.513,-31.197],[-70.52,-31.217],[-70.516,-31.234],[-70.532,-31.247],[-70.525,-31.258],[-70.527,-31.28],[-70.547,-31.314],[-70.542,-31.344],[-70.533,-31.351],[-70.527,-31.367],[-70.54,-31.386],[-70.532,-31.408],[-70.55,-31.408],[-70.56,-31.42],[-70.548,-31.435],[-70.549,-31.45],[-70.563,-31.461],[-70.569,-31.476],[-70.562,-31.482],[-70.566,-31.503],[-70.552,-31.511],[-70.563,-31.561],[-70.558,-31.575],[-70.567,-31.583],[-70.562,-31.595],[-70.567,-31.6],[-70.548,-31.606],[-70.532,-31.638],[-70.507,-31.652],[-70.504,-31.66],[-70.51,-31.664],[-70.513,-31.69],[-70.5,-31.694],[-70.487,-31.69],[-70.467,-31.701],[-70.458,-31.733],[-70.472,-31.758],[-70.457,-31.796],[-70.46,-31.806],[-70.451,-31.81],[-70.46,-31.844],[-70.447,-31.852],[-70.427,-31.854],[-70.403,-31.874],[-70.377,-31.885],[-70.364,-31.881],[-70.347,-31.89],[-70.317,-31.881],[-70.28,-31.884],[-70.264,-31.911],[-70.233,-31.926],[-70.209,-31.96],[-70.208,-31.978],[-70.249,-31.992],[-70.248,-32.023],[-70.26,-32.027],[-70.264,-32.038],[-70.283,-32.038],[-70.289,-32.052],[-70.329,-32.049],[-70.347,-32.039],[-70.351,-32.026],[-70.36,-32.025],[-70.38,-32.027],[-70.388,-32.045],[-70.335,-32.07],[-70.34,-32.084],[-70.35,-32.089],[-70.338,-32.103],[-70.342,-32.108],[-70.327,-32.128],[-70.304,-32.136],[-70.314,-32.149],[-70.317,-32.177],[-70.307,-32.187],[-70.31,-32.199],[-70.301,-32.207],[-70.311,-32.222],[-70.305,-32.232],[-70.322,-32.258],[-70.322,-32.269],[-70.296,-32.278],[-70.284,-32.293],[-70.262,-32.292],[-70.259,-32.303],[-70.218,-32.333],[-70.229,-32.364],[-70.217,-32.382],[-70.222,-32.39],[-70.231,-32.391],[-70.239,-32.405],[-70.237,-32.429],[-70.218,-32.428],[-70.213,-32.439],[-70.193,-32.45],[-70.169,-32.454],[-70.149,-32.466],[-70.135,-32.492],[-70.141,-32.499],[-70.123,-32.535],[-70.126,-32.574],[-70.091,-32.602],[-70.09,-32.622],[-70.072,-32.626],[-70.046,-32.605],[-70.04,-32.583],[-70.026,-32.579],[-70.026,-32.56],[-70.004,-32.528],[-69.984,-32.531],[-69.964,-32.546],[-69.931,-32.541],[-69.902,-32.561],[-69.863,-32.562],[-69.847,-32.571],[-69.827,-32.563],[-69.831,-32.556],[-69.822,-32.544],[-69.793,-32.547],[-69.784,-32.542],[-69.756,-32.509],[-69.739,-32.508],[-69.723,-32.496],[-69.705,-32.496],[-69.694,-32.458],[-69.699,-32.444],[-69.691,-32.44],[-69.689,-32.43],[-69.704,-32.404],[-69.733,-32.391],[-69.727,-32.362],[-69.729,-32.331],[-69.721,-32.314],[-69.686,-32.307],[-69.651,-32.269],[-69.631,-32.26],[-69.613,-32.216],[-69.603,-32.211],[-69.61,-32.202],[-69.596,-32.168],[-69.596,-32.143],[-69.586,-32.135],[-69.561,-32.129],[-69.558,-32.14],[-69.531,-32.141],[-69.506,-32.124],[-69.506,-32.115],[-69.477,-32.11],[-69.471,-32.091],[-69.455,-32.075],[-69.434,-32.076],[-69.416,-32.067],[-69.39,-32.077],[-69.379,-32.064],[-69.345,-32.083],[-69.314,-32.091],[-69.3,-32.074],[-69.277,-32.07],[-69.262,-32.033],[-69.245,-32.016],[-69.184,-31.999],[-69.126,-32.002],[-69.129,-31.985],[-69.118,-31.971],[-69.117,-31.949],[-69.109,-31.936],[-69.119,-31.921],[-69.117,-31.907],[-69.103,-31.872],[-69.106,-31.833],[-69.118,-31.825],[-69.135,-31.785],[-69.135,-31.759],[-69.146,-31.752],[-69.149,-31.735],[-69.162,-31.725],[-69.154,-31.704],[-69.16,-31.687],[-69.154,-31.683],[-69.152,-31.636],[-69.153,-31.615],[-69.163,-31.591],[-69.158,-31.58],[-69.165,-31.576],[-69.167,-31.558],[-69.176,-31.553],[-69.177,-31.543],[-69.191,-31.531],[-69.188,-31.515],[-69.201,-31.514],[-69.205,-31.506],[-69.208,-31.479],[-69.219,-31.456],[-69.21,-31.442],[-69.213,-31.437],[-69.205,-31.431],[-69.216,-31.401],[-69.199,-31.378],[-69.207,-31.374],[-69.202,-31.364],[-69.211,-31.358],[-69.219,-31.34],[-69.207,-31.323],[-69.217,-31.285],[-69.208,-31.272],[-69.21,-31.259],[-69.224,-31.233],[-69.243,-31.219],[-69.251,-31.202],[-69.25,-31.19],[-69.227,-31.151],[-69.216,-31.096],[-69.196,-31.061],[-69.179,-31.051],[-69.175,-31.022],[-69.166,-31.02],[-69.159,-31.008],[-69.141,-30.946],[-69.148,-30.92],[-69.136,-30.909],[-69.117,-30.866],[-69.124,-30.855],[-69.122,-30.831],[-69.104,-30.795],[-69.145,-30.779],[-69.216,-30.789],[-69.244,-30.77],[-69.322,-30.769],[-69.435,-30.682],[-69.479,-30.655],[-69.534,-30.675],[-69.604,-30.664],[-69.63,-30.635],[-69.632,-30.624],[-69.667,-30.609],[-69.671,-30.602],[-69.703,-30.615],[-69.704,-30.608],[-69.722,-30.601],[-69.726,-30.592],[-69.719,-30.577],[-69.728,-30.541],[-69.713,-30.538],[-69.735,-30.537],[-69.747,-30.528],[-69.759,-30.494],[-69.751,-30.47],[-69.782,-30.434],[-69.781,-30.42],[-69.811,-30.405],[-69.827,-30.369],[-69.823,-30.321],[-69.831,-30.292],[-69.876,-30.281],[-69.884,-30.272]]]}},{"type":"Feature","properties":{"n":"Rawson"},"geometry":{"type":"Polygon","coordinates":[[[-68.454,-31.818],[-68.411,-31.834],[-68.385,-31.817],[-68.378,-31.805],[-68.386,-31.791],[-68.38,-31.789],[-68.392,-31.785],[-68.39,-31.772],[-68.381,-31.765],[-68.393,-31.753],[-68.384,-31.751],[-68.41,-31.726],[-68.417,-31.728],[-68.416,-31.708],[-68.422,-31.699],[-68.413,-31.7],[-68.414,-31.671],[-68.408,-31.671],[-68.421,-31.66],[-68.421,-31.636],[-68.43,-31.628],[-68.424,-31.625],[-68.44,-31.591],[-68.473,-31.556],[-68.504,-31.551],[-68.522,-31.562],[-68.547,-31.555],[-68.548,-31.562],[-68.609,-31.544],[-68.602,-31.571],[-68.516,-31.596],[-68.532,-31.63],[-68.505,-31.638],[-68.52,-31.673],[-68.491,-31.79],[-68.454,-31.818]]]}},{"type":"Feature","properties":{"n":"Santa Lucía"},"geometry":{"type":"Polygon","coordinates":[[[-68.447,-31.578],[-68.432,-31.551],[-68.415,-31.554],[-68.418,-31.538],[-68.413,-31.531],[-68.43,-31.518],[-68.431,-31.508],[-68.472,-31.497],[-68.509,-31.505],[-68.504,-31.551],[-68.473,-31.556],[-68.46,-31.573],[-68.447,-31.578]]]}},{"type":"Feature","properties":{"n":"Albardón"},"geometry":{"type":"Polygon","coordinates":[[[-68.46,-31.459],[-68.469,-31.454],[-68.458,-31.449],[-68.455,-31.431],[-68.412,-31.36],[-68.373,-31.32],[-68.334,-31.294],[-68.334,-30.93],[-68.426,-30.929],[-68.426,-30.953],[-68.494,-30.992],[-68.491,-30.998],[-68.5,-31.004],[-68.516,-31.063],[-68.512,-31.1],[-68.529,-31.128],[-68.538,-31.173],[-68.541,-31.203],[-68.534,-31.21],[-68.538,-31.233],[-68.55,-31.25],[-68.543,-31.257],[-68.55,-31.266],[-68.548,-31.287],[-68.559,-31.301],[-68.567,-31.333],[-68.588,-31.36],[-68.605,-31.451],[-68.642,-31.502],[-68.612,-31.501],[-68.568,-31.476],[-68.519,-31.458],[-68.5,-31.457],[-68.473,-31.466],[-68.46,-31.459]]]}},{"type":"Feature","properties":{"n":"Angaco"},"geometry":{"type":"Polygon","coordinates":[[[-68.46,-31.459],[-68.395,-31.465],[-68.019,-31.462],[-68.025,-31.453],[-68.004,-31.433],[-67.989,-31.432],[-67.976,-31.418],[-67.953,-31.423],[-67.938,-31.402],[-67.966,-31.403],[-67.961,-31.387],[-67.97,-31.375],[-67.935,-31.346],[-67.929,-31.291],[-67.923,-31.283],[-67.914,-31.284],[-67.904,-31.271],[-67.909,-31.243],[-67.906,-31.205],[-67.911,-31.193],[-67.897,-31.181],[-67.91,-31.16],[-67.894,-31.151],[-67.896,-31.114],[-67.883,-31.101],[-67.883,-31.087],[-67.87,-31.074],[-67.868,-31.059],[-67.814,-31.012],[-67.875,-30.931],[-68.334,-30.93],[-68.334,-31.294],[-68.373,-31.32],[-68.412,-31.36],[-68.455,-31.431],[-68.458,-31.449],[-68.469,-31.454],[-68.46,-31.459]]]}},{"type":"Feature","properties":{"n":"Valle Fértil"},"geometry":{"type":"Polygon","coordinates":[[[-67.992,-29.979],[-68.013,-29.944],[-68.053,-29.901],[-68.105,-29.884],[-68.16,-29.884],[-68.163,-29.865],[-68.184,-29.848],[-68.182,-29.819],[-68.193,-29.787],[-68.199,-29.781],[-68.254,-29.781],[-68.259,-29.765],[-68.268,-29.759],[-68.259,-29.747],[-68.359,-29.801],[-68.358,-29.805],[-68.298,-29.863],[-68.289,-29.89],[-68.283,-29.902],[-68.272,-29.906],[-68.265,-29.927],[-68.251,-29.928],[-68.251,-29.94],[-68.246,-29.942],[-68.251,-29.949],[-68.243,-29.951],[-68.246,-29.959],[-68.237,-29.964],[-68.233,-29.984],[-68.238,-29.991],[-68.227,-29.997],[-68.175,-29.958],[-68.163,-29.921],[-68.136,-29.908],[-68.126,-29.935],[-68.098,-29.963],[-68.091,-29.998],[-68.063,-30.014],[-68.052,-30.059],[-68.04,-30.066],[-68.03,-30.087],[-68.033,-30.097],[-68.014,-30.126],[-68.022,-30.151],[-68.007,-30.199],[-67.982,-30.225],[-67.952,-30.226],[-67.942,-30.246],[-67.914,-30.246],[-67.905,-30.276],[-67.867,-30.295],[-67.868,-30.309],[-67.85,-30.32],[-67.855,-30.329],[-67.833,-30.36],[-67.824,-30.364],[-67.822,-30.377],[-67.811,-30.379],[-67.804,-30.397],[-67.807,-30.43],[-67.789,-30.448],[-67.794,-30.469],[-67.788,-30.483],[-67.77,-30.499],[-67.782,-30.51],[-67.764,-30.539],[-67.773,-30.553],[-67.767,-30.564],[-67.773,-30.564],[-67.777,-30.572],[-67.763,-30.596],[-67.767,-30.605],[-67.758,-30.63],[-67.762,-30.636],[-67.741,-30.666],[-67.746,-30.666],[-67.736,-30.685],[-67.741,-30.702],[-67.731,-30.706],[-67.696,-30.743],[-67.684,-30.767],[-67.668,-30.774],[-67.665,-30.786],[-67.642,-30.798],[-67.632,-30.817],[-67.606,-30.832],[-67.533,-30.928],[-67.497,-30.956],[-67.503,-30.964],[-67.494,-30.978],[-67.498,-30.986],[-67.508,-30.989],[-67.5,-31.004],[-67.5,-31.026],[-67.493,-31.032],[-67.494,-31.039],[-67.472,-31.057],[-67.452,-31.062],[-67.47,-31.08],[-67.46,-31.095],[-67.445,-31.098],[-67.442,-31.126],[-67.433,-31.135],[-67.437,-31.153],[-67.429,-31.167],[-67.434,-31.172],[-67.43,-31.184],[-67.439,-31.195],[-67.439,-31.21],[-67.428,-31.24],[-67.416,-31.247],[-67.419,-31.261],[-67.413,-31.272],[-67.402,-31.276],[-67.409,-31.29],[-67.392,-31.317],[-67.389,-31.351],[-67.378,-31.373],[-67.353,-31.41],[-67.281,-31.448],[-67.078,-31.434],[-67.109,-31.383],[-67.075,-31.227],[-67.126,-31.161],[-67.092,-31.061],[-67.112,-31.011],[-67.085,-30.914],[-67.129,-30.896],[-67.188,-30.829],[-67.221,-30.769],[-67.283,-30.695],[-67.299,-30.681],[-67.41,-30.627],[-67.446,-30.578],[-67.495,-30.536],[-67.579,-30.403],[-67.577,-30.379],[-67.592,-30.326],[-67.591,-30.298],[-67.606,-30.293],[-67.673,-30.237],[-67.686,-30.215],[-67.816,-30.127],[-67.836,-30.106],[-67.857,-30.1],[-67.877,-30.075],[-67.886,-30.074],[-67.888,-30.08],[-67.899,-30.073],[-67.909,-30.052],[-67.919,-30.047],[-67.931,-30.03],[-67.968,-30.009],[-67.992,-29.979]]]}},{"type":"Feature","properties":{"n":"Chimbas"},"geometry":{"type":"Polygon","coordinates":[[[-68.431,-31.508],[-68.441,-31.501],[-68.444,-31.477],[-68.461,-31.463],[-68.473,-31.466],[-68.5,-31.457],[-68.568,-31.476],[-68.617,-31.502],[-68.642,-31.502],[-68.628,-31.512],[-68.538,-31.511],[-68.472,-31.497],[-68.431,-31.508]]]}},{"type":"Feature","properties":{"n":"San Martín"},"geometry":{"type":"Polygon","coordinates":[[[-68.413,-31.531],[-68.389,-31.547],[-68.376,-31.568],[-68.365,-31.571],[-67.984,-31.631],[-68.031,-31.567],[-68.033,-31.537],[-68.041,-31.53],[-68.042,-31.521],[-68.029,-31.509],[-68.034,-31.5],[-68.019,-31.462],[-68.395,-31.465],[-68.46,-31.459],[-68.444,-31.477],[-68.441,-31.501],[-68.431,-31.508],[-68.43,-31.518],[-68.413,-31.531]]]}},{"type":"Feature","properties":{"n":"Rivadavia"},"geometry":{"type":"Polygon","coordinates":[[[-68.602,-31.571],[-68.609,-31.544],[-68.548,-31.562],[-68.55,-31.546],[-68.566,-31.546],[-68.569,-31.535],[-68.568,-31.52],[-68.557,-31.521],[-68.559,-31.511],[-68.628,-31.512],[-68.645,-31.499],[-68.652,-31.472],[-68.708,-31.564],[-68.686,-31.564],[-68.696,-31.574],[-68.699,-31.589],[-68.695,-31.621],[-68.632,-31.621],[-68.632,-31.604],[-68.608,-31.569],[-68.602,-31.571]]]}},{"type":"Feature","properties":{"n":"Ullum"},"geometry":{"type":"Polygon","coordinates":[[[-69.104,-30.795],[-69.122,-30.831],[-69.124,-30.855],[-69.117,-30.866],[-69.136,-30.909],[-69.148,-30.92],[-69.141,-30.946],[-69.159,-31.008],[-69.166,-31.02],[-69.175,-31.022],[-69.179,-31.051],[-69.196,-31.061],[-69.216,-31.096],[-69.227,-31.151],[-69.25,-31.19],[-69.246,-31.215],[-69.225,-31.232],[-69.212,-31.256],[-69.196,-31.247],[-69.111,-31.262],[-69.109,-31.28],[-69.056,-31.298],[-69.028,-31.322],[-69.02,-31.352],[-69.005,-31.366],[-69.011,-31.387],[-69.002,-31.423],[-69.005,-31.447],[-68.992,-31.484],[-68.996,-31.52],[-68.954,-31.515],[-68.92,-31.521],[-68.859,-31.511],[-68.805,-31.52],[-68.789,-31.511],[-68.678,-31.496],[-68.668,-31.479],[-68.652,-31.472],[-68.642,-31.502],[-68.605,-31.451],[-68.588,-31.36],[-68.567,-31.333],[-68.559,-31.301],[-68.548,-31.287],[-68.55,-31.266],[-68.543,-31.257],[-68.55,-31.25],[-68.538,-31.233],[-68.534,-31.21],[-68.541,-31.203],[-68.538,-31.173],[-68.529,-31.128],[-68.512,-31.1],[-68.516,-31.063],[-68.5,-31.004],[-68.756,-31.004],[-68.764,-30.972],[-68.76,-30.942],[-68.773,-30.905],[-68.765,-30.881],[-68.768,-30.857],[-68.78,-30.838],[-68.796,-30.836],[-68.8,-30.829],[-68.797,-30.803],[-68.82,-30.762],[-68.829,-30.691],[-68.819,-30.675],[-68.806,-30.67],[-68.801,-30.624],[-68.781,-30.598],[-68.993,-30.575],[-69.062,-30.58],[-69.055,-30.618],[-69.116,-30.627],[-69.121,-30.65],[-69.089,-30.729],[-69.104,-30.795]]]}},{"type":"Feature","properties":{"n":"Caucete"},"geometry":{"type":"Polygon","coordinates":[[[-67.239,-31.88],[-67.137,-31.834],[-67.05,-31.857],[-67.006,-31.855],[-66.886,-31.898],[-66.662,-31.921],[-66.735,-31.875],[-66.802,-31.812],[-66.875,-31.633],[-66.959,-31.633],[-67.078,-31.434],[-67.281,-31.448],[-67.354,-31.409],[-67.389,-31.351],[-67.392,-31.317],[-67.409,-31.29],[-67.402,-31.276],[-67.413,-31.272],[-67.419,-31.261],[-67.416,-31.247],[-67.428,-31.24],[-67.439,-31.21],[-67.439,-31.195],[-67.43,-31.184],[-67.434,-31.172],[-67.429,-31.167],[-67.437,-31.153],[-67.433,-31.135],[-67.442,-31.126],[-67.445,-31.098],[-67.46,-31.095],[-67.47,-31.08],[-67.452,-31.062],[-67.472,-31.057],[-67.494,-31.039],[-67.508,-30.989],[-67.498,-30.986],[-67.494,-30.978],[-67.503,-30.964],[-67.497,-30.956],[-67.525,-30.93],[-67.875,-30.931],[-67.814,-31.012],[-67.868,-31.059],[-67.87,-31.074],[-67.883,-31.087],[-67.883,-31.101],[-67.896,-31.114],[-67.894,-31.151],[-67.91,-31.16],[-67.897,-31.181],[-67.911,-31.193],[-67.906,-31.205],[-67.909,-31.243],[-67.904,-31.271],[-67.914,-31.284],[-67.923,-31.283],[-67.929,-31.291],[-67.935,-31.346],[-67.97,-31.375],[-67.961,-31.387],[-67.966,-31.403],[-67.939,-31.406],[-67.953,-31.423],[-67.976,-31.418],[-67.989,-31.432],[-68.004,-31.433],[-68.022,-31.447],[-68.025,-31.453],[-68.018,-31.459],[-68.034,-31.5],[-68.029,-31.509],[-68.042,-31.521],[-68.033,-31.537],[-68.031,-31.567],[-67.984,-31.631],[-68.365,-31.571],[-68.357,-31.579],[-68.364,-31.588],[-68.344,-31.624],[-68.346,-31.651],[-68.337,-31.661],[-68.343,-31.662],[-68.337,-31.67],[-68.346,-31.678],[-68.347,-31.695],[-67.239,-31.88]]]}},{"type":"Feature","properties":{"n":"9 de Julio"},"geometry":{"type":"Polygon","coordinates":[[[-68.347,-31.695],[-68.346,-31.678],[-68.337,-31.67],[-68.343,-31.662],[-68.337,-31.661],[-68.346,-31.651],[-68.344,-31.624],[-68.364,-31.588],[-68.358,-31.576],[-68.376,-31.568],[-68.389,-31.547],[-68.413,-31.531],[-68.418,-31.538],[-68.415,-31.554],[-68.432,-31.551],[-68.449,-31.584],[-68.424,-31.625],[-68.43,-31.628],[-68.421,-31.636],[-68.421,-31.66],[-68.408,-31.671],[-68.414,-31.671],[-68.413,-31.7],[-68.422,-31.699],[-68.416,-31.708],[-68.417,-31.728],[-68.41,-31.726],[-68.384,-31.751],[-68.393,-31.753],[-68.381,-31.765],[-68.39,-31.772],[-68.392,-31.785],[-68.376,-31.791],[-68.379,-31.776],[-68.369,-31.775],[-68.373,-31.765],[-68.363,-31.755],[-68.375,-31.744],[-68.364,-31.732],[-68.368,-31.727],[-68.35,-31.714],[-68.352,-31.704],[-68.343,-31.697],[-68.347,-31.695]]]}},{"type":"Feature","properties":{"n":"Jáchal"},"geometry":{"type":"Polygon","coordinates":[[[-68.993,-30.575],[-68.781,-30.598],[-68.801,-30.624],[-68.806,-30.67],[-68.819,-30.675],[-68.829,-30.691],[-68.82,-30.762],[-68.797,-30.803],[-68.8,-30.829],[-68.796,-30.836],[-68.78,-30.838],[-68.768,-30.857],[-68.765,-30.881],[-68.773,-30.905],[-68.76,-30.942],[-68.764,-30.972],[-68.756,-31.004],[-68.5,-31.004],[-68.493,-31.001],[-68.494,-30.992],[-68.483,-30.982],[-68.426,-30.953],[-68.426,-30.929],[-67.531,-30.93],[-67.606,-30.832],[-67.632,-30.817],[-67.642,-30.798],[-67.665,-30.786],[-67.668,-30.774],[-67.684,-30.767],[-67.696,-30.743],[-67.731,-30.706],[-67.741,-30.702],[-67.736,-30.685],[-67.746,-30.666],[-67.741,-30.666],[-67.762,-30.636],[-67.758,-30.63],[-67.767,-30.605],[-67.763,-30.596],[-67.777,-30.572],[-67.773,-30.564],[-67.767,-30.564],[-67.773,-30.553],[-67.764,-30.539],[-67.782,-30.51],[-67.77,-30.499],[-67.788,-30.483],[-67.794,-30.469],[-67.789,-30.448],[-67.807,-30.43],[-67.804,-30.397],[-67.811,-30.379],[-67.822,-30.377],[-67.824,-30.364],[-67.833,-30.36],[-67.855,-30.329],[-67.85,-30.32],[-67.868,-30.309],[-67.867,-30.295],[-67.905,-30.276],[-67.914,-30.246],[-67.942,-30.246],[-67.952,-30.226],[-67.982,-30.225],[-68.007,-30.199],[-68.022,-30.151],[-68.014,-30.126],[-68.033,-30.097],[-68.03,-30.087],[-68.04,-30.066],[-68.052,-30.059],[-68.063,-30.014],[-68.091,-29.998],[-68.098,-29.963],[-68.126,-29.935],[-68.136,-29.908],[-68.163,-29.921],[-68.175,-29.958],[-68.2,-29.98],[-68.227,-29.997],[-68.238,-29.991],[-68.233,-29.984],[-68.237,-29.964],[-68.246,-29.959],[-68.243,-29.951],[-68.251,-29.949],[-68.246,-29.942],[-68.251,-29.94],[-68.251,-29.928],[-68.265,-29.927],[-68.272,-29.906],[-68.283,-29.902],[-68.289,-29.89],[-68.298,-29.863],[-68.335,-29.824],[-68.35,-29.818],[-68.359,-29.801],[-68.259,-29.747],[-68.45,-29.648],[-68.567,-29.637],[-68.622,-29.646],[-68.64,-29.639],[-68.669,-29.64],[-68.683,-29.646],[-68.713,-29.629],[-68.736,-29.625],[-68.759,-29.633],[-68.794,-29.624],[-68.828,-29.634],[-68.863,-29.635],[-68.887,-29.622],[-68.885,-29.593],[-68.89,-29.605],[-68.908,-29.62],[-68.936,-29.62],[-68.934,-29.644],[-68.938,-29.652],[-68.957,-29.658],[-69.009,-29.643],[-69.02,-29.632],[-69.014,-29.66],[-69.027,-29.68],[-69.015,-29.699],[-69.023,-29.723],[-69.019,-29.74],[-69.032,-29.762],[-69.03,-29.784],[-69.022,-29.783],[-69.02,-29.817],[-69.03,-29.832],[-69.023,-29.847],[-69.028,-29.871],[-69.014,-29.881],[-69.04,-29.95],[-69.03,-29.986],[-69.067,-30.052],[-69.072,-30.072],[-69.042,-30.249],[-69.039,-30.295],[-69.066,-30.328],[-69.05,-30.344],[-69.063,-30.394],[-69.062,-30.468],[-69.057,-30.495],[-68.993,-30.575]]]}},{"type":"Feature","properties":{"n":"Capital"},"geometry":{"type":"Polygon","coordinates":[[[-68.504,-31.551],[-68.509,-31.505],[-68.559,-31.511],[-68.557,-31.521],[-68.568,-31.52],[-68.566,-31.546],[-68.55,-31.546],[-68.547,-31.555],[-68.522,-31.562],[-68.504,-31.551]]]}},{"type":"Feature","properties":{"n":"Sarmiento"},"geometry":{"type":"Polygon","coordinates":[[[-68.315,-32.138],[-68.331,-32.129],[-68.332,-32.11],[-68.283,-32.042],[-68.286,-31.978],[-68.308,-31.965],[-68.303,-31.952],[-68.313,-31.938],[-68.346,-31.915],[-68.355,-31.872],[-68.361,-31.869],[-68.358,-31.859],[-68.39,-31.859],[-68.403,-31.833],[-68.454,-31.818],[-68.436,-31.853],[-68.433,-31.888],[-68.446,-31.875],[-68.541,-31.873],[-68.686,-31.9],[-69.113,-31.901],[-69.117,-31.907],[-69.119,-31.921],[-69.109,-31.936],[-69.117,-31.949],[-69.118,-31.971],[-69.129,-31.985],[-69.126,-32.002],[-69.116,-32.002],[-69.116,-32.02],[-69.094,-32.031],[-69.086,-32.052],[-69.071,-32.061],[-69.064,-32.074],[-69.027,-32.095],[-69.012,-32.117],[-68.957,-32.109],[-68.918,-32.115],[-68.918,-32.338],[-68.666,-32.337],[-68.463,-32.238],[-68.463,-32.138],[-68.315,-32.138]]]}},{"type":"Feature","properties":{"n":"Zonda"},"geometry":{"type":"Polygon","coordinates":[[[-68.695,-31.621],[-68.699,-31.589],[-68.696,-31.574],[-68.686,-31.564],[-68.708,-31.564],[-68.652,-31.472],[-68.668,-31.479],[-68.678,-31.496],[-68.789,-31.511],[-68.805,-31.52],[-68.859,-31.511],[-68.92,-31.521],[-68.954,-31.515],[-68.996,-31.52],[-68.992,-31.484],[-69.005,-31.447],[-69.002,-31.423],[-69.011,-31.387],[-69.005,-31.366],[-69.02,-31.352],[-69.028,-31.322],[-69.056,-31.298],[-69.109,-31.28],[-69.111,-31.262],[-69.196,-31.247],[-69.212,-31.256],[-69.208,-31.27],[-69.217,-31.285],[-69.207,-31.323],[-69.219,-31.34],[-69.211,-31.358],[-69.202,-31.364],[-69.207,-31.374],[-69.199,-31.378],[-69.216,-31.401],[-69.205,-31.431],[-69.213,-31.437],[-69.21,-31.442],[-69.219,-31.456],[-69.208,-31.479],[-69.205,-31.506],[-69.201,-31.514],[-69.188,-31.515],[-69.191,-31.531],[-69.177,-31.543],[-69.176,-31.553],[-69.167,-31.558],[-69.165,-31.576],[-69.157,-31.581],[-69.163,-31.591],[-69.152,-31.618],[-69.154,-31.683],[-69.16,-31.687],[-69.154,-31.704],[-69.162,-31.725],[-69.149,-31.735],[-69.146,-31.752],[-69.135,-31.759],[-69.135,-31.785],[-69.126,-31.808],[-69.106,-31.833],[-69.103,-31.872],[-69.113,-31.901],[-68.686,-31.9],[-68.671,-31.857],[-68.669,-31.754],[-68.664,-31.739],[-68.674,-31.708],[-68.691,-31.702],[-68.711,-31.646],[-68.695,-31.621]]]}}]},"rios":{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"n":"Río abajo de Veladero: Río de las Taguas, Río de la Palca, Río Lavadero, Río Blanco, Río Jáchal","k":"main"},"geometry":{"type":"LineString","coordinates":[[-69.8937,-29.4088],[-69.8952,-29.405],[-69.903,-29.4014],[-69.916,-29.3902],[-69.9167,-29.3842],[-69.9306,-29.3674],[-69.9303,-29.3623],[-69.9069,-29.3558],[-69.9051,-29.3498],[-69.9065,-29.3415],[-69.9016,-29.3317],[-69.8815,-29.318],[-69.877,-29.3187],[-69.8747,-29.3148],[-69.8651,-29.3084],[-69.8602,-29.2908],[-69.8615,-29.2852],[-69.8602,-29.2812],[-69.8694,-29.2618],[-69.8725,-29.2492],[-69.8712,-29.2428],[-69.8738,-29.2398],[-69.8723,-29.2322],[-69.8577,-29.2209],[-69.8436,-29.2065],[-69.8128,-29.1965],[-69.7954,-29.1982],[-69.7892,-29.1928],[-69.7756,-29.1883],[-69.771,-29.182],[-69.7635,-29.1812],[-69.7578,-29.1768],[-69.7502,-29.1757],[-69.7395,-29.1841],[-69.7103,-29.1916],[-69.7032,-29.1991],[-69.6955,-29.1988],[-69.6832,-29.2051],[-69.6762,-29.2063],[-69.6758,-29.2085],[-69.6716,-29.2107],[-69.6712,-29.215],[-69.667,-29.2207],[-69.6626,-29.2223],[-69.6603,-29.2307],[-69.6558,-29.2363],[-69.6574,-29.24],[-69.6544,-29.2454],[-69.6539,-29.2515],[-69.6509,-29.2551],[-69.6497,-29.263],[-69.651,-29.2651],[-69.6497,-29.2683],[-69.6554,-29.2778],[-69.6537,-29.2881],[-69.6491,-29.2886],[-69.6477,-29.2911],[-69.6458,-29.3023],[-69.6379,-29.31],[-69.6376,-29.3147],[-69.6266,-29.318],[-69.6141,-29.3145],[-69.5953,-29.3415],[-69.5896,-29.3396],[-69.5874,-29.3407],[-69.5858,-29.3453],[-69.5741,-29.341],[-69.5697,-29.3327],[-69.5668,-29.3322],[-69.5627,-29.3273],[-69.5585,-29.3292],[-69.5519,-29.328],[-69.5468,-29.3315],[-69.5405,-29.3307],[-69.5348,-29.3335],[-69.5253,-29.3346],[-69.5215,-29.3331],[-69.519,-29.3342],[-69.5135,-29.3306],[-69.5047,-29.3297],[-69.5013,-29.3311],[-69.4962,-29.3284],[-69.4953,-29.3257],[-69.4899,-29.3264],[-69.4826,-29.3243],[-69.4788,-29.3276],[-69.4728,-29.3279],[-69.4675,-29.3261],[-69.4657,-29.3276],[-69.4662,-29.3303],[-69.4604,-29.3349],[-69.4522,-29.3345],[-69.4481,-29.3424],[-69.4404,-29.3468],[-69.439,-29.3518],[-69.4358,-29.3515],[-69.4277,-29.3569],[-69.4193,-29.3586],[-69.4115,-29.3567],[-69.3993,-29.3571],[-69.3944,-29.3624],[-69.3874,-29.3646],[-69.3853,-29.3678],[-69.3751,-29.3703],[-69.3718,-29.376],[-69.3665,-29.3802],[-69.3645,-29.3878],[-69.3552,-29.3934],[-69.3552,-29.3954],[-69.3599,-29.398],[-69.3633,-29.4145],[-69.3623,-29.4191],[-69.3549,-29.4276],[-69.3522,-29.4278],[-69.3512,-29.4309],[-69.3436,-29.4348],[-69.3434,-29.4371],[-69.3373,-29.4393],[-69.3333,-29.4452],[-69.3163,-29.4471],[-69.3122,-29.4448],[-69.306,-29.4445],[-69.2984,-29.4493],[-69.2976,-29.4531],[-69.3,-29.454],[-69.3003,-29.4587],[-69.296,-29.4741],[-69.2926,-29.4801],[-69.2882,-29.4806],[-69.2786,-29.4873],[-69.2826,-29.4914],[-69.2845,-29.4978],[-69.2831,-29.5037],[-69.2771,-29.5097],[-69.2758,-29.5202],[-69.2709,-29.5229],[-69.2675,-29.5275],[-69.2565,-29.531],[-69.2531,-29.5299],[-69.2501,-29.5356],[-69.2362,-29.5416],[-69.2323,-29.5416],[-69.2305,-29.5453],[-69.2229,-29.5425],[-69.2183,-29.5444],[-69.2067,-29.5437],[-69.2013,-29.5458],[-69.1958,-29.5512],[-69.1927,-29.5602],[-69.1933,-29.5635],[-69.1853,-29.5706],[-69.1846,-29.5786],[-69.1876,-29.5818],[-69.1853,-29.5935],[-69.1811,-29.5993],[-69.1712,-29.5998],[-69.1699,-29.6014],[-69.168,-29.6134],[-69.171,-29.6312],[-69.1683,-29.6365],[-69.1722,-29.6441],[-69.1729,-29.6561],[-69.165,-29.6647],[-69.1574,-29.6855],[-69.1539,-29.6885],[-69.1558,-29.6962],[-69.1539,-29.6999],[-69.1557,-29.7086],[-69.1583,-29.711],[-69.1545,-29.7168],[-69.1556,-29.7245],[-69.1526,-29.7285],[-69.1536,-29.7319],[-69.1522,-29.7346],[-69.1537,-29.7417],[-69.1576,-29.7447],[-69.1588,-29.7483],[-69.1587,-29.7563],[-69.1545,-29.7647],[-69.1542,-29.7723],[-69.1463,-29.7818],[-69.1445,-29.7879],[-69.1478,-29.7929],[-69.1543,-29.7933],[-69.16,-29.8052],[-69.1558,-29.8082],[-69.1567,-29.8103],[-69.152,-29.8193],[-69.1511,-29.8401],[-69.1457,-29.8484],[-69.1441,-29.853],[-69.1449,-29.8619],[-69.1406,-29.866],[-69.141,-29.869],[-69.1381,-29.8727],[-69.1388,-29.8753],[-69.1346,-29.8847],[-69.1385,-29.8895],[-69.1397,-29.8946],[-69.1369,-29.916],[-69.163,-29.9414],[-69.1692,-29.9511],[-69.1694,-29.9565],[-69.172,-29.9596],[-69.1715,-29.9655],[-69.1681,-29.9668],[-69.1659,-29.9708],[-69.1656,-29.9823],[-69.1633,-29.9829],[-69.1632,-29.9886],[-69.159,-29.9957],[-69.1585,-30.0042],[-69.1618,-30.0117],[-69.1617,-30.0201],[-69.1659,-30.0235],[-69.1667,-30.037],[-69.1717,-30.0425],[-69.17,-30.044],[-69.1699,-30.0515],[-69.1675,-30.0538],[-69.1681,-30.0571],[-69.1622,-30.0642],[-69.1607,-30.0759],[-69.1587,-30.0765],[-69.1526,-30.0863],[-69.1502,-30.0966],[-69.1454,-30.1007],[-69.1417,-30.1104],[-69.1277,-30.1264],[-69.1278,-30.1307],[-69.1226,-30.1352],[-69.1218,-30.1411],[-69.1139,-30.1463],[-69.1152,-30.1549],[-69.1135,-30.1576],[-69.1055,-30.1612],[-69.1046,-30.1639],[-69.0618,-30.1963],[-69.0596,-30.2032],[-69.051,-30.2055],[-69.0427,-30.204],[-69.034,-30.2147],[-69.0301,-30.2129],[-69.0196,-30.2136],[-69.019,-30.2107],[-69.0166,-30.212],[-69.0114,-30.2098],[-68.9984,-30.2134],[-68.9928,-30.217],[-68.9885,-30.215],[-68.9852,-30.2174],[-68.9829,-30.2161],[-68.9764,-30.2183],[-68.9716,-30.2144],[-68.9674,-30.2142],[-68.9629,-30.2159],[-68.9571,-30.2229],[-68.9491,-30.2213],[-68.9454,-30.2245],[-68.9376,-30.225],[-68.927,-30.2184],[-68.9226,-30.2189],[-68.9157,-30.2131],[-68.9067,-30.2159],[-68.8992,-30.2152],[-68.8984,-30.2103],[-68.8949,-30.2082],[-68.8953,-30.2068],[-68.8861,-30.2018],[-68.8815,-30.2036],[-68.8784,-30.2014],[-68.8742,-30.2065],[-68.8672,-30.2006],[-68.8378,-30.1958],[-68.823,-30.1959],[-68.812,-30.1972],[-68.7977,-30.2024],[-68.7848,-30.2029],[-68.7699,-30.2109],[-68.7656,-30.2115],[-68.7611,-30.2197],[-68.7571,-30.2208]]}},{"type":"Feature","properties":{"n":"Río abajo de Pascua-Lama: Río de las Taguas, Río de la Palca, Río Lavadero, Río Blanco, Río Jáchal","k":"main"},"geometry":{"type":"LineString","coordinates":[[-69.9303,-29.3623],[-69.9069,-29.3558],[-69.9051,-29.3498],[-69.9065,-29.3415],[-69.9016,-29.3317],[-69.8815,-29.318],[-69.877,-29.3187],[-69.8747,-29.3148],[-69.8651,-29.3084],[-69.8602,-29.2908],[-69.8615,-29.2852],[-69.8602,-29.2812],[-69.8678,-29.2666],[-69.8725,-29.2492],[-69.8712,-29.2428],[-69.8738,-29.2398],[-69.8719,-29.2317],[-69.8577,-29.2209],[-69.8436,-29.2065],[-69.8128,-29.1965],[-69.7954,-29.1982],[-69.7892,-29.1928],[-69.7756,-29.1883],[-69.771,-29.182],[-69.7635,-29.1812],[-69.7578,-29.1768],[-69.7502,-29.1757],[-69.7395,-29.1841],[-69.7103,-29.1916],[-69.7032,-29.1991],[-69.6955,-29.1988],[-69.6832,-29.2051],[-69.6762,-29.2063],[-69.6758,-29.2085],[-69.6716,-29.2107],[-69.6712,-29.215],[-69.667,-29.2207],[-69.6626,-29.2223],[-69.6603,-29.2307],[-69.6558,-29.2363],[-69.6574,-29.24],[-69.6544,-29.2454],[-69.6539,-29.2515],[-69.6509,-29.2551],[-69.6497,-29.263],[-69.651,-29.2651],[-69.6497,-29.2683],[-69.6554,-29.2778],[-69.6537,-29.2881],[-69.6491,-29.2886],[-69.6477,-29.2911],[-69.6458,-29.3023],[-69.6379,-29.31],[-69.6376,-29.3147],[-69.6266,-29.318],[-69.6141,-29.3145],[-69.5953,-29.3415],[-69.5896,-29.3396],[-69.5874,-29.3407],[-69.5858,-29.3453],[-69.5741,-29.341],[-69.5697,-29.3327],[-69.5668,-29.3322],[-69.5627,-29.3273],[-69.5585,-29.3292],[-69.5519,-29.328],[-69.5468,-29.3315],[-69.5405,-29.3307],[-69.5348,-29.3335],[-69.5253,-29.3346],[-69.5215,-29.3331],[-69.519,-29.3342],[-69.5135,-29.3306],[-69.5047,-29.3297],[-69.5013,-29.3311],[-69.4962,-29.3284],[-69.4953,-29.3257],[-69.4899,-29.3264],[-69.4826,-29.3243],[-69.4788,-29.3276],[-69.4728,-29.3279],[-69.4675,-29.3261],[-69.4657,-29.3276],[-69.4662,-29.3303],[-69.4604,-29.3349],[-69.4522,-29.3345],[-69.4481,-29.3424],[-69.4404,-29.3468],[-69.439,-29.3518],[-69.4358,-29.3515],[-69.4277,-29.3569],[-69.4193,-29.3586],[-69.4115,-29.3567],[-69.3993,-29.3571],[-69.3944,-29.3624],[-69.3874,-29.3646],[-69.3853,-29.3678],[-69.3751,-29.3703],[-69.3718,-29.376],[-69.3665,-29.3802],[-69.3645,-29.3878],[-69.3552,-29.3934],[-69.3552,-29.3954],[-69.3599,-29.398],[-69.3633,-29.4145],[-69.3623,-29.4191],[-69.3549,-29.4276],[-69.3522,-29.4278],[-69.3512,-29.4309],[-69.3436,-29.4348],[-69.3434,-29.4371],[-69.3373,-29.4393],[-69.3333,-29.4452],[-69.3163,-29.4471],[-69.3122,-29.4448],[-69.306,-29.4445],[-69.2984,-29.4493],[-69.2976,-29.4531],[-69.3,-29.454],[-69.3003,-29.4587],[-69.296,-29.4741],[-69.2926,-29.4801],[-69.2882,-29.4806],[-69.2786,-29.4873],[-69.2826,-29.4914],[-69.2845,-29.4978],[-69.2831,-29.5037],[-69.2771,-29.5097],[-69.2758,-29.5202],[-69.2709,-29.5229],[-69.2675,-29.5275],[-69.2565,-29.531],[-69.2531,-29.5299],[-69.2501,-29.5356],[-69.2362,-29.5416],[-69.2323,-29.5416],[-69.2305,-29.5453],[-69.2229,-29.5425],[-69.2183,-29.5444],[-69.2067,-29.5437],[-69.2013,-29.5458],[-69.1958,-29.5512],[-69.1927,-29.5602],[-69.1933,-29.5635],[-69.1853,-29.5706],[-69.1846,-29.5786],[-69.1876,-29.5818],[-69.1853,-29.5935],[-69.1811,-29.5993],[-69.1712,-29.5998],[-69.1699,-29.6014],[-69.168,-29.6134],[-69.171,-29.6312],[-69.1683,-29.6365],[-69.1722,-29.6441],[-69.1729,-29.6561],[-69.165,-29.6647],[-69.1574,-29.6855],[-69.1539,-29.6885],[-69.1558,-29.6962],[-69.1539,-29.6999],[-69.1557,-29.7086],[-69.1583,-29.711],[-69.1545,-29.7168],[-69.1556,-29.7245],[-69.1526,-29.7285],[-69.1536,-29.7319],[-69.1522,-29.7346],[-69.1537,-29.7417],[-69.1576,-29.7447],[-69.1588,-29.7483],[-69.1587,-29.7563],[-69.1545,-29.7647],[-69.1542,-29.7723],[-69.1463,-29.7818],[-69.1445,-29.7879],[-69.1478,-29.7929],[-69.1543,-29.7933],[-69.16,-29.8052],[-69.1558,-29.8082],[-69.1567,-29.8103],[-69.152,-29.8193],[-69.1511,-29.8401],[-69.1457,-29.8484],[-69.1441,-29.853],[-69.1449,-29.8619],[-69.1406,-29.866],[-69.141,-29.869],[-69.1381,-29.8727],[-69.1388,-29.8753],[-69.1346,-29.8847],[-69.1385,-29.8895],[-69.1397,-29.8946],[-69.1369,-29.916],[-69.163,-29.9414],[-69.1692,-29.9511],[-69.1694,-29.9565],[-69.172,-29.9596],[-69.1715,-29.9655],[-69.1681,-29.9668],[-69.1659,-29.9708],[-69.1656,-29.9823],[-69.1633,-29.9829],[-69.1632,-29.9886],[-69.159,-29.9957],[-69.1585,-30.0042],[-69.1618,-30.0117],[-69.1617,-30.0201],[-69.1659,-30.0235],[-69.1667,-30.037],[-69.1717,-30.0425],[-69.17,-30.044],[-69.1699,-30.0515],[-69.1675,-30.0538],[-69.1681,-30.0571],[-69.1622,-30.0642],[-69.1607,-30.0759],[-69.1587,-30.0765],[-69.1526,-30.0863],[-69.1502,-30.0966],[-69.1454,-30.1007],[-69.1417,-30.1104],[-69.1277,-30.1264],[-69.1278,-30.1307],[-69.1226,-30.1352],[-69.1218,-30.1411],[-69.1139,-30.1463],[-69.1152,-30.1549],[-69.1135,-30.1576],[-69.1055,-30.1612],[-69.1046,-30.1639],[-69.0618,-30.1963],[-69.0596,-30.2032],[-69.051,-30.2055],[-69.0427,-30.204],[-69.034,-30.2147],[-69.0301,-30.2129],[-69.0196,-30.2136],[-69.019,-30.2107],[-69.0166,-30.212],[-69.0114,-30.2098],[-68.9984,-30.2134],[-68.9928,-30.217],[-68.9885,-30.215],[-68.9852,-30.2174],[-68.9829,-30.2161],[-68.9764,-30.2183],[-68.9716,-30.2144],[-68.9674,-30.2142],[-68.9629,-30.2159],[-68.9571,-30.2229],[-68.9491,-30.2213],[-68.9454,-30.2245],[-68.9376,-30.225],[-68.927,-30.2184],[-68.9226,-30.2189],[-68.9157,-30.2131],[-68.9067,-30.2159],[-68.8992,-30.2152],[-68.8984,-30.2103],[-68.8949,-30.2082],[-68.8953,-30.2068],[-68.8861,-30.2018],[-68.8815,-30.2036],[-68.8784,-30.2014],[-68.8742,-30.2065],[-68.8672,-30.2006],[-68.8378,-30.1958],[-68.823,-30.1959],[-68.812,-30.1972],[-68.7977,-30.2024],[-68.7848,-30.2029],[-68.7699,-30.2109],[-68.7656,-30.2115],[-68.7611,-30.2197],[-68.7571,-30.2208]]}},{"type":"Feature","properties":{"n":"Río abajo de Gualcamayo: Río Gualcamayo, Río de Los Piojos, Río Guandacol, Río Bermejo","k":"main"},"geometry":{"type":"LineString","coordinates":[[-68.6043,-29.7195],[-68.6122,-29.7146],[-68.6152,-29.7079],[-68.6226,-29.7035],[-68.6257,-29.6956],[-68.6295,-29.6941],[-68.6359,-29.6951],[-68.6361,-29.6907],[-68.6429,-29.6804],[-68.6421,-29.6776],[-68.6359,-29.6749],[-68.6297,-29.667],[-68.6247,-29.6638],[-68.621,-29.653],[-68.6237,-29.6482],[-68.6209,-29.6457],[-68.6017,-29.6445],[-68.5944,-29.6406],[-68.5737,-29.6405],[-68.5616,-29.6431],[-68.5515,-29.6428],[-68.5404,-29.6459],[-68.5281,-29.645],[-68.5095,-29.6482],[-68.5051,-29.647],[-68.495,-29.6509],[-68.4852,-29.6493],[-68.467,-29.6568],[-68.4618,-29.6568],[-68.4573,-29.6602],[-68.438,-29.6659],[-68.4368,-29.6684],[-68.4337,-29.6678],[-68.4316,-29.6719],[-68.4291,-29.6726],[-68.4297,-29.6745],[-68.4213,-29.6815],[-68.4229,-29.6831],[-68.4201,-29.6859],[-68.4223,-29.6873],[-68.4194,-29.6892],[-68.4206,-29.6921],[-68.4191,-29.6941],[-68.416,-29.6909],[-68.4132,-29.6912],[-68.4134,-29.7002],[-68.4097,-29.699],[-68.4107,-29.7043],[-68.4071,-29.7035],[-68.4011,-29.7147],[-68.4046,-29.7179],[-68.4003,-29.7215],[-68.4027,-29.7218],[-68.4021,-29.7239],[-68.3978,-29.7256],[-68.4008,-29.7302],[-68.3973,-29.7303],[-68.3957,-29.7346],[-68.3902,-29.7364],[-68.393,-29.7389],[-68.3909,-29.7439],[-68.3861,-29.7441],[-68.384,-29.7488],[-68.3822,-29.7472],[-68.3797,-29.7482],[-68.3803,-29.7503],[-68.3772,-29.7512],[-68.3749,-29.7546],[-68.3774,-29.7562],[-68.3766,-29.7586],[-68.372,-29.7586],[-68.3738,-29.762],[-68.3705,-29.7641],[-68.3724,-29.7662],[-68.3705,-29.7674],[-68.374,-29.7692],[-68.3718,-29.7757],[-68.3682,-29.7761],[-68.3704,-29.7814],[-68.3626,-29.783],[-68.3657,-29.7861],[-68.3632,-29.7897],[-68.3648,-29.793],[-68.3601,-29.7954],[-68.3625,-29.796],[-68.3618,-29.7985],[-68.3577,-29.7998],[-68.3591,-29.8026],[-68.355,-29.8034]]}},{"type":"Feature","properties":{"n":"Río abajo de Casposo: Río Castaño, Río San Juan","k":"main"},"geometry":{"type":"LineString","coordinates":[[-69.5158,-31.1284],[-69.5123,-31.1291],[-69.5069,-31.1351],[-69.4989,-31.1392],[-69.4756,-31.1382],[-69.4641,-31.1342],[-69.4582,-31.1351],[-69.4598,-31.1456],[-69.4571,-31.1513],[-69.4582,-31.1564],[-69.4532,-31.1622],[-69.4505,-31.1829],[-69.4438,-31.1915],[-69.4434,-31.1956],[-69.4467,-31.2054],[-69.4436,-31.2147],[-69.4443,-31.2242],[-69.4422,-31.2293],[-69.4457,-31.2343],[-69.4428,-31.2384],[-69.4455,-31.2421],[-69.4373,-31.2535],[-69.4331,-31.2548],[-69.4272,-31.2529],[-69.4209,-31.2619],[-69.4186,-31.2626],[-69.4176,-31.2664],[-69.415,-31.2676],[-69.4064,-31.2694],[-69.3935,-31.2662],[-69.3908,-31.2584],[-69.382,-31.2587],[-69.375,-31.2475],[-69.3656,-31.2436],[-69.3527,-31.2443],[-69.3465,-31.2488],[-69.3417,-31.2476],[-69.3404,-31.2494],[-69.3291,-31.2495],[-69.3246,-31.2513],[-69.3166,-31.2418],[-69.3037,-31.2408],[-69.2954,-31.2422],[-69.2908,-31.2383],[-69.2865,-31.2414],[-69.2752,-31.2394],[-69.2693,-31.2438],[-69.2537,-31.244],[-69.2505,-31.2465],[-69.2439,-31.245],[-69.2367,-31.2495],[-69.2287,-31.2516],[-69.2189,-31.2515],[-69.213,-31.2561],[-69.1963,-31.2454],[-69.191,-31.2498],[-69.1822,-31.25],[-69.1703,-31.2548],[-69.1662,-31.2532],[-69.1584,-31.2579],[-69.151,-31.2546],[-69.1343,-31.2602],[-69.115,-31.2607],[-69.1085,-31.2637],[-69.1095,-31.2773],[-69.1081,-31.2812],[-69.1008,-31.2838],[-69.0981,-31.2868],[-69.0912,-31.2864],[-69.0861,-31.2907],[-69.0791,-31.2892],[-69.072,-31.2963],[-69.0615,-31.2982],[-69.0534,-31.3038],[-69.0499,-31.3038],[-69.0457,-31.3079],[-69.0386,-31.3094],[-69.0259,-31.3206],[-69.0242,-31.3287],[-69.026,-31.3312],[-69.0186,-31.3405],[-69.0187,-31.3479],[-69.0217,-31.3525],[-69.0122,-31.3618],[-69.0062,-31.3625],[-69.0052,-31.3653],[-69.0116,-31.3886],[-69.0109,-31.3921],[-69.0063,-31.3951],[-69.0064,-31.3991],[-69.0103,-31.4016],[-69.011,-31.4079],[-69.0077,-31.4147],[-69.0035,-31.417],[-69.0039,-31.42],[-68.9989,-31.4235],[-69.0044,-31.4291],[-69.0035,-31.4396],[-69.0052,-31.4468],[-69.0009,-31.4498],[-69.0008,-31.4569],[-68.9957,-31.4647],[-68.9957,-31.4706],[-68.9988,-31.4734],[-68.9993,-31.4786],[-68.9965,-31.4884],[-68.9999,-31.4935],[-68.9929,-31.5011],[-68.9963,-31.5057],[-68.9981,-31.5134],[-68.9951,-31.5196],[-68.9858,-31.5195],[-68.9801,-31.5223],[-68.9692,-31.5189],[-68.9677,-31.5167],[-68.9645,-31.5193],[-68.954,-31.5154],[-68.9365,-31.5173],[-68.9324,-31.5156],[-68.9231,-31.5165],[-68.9183,-31.5212],[-68.8965,-31.5162],[-68.8914,-31.5182],[-68.8716,-31.5109],[-68.8647,-31.5144],[-68.8528,-31.512],[-68.8478,-31.5155],[-68.8366,-31.5121],[-68.8247,-31.5149],[-68.8218,-31.5173],[-68.8178,-31.5163],[-68.8121,-31.5198],[-68.8022,-31.5176],[-68.791,-31.5093],[-68.7707,-31.5104],[-68.7425,-31.503],[-68.7331,-31.5032],[-68.7253,-31.5002],[-68.7199,-31.5019],[-68.716,-31.4987],[-68.7111,-31.4982],[-68.705,-31.5006],[-68.6983,-31.4934],[-68.6931,-31.4911],[-68.6936,-31.489],[-68.6916,-31.4895],[-68.6892,-31.4868],[-68.6846,-31.4902],[-68.6773,-31.4895],[-68.6657,-31.4747],[-68.6626,-31.4721],[-68.6556,-31.4712]]}},{"type":"Feature","properties":{"n":"Río abajo de El Pachón: Río Santa Cruz, Río de la Pantanosa, Río de Las Lagunas, Río Blanco, Río Colorado, Río Los Patos, Río de Los Patos, Río Calingasta, Río Castaño, Río San Juan","k":"main"},"geometry":{"type":"LineString","coordinates":[[-70.3015,-31.6732],[-70.2991,-31.6585],[-70.3014,-31.6441],[-70.299,-31.642],[-70.2998,-31.6387],[-70.2969,-31.6297],[-70.3009,-31.619],[-70.2929,-31.6085],[-70.2909,-31.6087],[-70.2919,-31.6047],[-70.2897,-31.6008],[-70.2863,-31.5993],[-70.2882,-31.5972],[-70.287,-31.5947],[-70.2825,-31.5924],[-70.2857,-31.5871],[-70.284,-31.5715],[-70.2852,-31.5641],[-70.282,-31.5637],[-70.2764,-31.5514],[-70.2721,-31.5475],[-70.2692,-31.5472],[-70.2657,-31.5407],[-70.2588,-31.538],[-70.2546,-31.5392],[-70.2491,-31.5372],[-70.2416,-31.5259],[-70.2358,-31.5225],[-70.233,-31.5269],[-70.2289,-31.5284],[-70.2265,-31.5339],[-70.2169,-31.5375],[-70.2142,-31.5449],[-70.216,-31.5469],[-70.2064,-31.5514],[-70.2007,-31.5644],[-70.1935,-31.565],[-70.1877,-31.5678],[-70.1806,-31.5668],[-70.1786,-31.5723],[-70.1735,-31.5745],[-70.1772,-31.5855],[-70.175,-31.5884],[-70.1767,-31.5915],[-70.1757,-31.594],[-70.1648,-31.5998],[-70.1639,-31.6042],[-70.16,-31.6063],[-70.1571,-31.612],[-70.1513,-31.6155],[-70.1453,-31.6234],[-70.1321,-31.6289],[-70.1323,-31.6319],[-70.1265,-31.6339],[-70.1173,-31.6448],[-70.1118,-31.6471],[-70.1105,-31.6506],[-70.0982,-31.6549],[-70.097,-31.6574],[-70.0853,-31.6605],[-70.085,-31.664],[-70.0818,-31.666],[-70.0791,-31.6731],[-70.08,-31.6774],[-70.0762,-31.6814],[-70.0741,-31.6901],[-70.0749,-31.6941],[-70.0682,-31.6992],[-70.0665,-31.7069],[-70.0492,-31.7168],[-70.0504,-31.7208],[-70.0486,-31.7267],[-70.0502,-31.7296],[-70.0462,-31.7349],[-70.0472,-31.7416],[-70.044,-31.7444],[-70.0464,-31.7526],[-70.0418,-31.7558],[-70.0408,-31.7599],[-70.0382,-31.7603],[-70.038,-31.7654],[-70.035,-31.768],[-70.0368,-31.7722],[-70.0368,-31.7867],[-70.0322,-31.7884],[-70.0319,-31.7913],[-70.0276,-31.7923],[-70.0211,-31.7991],[-70.0203,-31.8027],[-70.0139,-31.8051],[-70.0123,-31.8096],[-70.0096,-31.8104],[-70.0119,-31.8178],[-70.0062,-31.8208],[-70.0017,-31.8287],[-69.9954,-31.8316],[-69.9971,-31.8351],[-69.9959,-31.8394],[-69.9925,-31.8408],[-69.9935,-31.8445],[-69.9825,-31.8535],[-69.979,-31.8532],[-69.9775,-31.8552],[-69.9755,-31.8538],[-69.9684,-31.8584],[-69.9667,-31.861],[-69.9676,-31.8645],[-69.9635,-31.8669],[-69.9624,-31.8724],[-69.9519,-31.8749],[-69.951,-31.8832],[-69.9444,-31.8873],[-69.9421,-31.8931],[-69.9395,-31.8946],[-69.9398,-31.8983],[-69.9335,-31.9052],[-69.9137,-31.9092],[-69.9033,-31.9072],[-69.896,-31.9092],[-69.8905,-31.9068],[-69.884,-31.907],[-69.882,-31.9044],[-69.8772,-31.9062],[-69.8698,-31.9031],[-69.8647,-31.9036],[-69.8581,-31.9009],[-69.8469,-31.8997],[-69.8381,-31.8939],[-69.8249,-31.8941],[-69.8217,-31.8975],[-69.8152,-31.8986],[-69.807,-31.8951],[-69.7984,-31.8987],[-69.7924,-31.898],[-69.7835,-31.8937],[-69.7712,-31.8967],[-69.7467,-31.892],[-69.7162,-31.8994],[-69.7118,-31.8991],[-69.7066,-31.8941],[-69.6949,-31.8949],[-69.6913,-31.8898],[-69.6883,-31.8757],[-69.6838,-31.8705],[-69.6755,-31.8657],[-69.6692,-31.8647],[-69.6669,-31.8623],[-69.6658,-31.856],[-69.6594,-31.8548],[-69.6586,-31.85],[-69.6555,-31.8499],[-69.65,-31.8458],[-69.6447,-31.8453],[-69.6396,-31.8385],[-69.6206,-31.8304],[-69.6172,-31.8256],[-69.6162,-31.8187],[-69.5947,-31.8038],[-69.5912,-31.8039],[-69.5859,-31.796],[-69.5773,-31.7902],[-69.5693,-31.781],[-69.57,-31.7747],[-69.5633,-31.7671],[-69.5638,-31.7644],[-69.5558,-31.76],[-69.554,-31.7566],[-69.5507,-31.7562],[-69.5454,-31.7487],[-69.5435,-31.7421],[-69.5468,-31.7368],[-69.5443,-31.7243],[-69.5409,-31.7185],[-69.5354,-31.7145],[-69.5356,-31.709],[-69.5235,-31.7022],[-69.5206,-31.6927],[-69.5106,-31.6796],[-69.4741,-31.5956],[-69.469,-31.5821],[-69.4688,-31.5733],[-69.4522,-31.5605],[-69.4518,-31.5512],[-69.4481,-31.5439],[-69.4495,-31.5394],[-69.4455,-31.529],[-69.4358,-31.5219],[-69.4334,-31.509],[-69.4264,-31.5037],[-69.4148,-31.483],[-69.4114,-31.4804],[-69.4095,-31.4746],[-69.4081,-31.4538],[-69.4051,-31.4501],[-69.4058,-31.4399],[-69.4094,-31.4344],[-69.4107,-31.4279],[-69.417,-31.4216],[-69.4227,-31.4091],[-69.4224,-31.402],[-69.4202,-31.3986],[-69.4276,-31.3917],[-69.433,-31.3819],[-69.4301,-31.3776],[-69.4306,-31.3719],[-69.4277,-31.3657],[-69.4294,-31.3566],[-69.4241,-31.3518],[-69.4242,-31.3486],[-69.4194,-31.3445],[-69.4129,-31.3332],[-69.4141,-31.3257],[-69.4173,-31.3244],[-69.417,-31.3223],[-69.4195,-31.3216],[-69.421,-31.317],[-69.4244,-31.3141],[-69.4247,-31.3087],[-69.4217,-31.3045],[-69.4238,-31.3021],[-69.4214,-31.298],[-69.4218,-31.2911],[-69.4174,-31.2899],[-69.4162,-31.2865],[-69.4102,-31.2841],[-69.4085,-31.2772],[-69.4041,-31.2737],[-69.4047,-31.2715],[-69.3935,-31.2662],[-69.3908,-31.2584],[-69.382,-31.2587],[-69.375,-31.2475],[-69.3656,-31.2436],[-69.3527,-31.2443],[-69.3465,-31.2488],[-69.3417,-31.2476],[-69.3404,-31.2494],[-69.3291,-31.2495],[-69.3246,-31.2513],[-69.3166,-31.2418],[-69.3037,-31.2408],[-69.2954,-31.2422],[-69.2908,-31.2383],[-69.2865,-31.2414],[-69.2752,-31.2394],[-69.2693,-31.2438],[-69.2537,-31.244],[-69.2505,-31.2465],[-69.2439,-31.245],[-69.2367,-31.2495],[-69.2287,-31.2516],[-69.2189,-31.2515],[-69.213,-31.2561],[-69.1963,-31.2454],[-69.191,-31.2498],[-69.1822,-31.25],[-69.1703,-31.2548],[-69.1662,-31.2532],[-69.1584,-31.2579],[-69.151,-31.2546],[-69.1343,-31.2602],[-69.115,-31.2607],[-69.1085,-31.2637],[-69.1095,-31.2773],[-69.1081,-31.2812],[-69.1008,-31.2838],[-69.0981,-31.2868],[-69.0912,-31.2864],[-69.0861,-31.2907],[-69.0791,-31.2892],[-69.072,-31.2963],[-69.0615,-31.2982],[-69.0534,-31.3038],[-69.0499,-31.3038],[-69.0457,-31.3079],[-69.0386,-31.3094],[-69.0259,-31.3206],[-69.0242,-31.3287],[-69.026,-31.3312],[-69.0186,-31.3405],[-69.0187,-31.3479],[-69.0217,-31.3525],[-69.0122,-31.3618],[-69.0062,-31.3625],[-69.0052,-31.3653],[-69.0116,-31.3886],[-69.0109,-31.3921],[-69.0063,-31.3951],[-69.0064,-31.3991],[-69.0103,-31.4016],[-69.011,-31.4079],[-69.0077,-31.4147],[-69.0035,-31.417],[-69.0039,-31.42],[-68.9989,-31.4235],[-69.0044,-31.4291],[-69.0035,-31.4396],[-69.0052,-31.4468],[-69.0009,-31.4498],[-69.0008,-31.4569],[-68.9957,-31.4647],[-68.9957,-31.4706],[-68.9988,-31.4734],[-68.9993,-31.4786],[-68.9965,-31.4884],[-68.9999,-31.4935],[-68.9929,-31.5011],[-68.9963,-31.5057],[-68.9981,-31.5134],[-68.9951,-31.5196],[-68.9858,-31.5195],[-68.9801,-31.5223],[-68.9692,-31.5189],[-68.9677,-31.5167],[-68.9645,-31.5193],[-68.954,-31.5154],[-68.9365,-31.5173],[-68.9324,-31.5156],[-68.9231,-31.5165],[-68.9183,-31.5212],[-68.8965,-31.5162],[-68.8914,-31.5182],[-68.8716,-31.5109],[-68.8647,-31.5144],[-68.8528,-31.512],[-68.8478,-31.5155],[-68.8366,-31.5121],[-68.8247,-31.5149],[-68.8218,-31.5173],[-68.8178,-31.5163],[-68.8121,-31.5198],[-68.8022,-31.5176],[-68.791,-31.5093],[-68.7707,-31.5104],[-68.7425,-31.503],[-68.7331,-31.5032],[-68.7253,-31.5002],[-68.7199,-31.5019],[-68.716,-31.4987],[-68.7111,-31.4982],[-68.705,-31.5006],[-68.6983,-31.4934],[-68.6931,-31.4911],[-68.6936,-31.489],[-68.6916,-31.4895],[-68.6892,-31.4868],[-68.6846,-31.4902],[-68.6773,-31.4895],[-68.6657,-31.4747],[-68.6626,-31.4721],[-68.6556,-31.4712]]}},{"type":"Feature","properties":{"n":"Río abajo de Vicuña (Filo del Sol): Río de los Mogotes, Río Blanco, Río de La Peña Negra, Río Salado, Río del Carnerito Arriba, Río Jáchal","k":"main"},"geometry":{"type":"LineString","coordinates":[[-69.6339,-28.4859],[-69.6315,-28.4887],[-69.6285,-28.5112],[-69.6245,-28.5243],[-69.6214,-28.5278],[-69.6149,-28.53],[-69.6134,-28.5339],[-69.6144,-28.5383],[-69.6076,-28.5477],[-69.6024,-28.5514],[-69.6015,-28.5579],[-69.5975,-28.5628],[-69.5975,-28.5709],[-69.6062,-28.5819],[-69.6115,-28.5922],[-69.6122,-28.5977],[-69.618,-28.605],[-69.6169,-28.6133],[-69.6105,-28.619],[-69.6088,-28.6247],[-69.6023,-28.633],[-69.593,-28.6391],[-69.5906,-28.6435],[-69.5853,-28.6456],[-69.5813,-28.652],[-69.5692,-28.663],[-69.5592,-28.6677],[-69.5481,-28.6679],[-69.5357,-28.6727],[-69.5243,-28.6687],[-69.5183,-28.6704],[-69.514,-28.6679],[-69.5116,-28.6704],[-69.5009,-28.6703],[-69.4932,-28.6755],[-69.4887,-28.6761],[-69.4829,-28.673],[-69.4787,-28.6671],[-69.468,-28.6711],[-69.4614,-28.6705],[-69.4566,-28.6684],[-69.4481,-28.6602],[-69.4411,-28.66],[-69.4386,-28.6529],[-69.4379,-28.641],[-69.4349,-28.635],[-69.4237,-28.6315],[-69.4194,-28.6267],[-69.4159,-28.6144],[-69.409,-28.6082],[-69.4083,-28.5925],[-69.4008,-28.5747],[-69.3938,-28.5638],[-69.391,-28.5464],[-69.3822,-28.5376],[-69.3671,-28.5133],[-69.354,-28.5061],[-69.3485,-28.4997],[-69.3448,-28.4866],[-69.3386,-28.482],[-69.3352,-28.4744],[-69.3326,-28.4734],[-69.3273,-28.4568],[-69.3251,-28.4564],[-69.3041,-28.4263],[-69.2874,-28.4133],[-69.2809,-28.404],[-69.2695,-28.3934],[-69.2703,-28.3902],[-69.2675,-28.3857],[-69.2677,-28.3822],[-69.2464,-28.3632],[-69.2397,-28.355],[-69.2392,-28.349],[-69.2212,-28.3385],[-69.217,-28.3389],[-69.1993,-28.3477],[-69.1943,-28.3471],[-69.1871,-28.3551],[-69.1809,-28.3541],[-69.1779,-28.3577],[-69.1735,-28.3577],[-69.1697,-28.3523],[-69.1675,-28.3524],[-69.1653,-28.3581],[-69.1595,-28.3624],[-69.1576,-28.3752],[-69.1587,-28.3784],[-69.1564,-28.3825],[-69.1629,-28.4017],[-69.162,-28.4034],[-69.152,-28.4052],[-69.1495,-28.4027],[-69.1405,-28.4083],[-69.1416,-28.4119],[-69.1382,-28.4138],[-69.1377,-28.4176],[-69.1313,-28.4223],[-69.14,-28.4299],[-69.1402,-28.4319],[-69.1352,-28.44],[-69.1403,-28.4441],[-69.1397,-28.4461],[-69.1378,-28.4479],[-69.1346,-28.4473],[-69.1329,-28.4538],[-69.1351,-28.4572],[-69.1345,-28.46],[-69.1391,-28.4644],[-69.1428,-28.4764],[-69.1522,-28.4847],[-69.1541,-28.492],[-69.1533,-28.4961],[-69.1561,-28.5045],[-69.1499,-28.5316],[-69.1541,-28.55],[-69.1619,-28.5611],[-69.168,-28.5641],[-69.1708,-28.5701],[-69.1705,-28.576],[-69.1731,-28.5801],[-69.1813,-28.5828],[-69.1843,-28.5872],[-69.1886,-28.5872],[-69.1934,-28.5839],[-69.1987,-28.5846],[-69.199,-28.5945],[-69.2141,-28.6028],[-69.2166,-28.606],[-69.2141,-28.6325],[-69.218,-28.6478],[-69.2163,-28.6483],[-69.2162,-28.6531],[-69.2128,-28.6565],[-69.2137,-28.6588],[-69.211,-28.6591],[-69.213,-28.6646],[-69.2096,-28.6648],[-69.2111,-28.6671],[-69.2084,-28.6699],[-69.2096,-28.6771],[-69.2062,-28.6789],[-69.2092,-28.6793],[-69.2097,-28.6824],[-69.2038,-28.6881],[-69.203,-28.6917],[-69.2055,-28.6945],[-69.1996,-28.7075],[-69.1944,-28.7117],[-69.1906,-28.7188],[-69.1816,-28.7216],[-69.1808,-28.7278],[-69.1707,-28.7358],[-69.166,-28.7441],[-69.1682,-28.7518],[-69.162,-28.7592],[-69.1582,-28.774],[-69.1538,-28.7817],[-69.155,-28.7947],[-69.1621,-28.8101],[-69.166,-28.8145],[-69.1708,-28.8314],[-69.1698,-28.8408],[-69.1617,-28.8553],[-69.1579,-28.8564],[-69.1575,-28.8589],[-69.1494,-28.8671],[-69.1473,-28.8727],[-69.1488,-28.88],[-69.1518,-28.8831],[-69.1514,-28.8865],[-69.1562,-28.892],[-69.1574,-28.905],[-69.1643,-28.9166],[-69.1673,-28.9302],[-69.1641,-28.9329],[-69.1697,-28.9402],[-69.1787,-28.9424],[-69.1823,-28.946],[-69.1898,-28.9468],[-69.195,-28.9519],[-69.196,-28.9679],[-69.2007,-28.9705],[-69.2103,-28.9816],[-69.2094,-28.9878],[-69.2037,-28.9983],[-69.2046,-29.001],[-69.1939,-29.0065],[-69.1949,-29.009],[-69.1927,-29.0134],[-69.1877,-29.0146],[-69.1831,-29.011],[-69.1753,-29.0153],[-69.1732,-29.0211],[-69.1751,-29.0222],[-69.1751,-29.0257],[-69.1688,-29.0296],[-69.169,-29.0312],[-69.1649,-29.0322],[-69.1648,-29.0354],[-69.1607,-29.04],[-69.1576,-29.0413],[-69.154,-29.0402],[-69.1518,-29.0421],[-69.148,-29.04],[-69.1407,-29.0404],[-69.1358,-29.0441],[-69.131,-29.0431],[-69.1273,-29.0452],[-69.1312,-29.0489],[-69.1363,-29.0505],[-69.1367,-29.0529],[-69.1321,-29.0578],[-69.1232,-29.0593],[-69.1185,-29.0631],[-69.1187,-29.0684],[-69.1118,-29.0706],[-69.1066,-29.0791],[-69.1037,-29.0857],[-69.1057,-29.088],[-69.0969,-29.0931],[-69.0968,-29.0974],[-69.0919,-29.0981],[-69.087,-29.1059],[-69.0817,-29.1079],[-69.0817,-29.1124],[-69.0774,-29.1176],[-69.0803,-29.1434],[-69.086,-29.1491],[-69.0799,-29.1667],[-69.0851,-29.1809],[-69.0798,-29.1884],[-69.0818,-29.1898],[-69.0783,-29.2015],[-69.0804,-29.2075],[-69.0792,-29.2168],[-69.085,-29.2322],[-69.083,-29.2349],[-69.0855,-29.2409],[-69.0952,-29.2474],[-69.092,-29.2657],[-69.088,-29.2704],[-69.0878,-29.2742],[-69.0903,-29.2764],[-69.0899,-29.2874],[-69.0958,-29.2934],[-69.0939,-29.2962],[-69.0964,-29.31],[-69.0936,-29.3156],[-69.1108,-29.3295],[-69.1153,-29.342],[-69.1124,-29.3489],[-69.1138,-29.3547],[-69.118,-29.356],[-69.125,-29.363],[-69.1199,-29.3756],[-69.1262,-29.3879],[-69.1233,-29.3955],[-69.1247,-29.3975],[-69.1237,-29.4014],[-69.1291,-29.412],[-69.1317,-29.4135],[-69.132,-29.4197],[-69.137,-29.4239],[-69.1379,-29.4305],[-69.1434,-29.4362],[-69.1483,-29.4351],[-69.1558,-29.4374],[-69.1629,-29.4451],[-69.1626,-29.4528],[-69.1659,-29.4596],[-69.162,-29.4662],[-69.166,-29.4738],[-69.1607,-29.4811],[-69.1653,-29.4838],[-69.1683,-29.4975],[-69.173,-29.5042],[-69.1702,-29.5122],[-69.1775,-29.5187],[-69.1792,-29.5231],[-69.1791,-29.5388],[-69.1848,-29.5427],[-69.1893,-29.5423],[-69.1908,-29.5439],[-69.1892,-29.5515],[-69.1935,-29.5628],[-69.1853,-29.5706],[-69.1846,-29.5786],[-69.1876,-29.5818],[-69.1853,-29.5935],[-69.1811,-29.5993],[-69.1712,-29.5998],[-69.1695,-29.6029],[-69.168,-29.6134],[-69.171,-29.6312],[-69.1683,-29.6365],[-69.1722,-29.6441],[-69.1729,-29.6561],[-69.165,-29.6647],[-69.1574,-29.6855],[-69.1539,-29.6885],[-69.1558,-29.6962],[-69.1539,-29.6999],[-69.1557,-29.7086],[-69.1583,-29.711],[-69.1545,-29.7168],[-69.1556,-29.7245],[-69.1526,-29.7285],[-69.1536,-29.7319],[-69.1522,-29.7346],[-69.1537,-29.7417],[-69.1576,-29.7447],[-69.1588,-29.7483],[-69.1587,-29.7563],[-69.1545,-29.7647],[-69.1542,-29.7723],[-69.1463,-29.7818],[-69.1445,-29.7879],[-69.1478,-29.7929],[-69.1543,-29.7933],[-69.16,-29.8052],[-69.1558,-29.8082],[-69.1567,-29.8103],[-69.152,-29.8193],[-69.1511,-29.8401],[-69.1457,-29.8484],[-69.1441,-29.853],[-69.1449,-29.8619],[-69.1406,-29.866],[-69.141,-29.869],[-69.1381,-29.8727],[-69.1388,-29.8753],[-69.1346,-29.8847],[-69.1385,-29.8895],[-69.1397,-29.8946],[-69.1369,-29.916],[-69.163,-29.9414],[-69.1692,-29.9511],[-69.1694,-29.9565],[-69.172,-29.9596],[-69.1715,-29.9655],[-69.1681,-29.9668],[-69.1659,-29.9708],[-69.1656,-29.9823],[-69.1633,-29.9829],[-69.1632,-29.9886],[-69.159,-29.9957],[-69.1585,-30.0042],[-69.1618,-30.0117],[-69.1617,-30.0201],[-69.1659,-30.0235],[-69.1667,-30.037],[-69.1715,-30.0409],[-69.1709,-30.047],[-69.1675,-30.0538],[-69.1679,-30.0575],[-69.1622,-30.0642],[-69.1617,-30.0737],[-69.1526,-30.0863],[-69.1502,-30.0966],[-69.1454,-30.1007],[-69.1417,-30.1104],[-69.1277,-30.1264],[-69.1278,-30.1307],[-69.1226,-30.1352],[-69.1218,-30.1411],[-69.1139,-30.1463],[-69.1152,-30.1549],[-69.1135,-30.1576],[-69.1055,-30.1612],[-69.1046,-30.1639],[-69.0618,-30.1963],[-69.0596,-30.2032],[-69.051,-30.2055],[-69.0427,-30.204],[-69.034,-30.2147],[-69.0301,-30.2129],[-69.0196,-30.2136],[-69.019,-30.2107],[-69.0166,-30.212],[-69.0114,-30.2098],[-68.9984,-30.2134],[-68.9928,-30.217],[-68.9885,-30.215],[-68.9852,-30.2174],[-68.9829,-30.2161],[-68.9764,-30.2183],[-68.9716,-30.2144],[-68.9674,-30.2142],[-68.9629,-30.2159],[-68.9571,-30.2229],[-68.9491,-30.2213],[-68.9454,-30.2245],[-68.9376,-30.225],[-68.927,-30.2184],[-68.9226,-30.2189],[-68.9157,-30.2131],[-68.9067,-30.2159],[-68.8992,-30.2152],[-68.8984,-30.2103],[-68.8949,-30.2082],[-68.8953,-30.2068],[-68.8861,-30.2018],[-68.8815,-30.2036],[-68.8784,-30.2014],[-68.8742,-30.2065],[-68.8672,-30.2006],[-68.8378,-30.1958],[-68.823,-30.1959],[-68.812,-30.1972],[-68.7977,-30.2024],[-68.7848,-30.2029],[-68.7699,-30.2109],[-68.7656,-30.2115],[-68.7611,-30.2197],[-68.7571,-30.2208]]}}]}};
+EST.forEach((e,i)=>e.fase=i*1.7);
+const estById=id=>EST.find(e=>e.id===id);
+const PARAMS={
+ ph:{nombre:"pH",unidad:"",dec:1,que:"Dice si el agua está ácida o alcalina. Lo normal está entre 6,5 y 8,5."},
+ ce:{nombre:"Sales disueltas",unidad:"µS/cm",dec:0,que:"Cuántas sales y minerales lleva el agua. Si sube de golpe, algo entró al río."},
+ q:{nombre:"Caudal",unidad:"m³/s",dec:1,que:"Cuánta agua pasa por el río cada segundo."},
+};
+const ORDEN={verde:0,amarillo:1,rojo:2};
+function estadoParam(p,v,e){
+  if(p==="ph"){if(v>=6.5&&v<=8.5)return"verde";if(v>=6&&v<=9)return"amarillo";return"rojo";}
+  if(p==="ce"){const r=v/e.base.ce;if(r<1.3)return"verde";if(r<1.6)return"amarillo";return"rojo";}
+  if(p==="q"){return v/e.base.q<0.5?"amarillo":"verde";}
+}
+function estadoEst(e){const r=S.lect[e.id];if(!r)return"gris";return["ph","ce","q"].map(p=>estadoParam(p,r[p],e)).reduce((a,b)=>ORDEN[b]>ORDEN[a]?b:a,"verde");}
+const TXT={verde:"Normal",amarillo:"Atención",rojo:"Alerta",gris:"Sin datos"};
+const FRASE={verde:"El agua está dentro de lo normal.",amarillo:"Hay un valor que conviene mirar de cerca.",rojo:"Hay un valor fuera de lo normal. Ya avisamos a la empresa y a la autoridad ambiental.",gris:"Esperando datos…"};
+const COLOR={verde:"var(--ok)",amarillo:"var(--warn)",rojo:"var(--bad)",gris:"var(--muted)"};
+
+/* ---------- Estado ---------- */
+const S={lect:{},hist:{},pend:[],lotes:[],byId:new Map(),anom:null,n:0,tickets:[],tn:0,rol:"vecino",sel:"taguas-abajo",picoId:null,hechos:new Set(),ultimoVecino:null};
+EST.forEach(e=>S.hist[e.id]=[]);
+
+/* ---------- Simulador de sensores ---------- */
+function factorAnom(a,t){
+  if(t<a.ini)return 1;
+  if(t<a.ini+6000)return 1+1.2*(t-a.ini)/6000;
+  if(t<a.fin)return 2.2;
+  return Math.max(1,2.2-1.2*(t-a.fin)/12000);
+}
+function tick(){
+  const now=Date.now();
+  if(S.anom&&now>S.anom.fin+50000)S.anom=null;
+  for(const e of EST){
+    const s=Math.sin(now/45000+e.fase);
+    let ph=e.base.ph+0.08*s+rnd(0.04), ce=e.base.ce*(1+0.04*s+rnd(0.015)), q=e.base.q*(1+0.05*s+rnd(0.02));
+    const vj=VIAJE[e.id];if(S.anom&&vj){const f=factorAnom(S.anom,now-vj[0]);const k=1+(f-1)/1.2*(vj[1]-1);ce*=k;ph-=(k-1)*1.25;}
+    const r={id:"L-"+String(++S.n).padStart(6,"0"),est:e.id,t:new Date(now).toISOString(),ph:+ph.toFixed(2),ce:Math.round(ce),q:+q.toFixed(1)};
+    S.lect[e.id]=r; const h=S.hist[e.id]; h.push(r); if(h.length>90)h.shift();
+    S.pend.push(r); S.byId.set(r.id,{r}); if(S.api)S.apiPend.push(r);
+    if(e.id==="taguas-abajo"&&S.anom){const p=S.picoId&&S.byId.get(S.picoId);if(!p||r.ce>p.r.ce)S.picoId=r.id;}
+  }
+  revisarAlertas();
+  renderVivo();
+}
+const canon=r=>JSON.stringify({id:r.id,est:r.est,t:r.t,ph:r.ph,ce:r.ce,q:r.q});
+
+/* ---------- Sello digital: árbol de Merkle + cadena de lotes ---------- */
+async function merkle(leaves){
+  const levels=[leaves];let cur=leaves;
+  while(cur.length>1){const pares=[];for(let i=0;i<cur.length;i+=2)pares.push(sha(cur[i]+(cur[i+1]??cur[i])));cur=await Promise.all(pares);levels.push(cur);}
+  return levels;
+}
+function prueba(levels,idx){const p=[];for(let l=0;l<levels.length-1;l++){const lv=levels[l],der=idx%2===1;p.push({sib:der?lv[idx-1]:(lv[idx+1]??lv[idx]),lado:der?"izq":"der"});idx=Math.floor(idx/2);}return p;}
+async function recorrer(h,p){for(const s of p)h=s.lado==="izq"?await sha(s.sib+h):await sha(h+s.sib);return h;}
+async function cerrarLote(){
+  if(!S.pend.length)return;
+  const rs=S.pend.splice(0);
+  const leaves=await Promise.all(rs.map(r=>sha(canon(r))));
+  const levels=await merkle(leaves), root=levels[levels.length-1][0];
+  const prev=S.lotes.length?S.lotes[S.lotes.length-1].sello:"0".repeat(64);
+  const lote={n:S.lotes.length+1,root,prev,sello:await sha(prev+root),t:Date.now(),cant:rs.length,levels,anclado:false};
+  S.lotes.push(lote);
+  rs.forEach((r,i)=>{const o=S.byId.get(r.id);if(o){o.lote=lote.n;o.idx=i;}});
+  setTimeout(()=>{lote.anclado=true;if(ruta()==="verificar")renderLotes();},8000);
+  if(ruta()==="verificar"){renderLotes();llenarSelectVerif(true);}
+}
+
+/* ---------- Reclamos ---------- */
+const PLAZO=5*24*3600*1000;
+function nuevoTicket(d){
+  const tk={id:"AQ-"+String(++S.tn).padStart(4,"0"),creado:Date.now(),estado:"Recibido",responsable:"Empresa operadora (simulación)",control:"Autoridad ambiental provincial (demo)",vinculos:[],eventos:[],...d};
+  tk.vence=tk.creado+PLAZO;
+  S.tickets.unshift(tk);
+  return tk;
+}
+function evento(tk,quien,texto){
+  const ev={t:Date.now(),quien,texto,hash:null};tk.eventos.push(ev);
+  const prev=tk.eventos.length>1?(tk.eventos[tk.eventos.length-2].hash||""):"0";
+  sha(prev+JSON.stringify({t:ev.t,quien,texto})).then(h=>{ev.hash=h;if(ruta()==="reclamos")renderReclamos();});
+}
+function vincular(a,b){if(!a.vinculos.includes(b.id))a.vinculos.push(b.id);if(!b.vinculos.includes(a.id))b.vinculos.push(a.id);}
+const abierto=tk=>tk.estado!=="Cerrado";
+function revisarAlertas(){
+  for(const e of EST){
+    if(estadoEst(e)!=="rojo")continue;
+    if(S.tickets.some(t=>t.tipo==="alerta"&&t.est===e.id&&abierto(t)))continue;
+    const r=S.lect[e.id];
+    const malos=["ph","ce","q"].filter(p=>estadoParam(p,r[p],e)==="rojo").map(p=>PARAMS[p].nombre.toLowerCase());
+    const tk=nuevoTicket({tipo:"alerta",est:e.id,titulo:`Alerta automática: ${malos.join(" y ")} fuera de lo normal`,desc:`El sensor de ${e.nombre} marcó ${fmt(r.ce)} µS/cm de sales (lo habitual es cerca de ${fmt(e.base.ce)}) y pH ${fmt(r.ph,1)}.`,autor:"Sensor automático",lectura:r.id});
+    evento(tk,"Sistema AquaAbierta","Se detectó un valor fuera de lo normal. Se avisó a la empresa y a la autoridad ambiental.");
+    for(const v of S.tickets)if(v.tipo==="vecino"&&abierto(v)&&estById(v.est).cuenca===e.cuenca&&Date.now()-v.creado<864e5){vincular(tk,v);evento(v,"Sistema AquaAbierta",`Tu aviso coincide con una alerta del sensor en ${e.nombre} (reclamo ${tk.id}).`);}
+    toast(`Alerta en ${e.nombre}. Se abrió el reclamo ${tk.id}.`);
+  }
+}
+async function crearAvisoVecino({est,chips,desc,foto,ph,ce,nombre}){
+  const e=estById(est),sensor=S.lect[est];
+  let medicion=null;
+  if(ph!=null||ce!=null){
+    const difPh=ph!=null?Math.abs(ph-sensor.ph):0, difCe=ce!=null?Math.abs(ce-sensor.ce)/sensor.ce:0;
+    medicion={ph,ce,sensorPh:sensor.ph,sensorCe:sensor.ce,discrepa:difPh>0.5||difCe>0.25};
+  }
+  const tk=nuevoTicket({tipo:"vecino",est,titulo:chips.length?chips.join(", "):"Aviso de la comunidad",desc,foto,autor:nombre||"Vecino/a (anónimo)",medicion});
+  evento(tk,tk.autor,"Envió el aviso.");
+  reclamoAPI(tk,chips,nombre&&/WhatsApp/.test(nombre)?"whatsapp":"web");
+  const alerta=S.tickets.find(t=>t.tipo==="alerta"&&abierto(t)&&estById(t.est).cuenca===e.cuenca);
+  if(alerta){vincular(tk,alerta);evento(tk,"Sistema AquaAbierta",`Tu aviso coincide con una alerta del sensor (reclamo ${alerta.id}). Quedan unidos.`);}
+  if(medicion?.discrepa)evento(tk,"Sistema AquaAbierta","La medición comunitaria no coincide con el sensor. Se marcó para revisión de la autoridad.");
+  S.ultimoVecino=tk.id;
+  return {tk,alerta};
+}
+
+/* ---------- Mapa real (Leaflet + límites oficiales + OpenStreetMap si está disponible) ---------- */
+const MK={};let MAPA=null;
+function construirMapa(){
+  const el=$("#mapa");
+  if(!window.L){el.innerHTML="<p class='muted' style='padding:16px'>No se pudo cargar el mapa. Revisá la conexión.</p>";return;}
+  const css=getComputedStyle(document.documentElement),tok=n=>css.getPropertyValue(n).trim();
+  MAPA=L.map(el,{zoomControl:true,attributionControl:true,scrollWheelZoom:false,zoomSnap:0.25}).fitBounds([[-28.4,-70.45],[-31.97,-68.3]],{padding:[6,6]});
+  MAPA.attributionControl.addAttribution('Ríos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · Límites: geoBoundaries');
+  const DS={color:tok("--muted"),weight:1.3,opacity:.75,fill:true,fillOpacity:0},DSel={color:tok("--ink"),weight:3,opacity:1,dashArray:"7 5",fill:true,fillOpacity:0};
+  let depSel=null;
+  const deps=L.geoJSON(GEO.dep,{style:DS,onEachFeature:(f,l)=>{l.bindTooltip("Departamento "+f.properties.n,{sticky:true});
+    l.on("click",ev=>{L.DomEvent.stopPropagation(ev);if(depSel)depSel.setStyle(DS);depSel=depSel===l?null:l;if(depSel){l.setStyle(DSel);l.bringToFront();}});}}).addTo(MAPA);
+  MAPA.on("click",()=>{if(depSel){depSel.setStyle(DS);depSel=null;}});
+  const RS={main:{color:tok("--azul"),weight:4,opacity:.95},minor:{color:tok("--celeste"),weight:1.2,opacity:.6}};
+  L.geoJSON(GEO.rios,{style:f=>RS[f.properties.k]||RS.minor,onEachFeature:(f,l)=>{if(f.properties.n)l.bindTooltip(f.properties.n,{sticky:true});}}).addTo(MAPA);
+  [["Río Jáchal",-30.3,-68.95],["Río San Juan",-31.36,-68.95],["Río Bermejo",-29.95,-68.25],["Río de los Patos",-31.9,-69.62]].forEach(([n,la,lo])=>L.marker([la,lo],{icon:L.divIcon({className:"",html:`<span style="font:italic 800 13px var(--font);color:var(--azul);white-space:nowrap;text-shadow:0 0 3px var(--surface),0 0 3px var(--surface)">${n}</span>`,iconSize:[0,0]}),interactive:false}).addTo(MAPA));
+  MINAS.filter(m=>m.lat).forEach(m=>{
+    L.marker([m.lat,m.lon],{icon:L.divIcon({className:"",html:`<div class="mina-ic ${m.tipo}"></div>`,iconSize:[18,18]}),keyboard:true,title:m.n})
+     .bindTooltip(m.n,{direction:m.dir||"left",offset:[m.dir==="right"?10:-10,0],permanent:true})
+     .bindPopup(`<b>Mina ${esc(m.n)}</b><br>${esc(m.min)} · ${esc(m.emp)}<br>Departamento ${esc(m.dep)}<br>${esc(m.est)}${m.cuenca?"<br>"+esc(m.cuenca):""}`).addTo(MAPA);
+  });
+  EST.forEach(e=>{
+    const c=L.circleMarker([e.lat,e.lon],{radius:8,weight:3,color:tok("--surface"),fillOpacity:1,fillColor:tok("--muted")}).addTo(MAPA);
+    c.bindTooltip(e.nombre,{direction:"top",offset:[0,-8]});
+    c.on("click",()=>{S.sel=e.id;renderVivo();});
+    MK[e.id]=c;
+  });
+}
+function pintarMapa(){
+  if(!MAPA)return;
+  const css=getComputedStyle(document.documentElement),tok=n=>css.getPropertyValue(n).trim();
+  const col={verde:tok("--ok"),amarillo:tok("--warn"),rojo:tok("--bad"),gris:tok("--muted")};
+  EST.forEach(e=>{const s=estadoEst(e),m=MK[e.id];if(!m)return;
+    m.setStyle({fillColor:col[s],color:s==="rojo"?col.rojo:(S.sel===e.id?tok("--ink"):tok("--surface")),weight:S.sel===e.id?4:3});
+    const p=m.getElement&&m.getElement();if(p)p.classList.toggle("est-rojo",s==="rojo");});
+}
+const PROD=new Set(["Veladero","Gualcamayo","Casposo"]);
+function tarjetaMina(m){const pr=PROD.has(m.n);return `<div class="mina"><h3>${esc(m.n)}</h3><span class="pill ${pr?"s-verde":"s-amarillo"}" style="font-size:.8rem;width:fit-content">${pr?"En producción":"En proyecto"}</span>${m.est!=="En producción"?`<p class="small"><b>${esc(m.est)}</b></p>`:""}<p class="small">${esc(m.min)} · Departamento ${esc(m.dep)}</p><p class="small muted">${esc(m.emp)}</p><p class="small">${m.lat?"<b>Río abajo llega al "+esc(m.llega)+".</b> ":""}${esc(m.cuenca||"")}</p></div>`;}
+function renderMinas(){
+  const pr=MINAS.filter(m=>PROD.has(m.n)),py=MINAS.filter(m=>!PROD.has(m.n));
+  $("#minas").innerHTML=`<h3 style="grid-column:1/-1;margin-top:4px">En producción (${pr.length})</h3>${pr.map(tarjetaMina).join("")}<h3 style="grid-column:1/-1;margin-top:12px">En proyecto (${py.length})</h3><p class="small muted" style="grid-column:1/-1;margin-top:-6px">Todavía no producen: están en exploración, en preparación para construir o frenadas.</p>${py.map(tarjetaMina).join("")}`;
+}
+
+/* ---------- Render en vivo ---------- */
+function spark(e){
+  const h=S.hist[e.id];if(h.length<2)return"";
+  const vals=h.map(r=>r.ce),max=Math.max(e.base.ce*1.7,...vals),min=Math.min(e.base.ce*0.8,...vals);
+  const w=300,hh=70,X=i=>i/(89)*w,Y=v=>hh-6-(v-min)/(max-min)*(hh-12);
+  const pts=vals.map((v,i)=>`${X(i+90-vals.length).toFixed(1)},${Y(v).toFixed(1)}`);
+  const last=pts[pts.length-1].split(",");
+  const est=estadoParam("ce",vals[vals.length-1],e);
+  return `<svg class="spark" viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none" aria-hidden="true">
+   <line x1="0" x2="${w}" y1="${Y(e.base.ce)}" y2="${Y(e.base.ce)}" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1"/>
+   <line x1="0" x2="${w}" y1="${Y(e.base.ce*1.6)}" y2="${Y(e.base.ce*1.6)}" stroke="var(--bad)" stroke-dasharray="2 4" stroke-width="1"/>
+   <polyline points="${pts.join(" ")}" fill="none" stroke="var(--azul)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+   <circle cx="${last[0]}" cy="${last[1]}" r="4" fill="${COLOR[est]}"/></svg>`;
+}
+function renderVivo(){
+  $("#reloj").textContent="Actualizado "+hora(Date.now());
+  const cnt={verde:0,amarillo:0,rojo:0};EST.forEach(e=>{const s=estadoEst(e);if(cnt[s]!=null)cnt[s]++;});
+  $("#resumen").innerHTML=`<span class="pill s-verde">${cnt.verde} normales</span><span class="pill s-amarillo">${cnt.amarillo} en atención</span><span class="pill s-rojo">${cnt.rojo} en alerta</span>`;
+  pintarMapa();
+  $("#lista").innerHTML=EST.map((e,i)=>{const s=estadoEst(e);return `${i===0||EST[i-1].cuenca!==e.cuenca?`<h4 class="small muted" style="margin:8px 0 0">${CUENCAS[e.cuenca]}</h4>`:""}<button type="button" data-id="${e.id}" aria-pressed="${S.sel===e.id}"><span>${esc(e.nombre)}</span><span class="pill s-${s}">${TXT[s]}</span></button>`;}).join("");
+  $$("#lista button").forEach(b=>b.addEventListener("click",()=>{S.sel=b.dataset.id;renderVivo();}));
+  const e=estById(S.sel),r=S.lect[e.id],s=estadoEst(e);
+  $("#ficha").innerHTML=!r?"<p class='muted'>Esperando datos…</p>":`
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${esc(e.nombre)}</h2><p class="small muted">${CUENCAS[e.cuenca]}${e.nota?" · "+esc(e.nota):""}</p></div><span class="pill s-${s}" style="font-size:1.05rem">${TXT[s]}</span></div>
+    <p style="margin:12px 0 4px;font-weight:700">${FRASE[s]}</p>
+    ${["ph","ce","q"].map(p=>{const ps=estadoParam(p,r[p],e),P=PARAMS[p];return `<div class="param"><div><b>${P.nombre}</b> <span class="pill s-${ps}" style="font-size:.78rem;padding:2px 8px;margin-left:4px">${TXT[ps]}</span></div><div class="v num">${fmt(r[p],P.dec)} <small>${P.unidad}</small></div><p class="que">${P.que}</p></div>`;}).join("")}
+    <div style="border-top:1px solid var(--line);padding-top:10px"><p class="small"><b>Sales en los últimos 3 minutos</b> <span class="muted">· línea gris: lo habitual · línea roja: alerta</span></p>${spark(e)}</div>
+    <div class="row" style="margin-top:12px"><a class="btn" href="#reportar" data-lugar="${e.id}" id="f-rep">Avisar algo en este lugar</a><a class="btn sec" href="#verificar" id="f-ver">Comprobar este dato</a></div>
+    <p class="small muted num" style="margin-top:8px">Último dato ${hora(r.t)} · código ${r.id}${(()=>{const ra=[...S.hist[e.id]].reverse().find(x=>x.apiCod);return ra?` · <a href="${esc(API_URL)}/v1/verificar/${ra.apiCod}" target="_blank" rel="noopener">comprobar en la API (${ra.apiCod})</a>`:"";})()}</p>`;
+  const fr=$("#f-rep");if(fr)fr.addEventListener("click",()=>{S.preLugar=e.id;});
+  const fv=$("#f-ver");if(fv)fv.addEventListener("click",()=>{S.verifId=r.id;});
+  const rojos=EST.filter(x=>estadoEst(x)==="rojo");
+  $("#alerta-global").innerHTML=rojos.length?`<div class="alerta" role="alert"><div class="ic">!</div><div><b>Alerta en ${rojos.map(x=>esc(x.nombre)).join(", ")}.</b> El agua tiene más sales de lo normal. Ya avisamos a la empresa y a la autoridad ambiental. <a href="#reclamos">Ver el reclamo</a>. Por precaución, no uses esta agua para tomar ni para los animales hasta que se normalice.</div></div>`:"";
+  if(ruta()==="datos")$("#json").textContent=JSON.stringify({actualizado:new Date().toISOString(),estaciones:EST.map(x=>({id:x.id,nombre:x.nombre,estado:TXT[estadoEst(x)].toLowerCase(),ultima_lectura:S.lect[x.id]}))},null,2);
+}
+
+/* ---------- Reportar ---------- */
+function prepararReportar(){
+  const sel=$("#r-lugar");
+  if(!sel.options.length)sel.innerHTML=EST.map(e=>`<option value="${e.id}">${esc(e.nombre)}</option>`).join("");
+  if(S.preLugar){sel.value=S.preLugar;S.preLugar=null;}
+}
+let fotoData=null;
+$("#r-foto").addEventListener("change",ev=>{const f=ev.target.files[0];if(!f){fotoData=null;$("#r-foto-prev").innerHTML="";return;}const fr=new FileReader();fr.onload=()=>{fotoData=fr.result;$("#r-foto-prev").innerHTML=`<img class="foto-prev" src="${fotoData}" alt="Foto adjunta">`;};fr.readAsDataURL(f);});
+$("#form-rep").addEventListener("submit",async ev=>{
+  ev.preventDefault();
+  const chips=$$("#r-chips input:checked").map(i=>i.value), desc=$("#r-desc").value.trim();
+  const err=$("#r-error");
+  if(!chips.length&&!desc){err.textContent="Contanos qué viste: elegí una opción o escribí algo.";err.hidden=false;return;}
+  err.hidden=true;
+  const num=v=>v===""?null:Number(v);
+  const {tk,alerta}=await crearAvisoVecino({est:$("#r-lugar").value,chips,desc,foto:fotoData,ph:num($("#r-ph").value),ce:num($("#r-ce").value),nombre:$("#r-nombre").value.trim()});
+  $("#form-rep").reset();fotoData=null;$("#r-foto-prev").innerHTML="";
+  mostrarResultadoAviso(tk,alerta);
+});
+function mostrarResultadoAviso(tk,alerta){
+  const m=tk.medicion;
+  $("#r-resultado").innerHTML=`<div class="ok-box stack"><h2>¡Gracias! Tu reclamo es el ${tk.id}</h2>
+    <p>La empresa tiene plazo hasta el <b>${fecha(tk.vence)}</b> para responder por escrito.</p>
+    ${alerta?`<p><b>Tu aviso coincide con una alerta del sensor</b> (${alerta.id}). Quedaron unidos.</p>`:""}
+    ${m?(m.discrepa?`<p><b>Tu medición no coincide con el sensor</b> (vos: pH ${m.ph??"-"}, ${m.ce??"-"} µS/cm · sensor: pH ${fmt(m.sensorPh,1)}, ${fmt(m.sensorCe)} µS/cm). Lo marcamos para que lo revise la autoridad.</p>`:`<p>Tu medición coincide con la del sensor. Gracias por controlar.</p>`):""}
+    <div><a class="btn" href="#reclamos">Seguir mi reclamo</a></div></div>`;
+}
+
+/* ---------- Reclamos (render) ---------- */
+const PLANTILLA="La empresa operadora informa (simulación): recibimos el reclamo y revisamos la zona. Detectamos una falla en una pileta de contención y cerramos la descarga. Tomamos muestras con un laboratorio externo y publicaremos los resultados en 72 horas. Responsable: Área de Medio Ambiente.";
+function restante(t){const ms=t-Date.now();if(ms<=0)return"Plazo vencido";const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5);return`Quedan ${d} días y ${h} h para responder`;}
+function renderReclamos(){
+  const borradores={};$$("#tickets textarea").forEach(t=>borradores[t.id]=t.value);
+  $$("#roles button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rol===S.rol));
+  $("#r-cuenta").textContent=`${S.tickets.filter(abierto).length} abiertos · ${S.tickets.length} en total`;
+  if(!S.tickets.length){$("#tickets").innerHTML=`<div class="card"><p class="muted">Todavía no hay reclamos. Podés <a href="#reportar">avisar algo</a> o usar el <a href="#presentacion">modo demo</a>.</p></div>`;return;}
+  $("#tickets").innerHTML=S.tickets.map(tk=>{
+    const e=estById(tk.est),cls=tk.estado==="Cerrado"?"s-verde":tk.estado==="Respondido"?"s-amarillo":"s-rojo";
+    return `<article class="card ticket">
+      <div class="head"><div><span class="tid">${tk.id}</span> ${tk.tipo==="alerta"?'<span class="tag bad">Alerta del sensor</span>':'<span class="tag">Aviso de la comunidad</span>'} ${tk.medicion?.discrepa?'<span class="tag warn">No coincide con el sensor</span>':""}
+        <h3 style="margin-top:6px">${esc(tk.titulo)}</h3><p class="small muted">${esc(e.nombre)} · ${fecha(tk.creado)} · ${esc(tk.autor)}</p></div>
+        <span class="pill ${cls}">${tk.estado}</span></div>
+      ${tk.desc?`<p>${esc(tk.desc)}</p>`:""}
+      ${tk.foto?`<img class="foto-prev" src="${tk.foto}" alt="Foto del aviso">`:""}
+      ${tk.medicion?`<p class="small">Medición comunitaria: pH ${tk.medicion.ph??"-"} · ${tk.medicion.ce??"-"} µS/cm. Sensor en ese momento: pH ${fmt(tk.medicion.sensorPh,1)} · ${fmt(tk.medicion.sensorCe)} µS/cm.</p>`:""}
+      <div class="meta"><div><b>Responde</b>${esc(tk.responsable)}</div><div><b>Controla</b>${esc(tk.control)}</div><div><b>Plazo</b>${tk.estado==="Cerrado"?"Cerrado":restante(tk.vence)}</div>${tk.vinculos.length?`<div><b>Unido con</b>${tk.vinculos.join(", ")}</div>`:""}</div>
+      <div class="timeline">${tk.eventos.map(ev=>`<div class="ev"><p><span class="quien">${esc(ev.quien)}</span> <span class="small muted">${fecha(ev.t)}</span></p><p>${esc(ev.texto)}</p><span class="hash">sello ${ev.hash?ev.hash.slice(0,24)+"…":"calculando…"}</span></div>`).join("")}</div>
+      ${acciones(tk)}
+    </article>`;}).join("");
+  Object.entries(borradores).forEach(([id,v])=>{const t=document.getElementById(id);if(t)t.value=v;});
+  $$("[data-acc]").forEach(b=>b.addEventListener("click",()=>accion(b.dataset.acc,b.dataset.tk)));
+}
+function acciones(tk){
+  if(!abierto(tk))return"";
+  if(S.rol==="empresa")return `<div class="stack info-box"><label class="lbl" for="resp-${tk.id}">Respuesta formal de la empresa</label><textarea id="resp-${tk.id}">${tk.estado==="Recibido"?PLANTILLA:""}</textarea><div class="row"><button class="btn" type="button" data-acc="responder" data-tk="${tk.id}">Publicar respuesta</button></div></div>`;
+  if(S.rol==="autoridad")return `<div class="row info-box"><button class="btn" type="button" data-acc="cerrar" data-tk="${tk.id}">Dar por resuelto</button><button class="btn sec" type="button" data-acc="pedir" data-tk="${tk.id}">Pedir más información a la empresa</button></div>`;
+  return `<p class="small muted">Para responder, elegí “Empresa” o “Autoridad ambiental” arriba (solo en la demo).</p>`;
+}
+function accion(tipo,id){
+  const tk=S.tickets.find(t=>t.id===id);if(!tk)return;
+  if(tipo==="responder"){const txt=$("#resp-"+id).value.trim();if(!txt){toast("Escribí la respuesta antes de publicar.");return;}responder(tk,txt);}
+  if(tipo==="cerrar"){tk.estado="Cerrado";evento(tk,"Autoridad ambiental","Revisamos la respuesta y los datos. El reclamo queda resuelto. Seguiremos controlando el punto.");toast(`${tk.id} quedó resuelto.`);}
+  if(tipo==="pedir"){tk.estado="En análisis";evento(tk,"Autoridad ambiental","La respuesta no alcanza. Pedimos a la empresa los resultados del laboratorio externo.");toast(`Se pidió más información en ${tk.id}.`);}
+  renderReclamos();
+}
+function responder(tk,txt){
+  const lista=[tk,...tk.vinculos.map(v=>S.tickets.find(t=>t.id===v)).filter(Boolean)];
+  lista.forEach(t=>{if(!abierto(t))return;t.estado="Respondido";evento(t,"Empresa operadora (respuesta formal, simulación)",txt);});
+  toast(`Respuesta publicada en ${lista.map(t=>t.id).join(" y ")}.`);
+}
+$$("#roles button").forEach(b=>b.addEventListener("click",()=>{S.rol=b.dataset.rol;renderReclamos();}));
+
+/* ---------- Verificar ---------- */
+function llenarSelectVerif(mantener){
+  const sel=$("#v-sel"),prev=sel.value;
+  const ids=[...S.byId.values()].filter(o=>o.lote).slice(-36).reverse().map(o=>o.r);
+  if(S.picoId&&!ids.some(r=>r.id===S.picoId)&&S.byId.get(S.picoId)?.lote)ids.unshift(S.byId.get(S.picoId).r);
+  sel.innerHTML=ids.map(r=>`<option value="${r.id}">${r.id} · ${esc(estById(r.est).nombre)} · ${hora(r.t)} · ${fmt(r.ce)} µS/cm${r.id===S.picoId?" (pico)":""}</option>`).join("")||`<option value="">Esperando el primer sello (unos segundos)…</option>`;
+  const quiero=S.verifId&&S.byId.get(S.verifId)?.lote?S.verifId:(mantener?prev:null);
+  if(quiero&&ids.some(r=>r.id===quiero))sel.value=quiero;
+}
+function renderLotes(){
+  $("#lotes").innerHTML=S.lotes.slice(-6).reverse().map(l=>`<tr><td class="num">#${l.n}</td><td class="num">${l.cant}</td><td class="mono" style="background:none;padding:9px 10px">${corto(l.sello)}</td><td>${l.anclado?'<span class="pill s-verde" style="font-size:.8rem">Sellado</span>':'<span class="pill s-amarillo" style="font-size:.8rem">Sellando…</span>'}</td></tr>`).join("")||`<tr><td colspan="4" class="muted">Juntando las primeras mediciones…</td></tr>`;
+}
+let qr=null;
+function dibujarQR(id){
+  const txt=`https://aquaabierta.ar/verificar/${id}`;$("#qr-txt").textContent=txt;
+  try{ if(window.QRCode){$("#qr").innerHTML="";qr=new QRCode($("#qr"),{text:txt,width:150,height:150,colorDark:"#0B2E4A",colorLight:"#ffffff"});} }catch(e){$("#qr").textContent="";}
+}
+async function verificar(alterar){
+  const id=$("#v-sel").value;const o=S.byId.get(id);
+  if(!o||!o.lote){$("#v-res").innerHTML=`<p class="muted">Este dato todavía se está sellando. Probá en unos segundos.</p>`;return;}
+  S.verifId=null;
+  const lote=S.lotes[o.lote-1];
+  const r=alterar?{...o.r,ce:Math.round(estById(o.r.est).base.ce*1.02)}:o.r;
+  const leaf=await sha(canon(r)), p=prueba(lote.levels,o.idx), calc=await recorrer(leaf,p), ok=calc===lote.root;
+  const e=estById(r.est);
+  dibujarQR(id);
+  $("#v-res").innerHTML=`
+   <div class="${ok?"ok-box":"bad-box"} stack">
+     <h2>${ok?"El dato es real. Nadie lo cambió.":"¡Este dato fue cambiado!"}</h2>
+     <p>${ok?`El ${hora(r.t)} el sensor de ${esc(e.nombre)} midió <b>${fmt(r.ce)} µS/cm</b> de sales y pH <b>${fmt(r.ph,1)}</b>. Coincide con el sello del lote #${lote.n}.`:`Alguien intentó mostrar <b>${fmt(r.ce)} µS/cm</b> en lugar de <b>${fmt(o.r.ce)} µS/cm</b>. El sello no coincide, así que el cambio queda en evidencia.`}</p>
+   </div>
+   <details class="extra" style="margin-top:12px"><summary>Ver el paso a paso técnico</summary>
+     <div class="stack small" style="margin-top:10px">
+       <div><b>1. Huella del dato</b> (SHA-256)<span class="mono">${leaf}</span></div>
+       <div><b>2. Camino hasta la raíz del lote</b> (${p.length} pasos, árbol de Merkle)<span class="mono">${p.map(s=>(s.lado==="izq"?"◀ ":"▶ ")+s.sib.slice(0,16)+"…").join("<br>")}</span></div>
+       <div><b>3. Raíz calculada</b><span class="mono">${calc}</span></div>
+       <div><b>4. Raíz guardada en el sello del lote #${lote.n}</b><span class="mono">${lote.root}</span></div>
+       <p class="muted">En la versión final, la raíz de cada lote se registra en una red pública (OpenTimestamps sobre Bitcoin). Ni nosotros ni la empresa la podemos cambiar.</p>
+     </div></details>`;
+}
+$("#v-go").addEventListener("click",()=>verificar(false));
+$("#v-trucho").addEventListener("click",()=>verificar(true));
+
+/* ---------- Modo demo ---------- */
+const PASOS=[
+ {t:"Todo normal",d:"Los sensores mandan datos cada 2 segundos y el mapa está en verde.",b:"Volver a la normalidad",f:()=>{S.anom=null;S.sel="taguas-abajo";location.hash="inicio";}},
+ {t:"Pico de sales en el río de las Taguas",d:"En el punto 2 sube de golpe la conductividad y baja el pH, mientras el punto 1 (aguas arriba) sigue normal. Salta la alerta y la mancha viaja río abajo, cada vez más diluida.",b:"Simular el pico",f:()=>{const n=Date.now();S.anom={ini:n,fin:n+70000};S.picoId=null;S.sel="taguas-abajo";location.hash="inicio";}},
+ {t:"Una vecina avisa",d:"María, de Angualasto, ve el agua del canal amarillenta y lo reporta con su celular.",b:"Enviar el aviso de María",f:async()=>{const {tk}=await crearAvisoVecino({est:"angualasto",chips:["Color raro"],desc:"El agua del canal bajó amarillenta desde el mediodía y las piedras de la orilla están manchadas.",foto:null,ph:6.4,ce:S.lect["angualasto"]?.ce??null,nombre:"María, de Angualasto"});S.rol="vecino";location.hash="reclamos";toast(`María envió el reclamo ${tk.id}.`);}},
+ {t:"La empresa responde",d:"La empresa operadora publica una respuesta formal, que queda en todos los reclamos unidos.",b:"Publicar la respuesta",f:()=>{const tk=S.tickets.find(t=>t.id===S.ultimoVecino)||S.tickets.find(abierto);if(!tk){toast("Primero hacé los pasos 2 y 3.");return false;}responder(tk,PLANTILLA);S.rol="autoridad";location.hash="reclamos";}},
+ {t:"Cualquiera comprueba el dato",d:"Verificamos la medición del pico. Después probamos qué pasa si alguien la quiere “bajar”.",b:"Comprobar el pico",f:()=>{S.verifId=S.picoId;location.hash="verificar";setTimeout(()=>verificar(false),300);}},
+];
+function renderHistoria(){
+  $("#historia").innerHTML=PASOS.map((p,i)=>`<div class="h ${S.hechos.has(i)?"hecho":""}"><div class="n">${S.hechos.has(i)?"✓":i+1}</div><div><h3>${p.t}</h3><p class="muted small">${p.d}</p></div><button class="btn ${i?"":"sec"}" type="button" data-paso="${i}">${p.b}</button></div>`).join("");
+  $$("[data-paso]").forEach(b=>b.addEventListener("click",async()=>{const i=+b.dataset.paso;const r=await PASOS[i].f();if(r!==false)S.hechos.add(i);if(i===0)S.hechos=new Set([0]);}));
+}
+$("#bench").addEventListener("click",async()=>{
+  const b=$("#bench");b.disabled=true;$("#bench-res").textContent="Procesando…";
+  const t0=performance.now();const N=10000;const rs=[];
+  for(let i=0;i<N;i++){const e=EST[i%EST.length];const r={id:"B-"+i,est:e.id,t:new Date().toISOString(),ph:+(e.base.ph+rnd(.3)).toFixed(2),ce:Math.round(e.base.ce*(1+rnd(.1))),q:+(e.base.q*(1+rnd(.1))).toFixed(1)};
+    if(r.ph<0||r.ph>14||r.ce<0||r.q<0)continue;rs.push(r);}
+  const leaves=await Promise.all(rs.map(r=>sha(canon(r))));const lv=await merkle(leaves);
+  const ms=performance.now()-t0;
+  $("#bench-res").innerHTML=`<span class="big-num">${fmt(ms)} ms</span> <span class="muted">para ${fmt(rs.length)} mediciones (≈ ${fmt(rs.length/(ms/1000))} por segundo). Sello: ${corto(lv[lv.length-1][0])}</span>`;
+  b.disabled=false;
+});
+
+/* ---------- Bot de WhatsApp (simulación con la misma conversación que el bot real) ---------- */
+const BOT=(()=>{const module={exports:{}};
+/*BOT-INICIO*/
+// Lógica de la conversación del bot de AquaAbierta (sin dependencias).
+// Recibe el estado de la charla y el mensaje del vecino, devuelve el nuevo estado y las respuestas.
+// La usan el servidor de WhatsApp (servidor.js) y las pruebas (prueba.js).
+
+const MENU =
+  "Hola, soy *AquaAbierta* 💧\n" +
+  "Te cuento cómo está el agua de los ríos de San Juan.\n\n" +
+  "Respondé con un número:\n" +
+  "*1* Ver cómo está el agua\n" +
+  "*2* Avisar algo raro en el agua\n" +
+  "*3* Seguir mi reclamo\n" +
+  "*4* Comprobar que un dato es real\n\n" +
+  "También podés mandarme tu *ubicación* 📍 y te digo cómo está el punto más cercano.";
+
+const SEMAFORO = { verde: "🟢 Normal", amarillo: "🟡 Atención", rojo: "🔴 Alerta" };
+const QUE_VISTE = ["Color raro", "Olor feo", "Espuma", "Peces o animales muertos", "Poca agua", "Otra cosa"];
+
+function distanciaKm(a, b) {
+  const R = 6371, rad = (x) => (x * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function fichaEstacion(e) {
+  const r = e.ultima_lectura || {};
+  let t = `*${e.nombre}*\n${SEMAFORO[e.estado] || "Sin datos"}\n`;
+  if (r.ph != null) t += `• pH: ${r.ph} (normal entre 6,5 y 8,5)\n`;
+  if (r.ce != null) t += `• Sales: ${r.ce} µS/cm\n`;
+  if (r.q != null) t += `• Caudal: ${r.q} m³/s\n`;
+  if (e.estado === "rojo") t += "\n⚠️ Hay un valor fuera de lo normal. Por precaución no uses esta agua para tomar ni para los animales.";
+  if (e.estado === "amarillo") t += "\nHay un valor que conviene mirar de cerca.";
+  if (r.id) t += `\n\nCódigo del dato: ${r.id}`;
+  return t;
+}
+
+/**
+ * @param {object} estado  estado guardado de esta charla ({paso, borrador})
+ * @param {object} msg     {tipo:'texto'|'ubicacion'|'imagen', texto, lat, lon, imagenId, de}
+ * @param {object} datos   funciones para leer/escribir datos: estaciones(), crearReclamo(d), verReclamo(id), verificar(id)
+ * @returns {Promise<{estado:object, respuestas:string[]}>}
+ */
+async function responder(estado, msg, datos) {
+  estado = estado || { paso: "inicio" };
+  const txt = (msg.texto || "").trim();
+  const t = txt.toLowerCase();
+  const out = [];
+
+  if (["menu", "menú", "hola", "inicio", "0", "volver"].includes(t)) {
+    return { estado: { paso: "inicio" }, respuestas: [MENU] };
+  }
+
+  if (msg.tipo === "ubicacion") {
+    const est = await datos.estaciones();
+    const cerca = est
+      .map((e) => ({ e, d: distanciaKm({ lat: msg.lat, lon: msg.lon }, e) }))
+      .sort((a, b) => a.d - b.d)[0];
+    if (estado.paso === "aviso_lugar") {
+      estado.borrador.est = cerca.e.id;
+      estado.paso = "aviso_que";
+      out.push(`Anotado: cerca de *${cerca.e.nombre}* (a ${cerca.d.toFixed(1)} km).`);
+      out.push(preguntaQueViste());
+      return { estado, respuestas: out };
+    }
+    out.push(`El punto de control más cercano está a ${cerca.d.toFixed(1)} km:\n\n${fichaEstacion(cerca.e)}`);
+    out.push("Escribí *menu* para volver.");
+    return { estado: { paso: "inicio" }, respuestas: out };
+  }
+
+  switch (estado.paso) {
+    case "inicio": {
+      if (t === "1") {
+        const est = await datos.estaciones();
+        const lista = est.map((e, i) => `*${i + 1}* ${SEMAFORO[e.estado] || "⚪"} ${e.nombre}`).join("\n");
+        return { estado: { paso: "elegir_estacion" }, respuestas: [`Estos son los puntos de control:\n\n${lista}\n\nRespondé con el número para ver el detalle.`] };
+      }
+      if (t === "2") {
+        const est = await datos.estaciones();
+        const lista = est.map((e, i) => `*${i + 1}* ${e.nombre}`).join("\n");
+        return { estado: { paso: "aviso_lugar", borrador: {} }, respuestas: [`Vamos a cargar tu aviso. ¿Dónde fue?\n\n${lista}\n\nRespondé con el número o mandame tu *ubicación* 📍`] };
+      }
+      if (t === "3") return { estado: { paso: "seguir" }, respuestas: ["Escribí el número de tu reclamo. Por ejemplo: *AQ-0001*"] };
+      if (t === "4") return { estado: { paso: "verificar" }, respuestas: ["Escribí el código del dato que querés comprobar. Por ejemplo: *L-000123*"] };
+      return { estado: { paso: "inicio" }, respuestas: [MENU] };
+    }
+    case "elegir_estacion": {
+      const est = await datos.estaciones();
+      const e = est[Number(t) - 1];
+      if (!e) return { estado, respuestas: ["No encontré ese número. Probá de nuevo o escribí *menu*."] };
+      return { estado: { paso: "inicio" }, respuestas: [fichaEstacion(e), "Escribí *menu* para volver."] };
+    }
+    case "aviso_lugar": {
+      const est = await datos.estaciones();
+      const e = est[Number(t) - 1];
+      if (!e) return { estado, respuestas: ["Respondé con el número del lugar o mandame tu ubicación 📍"] };
+      estado.borrador.est = e.id;
+      estado.paso = "aviso_que";
+      return { estado, respuestas: [preguntaQueViste()] };
+    }
+    case "aviso_que": {
+      const n = Number(t);
+      estado.borrador.chips = n >= 1 && n <= QUE_VISTE.length ? [QUE_VISTE[n - 1]] : [];
+      if (!estado.borrador.chips.length) estado.borrador.desc = txt;
+      estado.paso = "aviso_desc";
+      return { estado, respuestas: ["Contame con tus palabras qué viste. Si tenés una *foto*, mandala ahora. Cuando termines escribí *listo*."] };
+    }
+    case "aviso_desc": {
+      if (msg.tipo === "imagen") {
+        estado.borrador.fotos = [...(estado.borrador.fotos || []), msg.imagenId];
+        return { estado, respuestas: ["📷 Foto recibida. Podés mandar otra o escribir *listo*."] };
+      }
+      if (t !== "listo") {
+        estado.borrador.desc = [estado.borrador.desc, txt].filter(Boolean).join(" ");
+        return { estado, respuestas: ["Anotado. Si querés agregar algo más, escribilo. Si no, escribí *listo*."] };
+      }
+      const tk = await datos.crearReclamo({ ...estado.borrador, canal: "whatsapp", contacto: msg.de });
+      let r = `✅ Tu reclamo es el *${tk.id}*.\nLa empresa tiene plazo hasta el *${tk.vence_texto}* para responder por escrito. La autoridad ambiental controla el plazo.`;
+      if (tk.vinculado) r += `\n\nTu aviso coincide con una alerta del sensor (${tk.vinculado}). Quedaron unidos.`;
+      r += "\n\nTe aviso por acá cuando haya una respuesta. Escribí *menu* para volver.";
+      return { estado: { paso: "inicio" }, respuestas: [r] };
+    }
+    case "seguir": {
+      const tk = await datos.verReclamo(txt.toUpperCase());
+      if (!tk) return { estado, respuestas: ["No encontré ese reclamo. Revisá el número o escribí *menu*."] };
+      const ult = tk.eventos[tk.eventos.length - 1];
+      return {
+        estado: { paso: "inicio" },
+        respuestas: [`*${tk.id}* · ${tk.estado}\n${tk.titulo}\n\nÚltima novedad (${ult.quien}):\n${ult.texto}\n\nEscribí *menu* para volver.`],
+      };
+    }
+    case "verificar": {
+      const v = await datos.verificar(txt.toUpperCase());
+      if (!v) return { estado, respuestas: ["No encontré ese dato o todavía se está sellando. Probá en unos segundos."] };
+      return {
+        estado: { paso: "inicio" },
+        respuestas: [v.ok ? `✅ El dato *${v.id}* es real. Coincide con el sello del lote #${v.lote}.` : `❌ El dato *${v.id}* no coincide con su sello.`],
+      };
+    }
+    default:
+      return { estado: { paso: "inicio" }, respuestas: [MENU] };
+  }
+}
+
+function preguntaQueViste() {
+  return "¿Qué viste?\n\n" + QUE_VISTE.map((q, i) => `*${i + 1}* ${q}`).join("\n") + "\n\nRespondé con el número o escribilo.";
+}
+
+module.exports = { responder, MENU, distanciaKm };
+/*BOT-FIN*/
+return module.exports;})();
+const charla={estado:null};
+const datosBot={
+  estaciones:async()=>EST.map(e=>({id:e.id,nombre:e.nombre,lat:e.lat,lon:e.lon,estado:estadoEst(e),ultima_lectura:S.lect[e.id]?{...S.lect[e.id],ph:fmt(S.lect[e.id].ph,1),q:fmt(S.lect[e.id].q,1)}:null})),
+  crearReclamo:async d=>{const {tk,alerta}=await crearAvisoVecino({est:d.est,chips:d.chips||[],desc:d.desc||"",foto:null,nombre:"Vecino/a por WhatsApp"});tk.canal="whatsapp";return{...tk,vence_texto:new Date(tk.vence).toLocaleDateString("es-AR"),vinculado:alerta?alerta.id:null};},
+  verReclamo:async id=>S.tickets.find(t=>t.id===id)||null,
+  verificar:async id=>{const o=S.byId.get(id);if(!o||!o.lote)return null;const lote=S.lotes[o.lote-1];const h=await sha(canon(o.r));return{id,ok:(await recorrer(h,prueba(lote.levels,o.idx)))===lote.root,lote:lote.n};},
+};
+const fmtWA=t=>esc(t).replace(/\*([^*\n]+)\*/g,"<b>$1</b>");
+function burbuja(txt,yo){const d=document.createElement("div");d.className="burb "+(yo?"yo":"bot");d.innerHTML=fmtWA(txt)+`<span class="h">${new Date().toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"})}</span>`;$("#chat").appendChild(d);$("#chat").scrollTop=$("#chat").scrollHeight;}
+async function hablar(msg,mostrar){
+  burbuja(mostrar??msg.texto,true);
+  const {estado,respuestas}=await BOT.responder(charla.estado,msg,datosBot);charla.estado=estado;
+  for(const r of respuestas){await new Promise(z=>setTimeout(z,350));burbuja(r,false);}
+  rapidas();
+}
+function rapidas(){
+  const p=charla.estado?.paso||"inicio";
+  let b=[];
+  if(p==="inicio")b=[["1","Ver el agua"],["2","Avisar algo"],["3","Seguir reclamo"],["4","Comprobar dato"],["ubic","📍 Mandar ubicación"]];
+  else if(p==="aviso_lugar")b=[["ubic","📍 Mandar ubicación"],...EST.slice(0,4).map((e,i)=>[String(i+1),e.nombre])];
+  else if(p==="aviso_desc")b=[["foto","📷 Mandar foto"],["listo","listo"]];
+  else if(p==="seguir")b=S.tickets.slice(0,3).map(t=>[t.id,t.id]);
+  else if(p==="verificar"){const o=[...S.byId.values()].filter(x=>x.lote).slice(-1)[0];if(o)b=[[o.r.id,o.r.id]];}
+  b.push(["menu","menú"]);
+  $("#rapidas").innerHTML=b.map(([v,t])=>`<button type="button" data-v="${esc(v)}">${esc(t)}</button>`).join("");
+  $$("#rapidas button").forEach(x=>x.addEventListener("click",()=>{const v=x.dataset.v;
+    if(v==="ubic"){const e=estById("angualasto")||EST[0];hablar({tipo:"ubicacion",lat:e.lat+0.004,lon:e.lon+0.004},"📍 Ubicación enviada (cerca de "+e.nombre.split(" (")[0]+")");}
+    else if(v==="foto")hablar({tipo:"imagen",imagenId:"foto-demo"},"📷 Foto");
+    else hablar({tipo:"texto",texto:v});}));
+}
+$("#chat-form").addEventListener("submit",ev=>{ev.preventDefault();const v=$("#chat-in").value.trim();if(!v)return;$("#chat-in").value="";hablar({tipo:"texto",texto:v});});
+function prepararWA(){if(!$("#chat").children.length){burbuja(BOT.MENU,false);rapidas();}}
+
+/* ---------- Análisis de laboratorios y profesionales ---------- */
+/* Límites: Código Alimentario Argentino, art. 982 (agua potable), Res. Conjunta SCS-SAGyP 33/2023 */
+const PAR_AN=[
+ {id:"ph",n:"pH",u:"",rango:[6.5,8.5],q:"Ácido o alcalino."},
+ {id:"ce",n:"Conductividad",u:"µS/cm",q:"Sales disueltas. Sin límite en el Código; se compara con el sensor."},
+ {id:"sdt",n:"Sólidos disueltos totales",u:"mg/l",max:1500,q:"Todo lo que el agua lleva disuelto."},
+ {id:"turb",n:"Turbiedad",u:"NTU",max:3,q:"Qué tan turbia está el agua."},
+ {id:"temp",n:"Temperatura",u:"°C",q:"Influye en la vida del río."},
+ {id:"od",n:"Oxígeno disuelto",u:"mg/l",q:"Oxígeno para peces y otros seres vivos. Sin límite en el Código."},
+ {id:"sulf",n:"Sulfatos",u:"mg/l",max:400,q:"Pueden venir de rocas con minerales o del drenaje de una mina."},
+ {id:"nitr",n:"Nitratos",u:"mg/l",max:45,q:"Suelen venir de fertilizantes o desechos."},
+ {id:"clor",n:"Cloruros",u:"mg/l",max:350,q:"Sales que le dan gusto salado al agua."},
+ {id:"as",n:"Arsénico",u:"mg/l",max:0.01,q:"Aparece natural en suelos de la región. En exceso daña la salud a largo plazo."},
+ {id:"cn",n:"Cianuro",u:"mg/l",max:0.10,q:"Se usa para separar el oro. En exceso es muy tóxico."},
+ {id:"hg",n:"Mercurio",u:"mg/l",max:0.001,q:"Metal pesado muy tóxico."},
+ {id:"pb",n:"Plomo",u:"mg/l",max:0.05,q:"Metal pesado tóxico."},
+ {id:"cd",n:"Cadmio",u:"mg/l",max:0.005,q:"Metal pesado tóxico."},
+ {id:"cr",n:"Cromo",u:"mg/l",max:0.05,q:"Metal pesado."},
+ {id:"ni",n:"Níquel",u:"mg/l",max:0.02,q:"Metal pesado."},
+ {id:"se",n:"Selenio",u:"mg/l",max:0.01,q:"En exceso es tóxico."},
+ {id:"cu",n:"Cobre",u:"mg/l",max:1.0,q:"En exceso da mal gusto y afecta la salud."},
+ {id:"zn",n:"Zinc",u:"mg/l",max:5.0,q:"En exceso da mal gusto."},
+ {id:"fe",n:"Hierro total",u:"mg/l",max:0.30,q:"Mancha y da color al agua."},
+ {id:"mn",n:"Manganeso",u:"mg/l",max:0.10,q:"Mancha el agua; en exceso afecta la salud."},
+ {id:"al",n:"Aluminio",u:"mg/l",max:0.20,q:"Puede aumentar con aguas ácidas."},
+ {id:"q",n:"Caudal",u:"m³/s",q:"Cuánta agua pasa por segundo."},
+];
+const parAn=id=>PAR_AN.find(p=>p.id===id);
+function evalRes(r){
+  const p=parAn(r.p);
+  if(r.menorLD)return{e:"verde",t:"No detectado"};
+  if(p.rango){if(r.v>=p.rango[0]&&r.v<=p.rango[1])return{e:"verde",t:"Dentro del rango"};return{e:"rojo",t:"Fuera del rango"};}
+  if(p.max==null)return{e:"gris",t:"Sin límite de referencia"};
+  if(r.v>p.max)return{e:"rojo",t:"Supera el límite"};
+  if(r.v>=p.max*0.8)return{e:"amarillo",t:"Cerca del límite"};
+  return{e:"verde",t:"Dentro del límite"};
+}
+const limTxt=p=>p.rango?`${fmt(p.rango[0],1)} a ${fmt(p.rango[1],1)}`:(p.max!=null?`máx. ${String(p.max).replace(".",",")} ${p.u}`:"—");
+function confianza(a){
+  if(a.tipo==="Laboratorio acreditado"&&a.acred)return{c:"alta",t:"Confianza alta: laboratorio acreditado"};
+  if(a.mat&&a.docs.some(d=>d.tipo==="Informe firmado"))return{c:"media",t:"Confianza media: profesional matriculado con informe"};
+  return{c:"basica",t:"Confianza básica"};
+}
+S.aportes=[];S.an=0;
+async function sellarAporte(a){
+  const base=JSON.stringify({id:a.id,tipo:a.tipo,org:a.org,resp:a.resp,mat:a.mat,punto:a.punto,fecha:a.fecha,res:a.res,docs:a.docs.map(d=>d.hash)});
+  a.sello=await sha(base);
+}
+function eventoAn(a,quien,texto){a.eventos.push({t:Date.now(),quien,texto});}
+async function nuevoAporte(d){
+  const a={id:"AN-"+String(++S.an).padStart(4,"0"),creado:Date.now(),estado:"En revisión técnica",eventos:[],...d};
+  eventoAn(a,a.org,"Envió el análisis con "+a.docs.length+" documento(s) de respaldo.");
+  await sellarAporte(a);
+  S.aportes.unshift(a);return a;
+}
+function compararSensor(a){
+  const e=estById(a.punto);if(!e)return"";
+  const s=S.lect[e.id];if(!s)return"";
+  const out=[];
+  for(const r of a.res){
+    if(r.menorLD)continue;
+    if(r.p==="ph"){const dif=Math.abs(r.v-s.ph);out.push(`pH: análisis ${fmt(r.v,1)}, sensor ${fmt(s.ph,1)} → ${dif<=0.5?"coinciden":"no coinciden"}`);}
+    if(r.p==="ce"){const dif=Math.abs(r.v-s.ce)/s.ce;out.push(`Conductividad: análisis ${fmt(r.v)}, sensor ${fmt(s.ce)} µS/cm → ${dif<=0.25?"coinciden":"no coinciden"}`);}
+  }
+  return out.length?`<div class="info-box small"><b>Comparación con el sensor de ${esc(e.nombre)}</b> (valor actual del sensor):<br>${out.join("<br>")}</div>`:"";
+}
+function renderAnalisis(){
+  $("#an-cuenta").textContent=`${S.aportes.length} análisis aportados · ${S.aportes.filter(a=>a.estado==="Validado").length} validados`;
+  $("#an-lista").innerHTML=S.aportes.map(a=>{
+    const e=estById(a.punto),cf=confianza(a),cls=a.estado==="Validado"?"s-verde":a.estado==="Observado"?"s-rojo":"s-amarillo";
+    const peor=a.res.map(evalRes).reduce((m,x)=>ORDEN[x.e]>(ORDEN[m]??-1)?x.e:m,"verde");
+    return `<article class="card ticket">
+      <div class="head"><div><span class="tid">${a.id}</span> <span class="tag">${esc(a.tipo)}</span> <span class="conf ${cf.c}">${cf.t}</span>${a.ejemplo?' <span class="tag warn">Ejemplo</span>':""}
+        <h3 style="margin-top:6px">${esc(a.org)}</h3><p class="small muted">${e?esc(e.nombre):`Lat ${a.lat}, Lon ${a.lon}`} · muestra del ${fecha(new Date(a.fecha).getTime())} · ${esc(a.motivo)}</p></div>
+        <div class="stack" style="gap:6px;justify-items:end"><span class="pill ${cls}">${a.estado}</span><span class="pill s-${peor}" style="font-size:.8rem">${peor==="rojo"?"Hay valores que superan el límite":peor==="amarillo"?"Hay valores cerca del límite":"Valores dentro de lo normal"}</span></div></div>
+      <div class="meta"><div><b>Responsable técnico</b>${esc(a.resp)}</div><div><b>Matrícula o CUIT</b>${esc(a.mat)}</div>${a.acred?`<div><b>Acreditación</b>${esc(a.acred)}</div>`:""}${a.cust?`<div><b>Cadena de custodia</b>${esc(a.cust)}</div>`:""}<div><b>Relación con la minería</b>${esc(a.conflicto)}</div></div>
+      <div class="scroll"><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Límite de referencia</th><th>Qué significa</th><th>Método</th></tr></thead><tbody>
+        ${a.res.map(r=>{const p=parAn(r.p),ev=evalRes(r);return `<tr><td><b>${p.n}</b></td><td class="num">${r.menorLD?`&lt; ${String(r.ld).replace(".",",")}`:String(r.v).replace(".",",")} ${p.u}<br><span class="pill s-${ev.e}" style="font-size:.75rem;padding:2px 8px;margin-top:4px">${ev.t}</span></td><td class="num">${limTxt(p)}</td><td class="small muted">${p.q}</td><td class="small">${esc(r.met||"—")}</td></tr>`;}).join("")}
+      </tbody></table></div>
+      ${compararSensor(a)}
+      ${a.obs?`<p class="small"><b>Observaciones:</b> ${esc(a.obs)}</p>`:""}
+      <details class="extra"><summary>Documentos de respaldo (${a.docs.length}) y sello</summary>
+        <div style="margin-top:8px">${a.docs.map(d=>`<div class="doc"><span><b>${esc(d.tipo)}</b><br><span class="muted">${esc(d.nombre)} · ${fmt(d.kb)} KB</span></span><span class="mono" title="Huella SHA-256">${d.hash}</span></div>`).join("")}
+        <div class="doc"><span><b>Sello del aporte</b><br><span class="muted">Une los datos y las huellas de los documentos</span></span><span class="mono">${a.sello||"calculando…"}</span></div></div>
+      </details>
+      <div class="timeline">${a.eventos.map(ev=>`<div class="ev"><p><span class="quien">${esc(ev.quien)}</span> <span class="small muted">${fecha(ev.t)}</span></p><p>${esc(ev.texto)}</p></div>`).join("")}</div>
+      ${a.estado==="En revisión técnica"?`<div class="info-box stack"><span class="small"><b>Revisión técnica</b> (en la demo, como autoridad ambiental)</span><div class="row"><button class="btn" type="button" data-an="validar" data-id="${a.id}">Validar análisis</button><button class="btn sec" type="button" data-an="observar" data-id="${a.id}">Pedir correcciones</button></div></div>`:""}
+    </article>`;}).join("")||`<div class="card"><p class="muted">Todavía no hay análisis aportados.</p></div>`;
+  $$("[data-an]").forEach(b=>b.addEventListener("click",()=>{const a=S.aportes.find(x=>x.id===b.dataset.id);if(!a)return;
+    if(b.dataset.an==="validar"){a.estado="Validado";eventoAn(a,"Autoridad ambiental","Revisamos el informe, la cadena de custodia y los métodos. El análisis queda validado.");toast(`${a.id} validado.`);}
+    else{a.estado="Observado";eventoAn(a,"Autoridad ambiental","Falta el certificado de acreditación o el protocolo firmado. Se pidió al aportante que lo complete.");toast(`Se pidieron correcciones en ${a.id}.`);}
+    renderAnalisis();}));
+}
+/* Formulario */
+let anDocs=[];
+function filaRes(pid="",v="",met="",ld=""){
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><select class="r-p">${PAR_AN.map(p=>`<option value="${p.id}" ${p.id===pid?"selected":""}>${p.n}</option>`).join("")}</select></td><td><input type="number" class="r-v" step="any" value="${v}" style="width:110px"></td><td class="r-u small muted"></td><td><input type="text" class="r-m" value="${esc(met)}" placeholder="Ej.: SM 4500-H+ B" style="width:150px"></td><td><input type="number" class="r-ld" step="any" value="${ld}" style="width:90px"></td><td><input type="checkbox" class="r-lt" aria-label="Menor al límite de detección"></td><td><button type="button" class="btn sec r-x" style="padding:6px 10px" aria-label="Quitar parámetro">×</button></td>`;
+  const upd=()=>{tr.querySelector(".r-u").textContent=parAn(tr.querySelector(".r-p").value).u||"—";};
+  tr.querySelector(".r-p").addEventListener("change",upd);tr.querySelector(".r-x").addEventListener("click",()=>tr.remove());upd();
+  $("#an-res").appendChild(tr);
+}
+function prepararAnalisis(){
+  const sel=$("#an-punto");
+  if(!sel.options.length){sel.innerHTML=EST.map(e=>`<option value="${e.id}">${esc(e.nombre)}</option>`).join("")+`<option value="otro">Otro lugar (cargar coordenadas)</option>`;
+    sel.addEventListener("change",()=>{$("#an-otro").hidden=sel.value!=="otro";});}
+  if(!$("#an-res").children.length){filaRes("ph");filaRes("ce");filaRes("sulf");filaRes("as");}
+  renderAnalisis();
+}
+$("#an-add").addEventListener("click",()=>filaRes("cn"));
+$("#an-ir").addEventListener("click",ev=>{ev.preventDefault();$("#form-an").scrollIntoView({behavior:"smooth"});});
+$$("#form-an input[type=file]").forEach(inp=>inp.addEventListener("change",async()=>{
+  anDocs=anDocs.filter(d=>d.input!==inp.id);
+  for(const f of inp.files){const buf=await f.arrayBuffer();const h=await crypto.subtle.digest("SHA-256",buf);
+    anDocs.push({input:inp.id,tipo:inp.dataset.doc,nombre:f.name,kb:Math.max(1,Math.round(f.size/1024)),hash:Array.from(new Uint8Array(h),x=>x.toString(16).padStart(2,"0")).join("")});}
+  $("#an-docs").innerHTML=anDocs.map(d=>`<div class="doc"><span><b>${esc(d.tipo)}</b><br><span class="muted">${esc(d.nombre)} · ${fmt(d.kb)} KB</span></span><span class="mono" title="Huella SHA-256">${d.hash}</span></div>`).join("");
+}));
+$("#form-an").addEventListener("submit",async ev=>{
+  ev.preventDefault();
+  const val=id=>$(id).value.trim(),err=[];
+  if(!val("#an-org"))err.push("la institución");if(!val("#an-resp"))err.push("el responsable técnico");if(!val("#an-mat"))err.push("la matrícula o CUIT");
+  if(!/^\S+@\S+\.\S+$/.test(val("#an-mail")))err.push("un correo válido");if(!val("#an-fecha"))err.push("la fecha de la toma");
+  const punto=val("#an-punto");if(punto==="otro"&&(!val("#an-lat")||!val("#an-lon")))err.push("las coordenadas del lugar");
+  const res=$$("#an-res tr").map(tr=>({p:tr.querySelector(".r-p").value,v:tr.querySelector(".r-v").value===""?null:Number(tr.querySelector(".r-v").value),met:tr.querySelector(".r-m").value.trim(),ld:tr.querySelector(".r-ld").value===""?null:Number(tr.querySelector(".r-ld").value),menorLD:tr.querySelector(".r-lt").checked})).filter(r=>r.v!=null||r.menorLD);
+  if(!res.length)err.push("al menos un resultado");
+  if(res.some(r=>r.menorLD&&r.ld==null))err.push("el límite de detección de los valores marcados como “< LD”");
+  if(!anDocs.some(d=>d.tipo==="Informe firmado"))err.push("el informe firmado en PDF");
+  if(!val("#an-conf"))err.push("tu relación con la actividad minera");
+  if(!$("#an-ddjj").checked)err.push("la declaración jurada");if(!$("#an-pub").checked)err.push("la aceptación de publicar los datos");
+  const box=$("#an-error");
+  if(err.length){box.textContent="Falta completar: "+err.join(", ")+".";box.hidden=false;return;}
+  box.hidden=true;
+  const a=await nuevoAporte({tipo:val("#an-tipo"),org:val("#an-org"),resp:val("#an-resp"),mat:val("#an-mat"),acred:val("#an-acred"),punto:punto==="otro"?null:punto,lat:val("#an-lat"),lon:val("#an-lon"),fecha:val("#an-fecha"),motivo:val("#an-motivo"),tipom:val("#an-tipom"),tomo:val("#an-tomo"),cust:val("#an-cust"),res,docs:anDocs.map(({input,...d})=>d),conflicto:val("#an-conf"),obs:val("#an-obs")});
+  $("#form-an").reset();anDocs=[];$("#an-docs").innerHTML="";$("#an-res").innerHTML="";filaRes("ph");filaRes("ce");filaRes("sulf");filaRes("as");$("#an-otro").hidden=true;
+  renderAnalisis();window.scrollTo({top:0,behavior:"smooth"});toast(`Recibimos el análisis ${a.id}. Queda en revisión técnica.`);
+});
+/* Dos ejemplos para que la sección no arranque vacía (marcados como ejemplo) */
+(async()=>{
+  const dia=864e5,iso=t=>new Date(t).toISOString().slice(0,16);
+  const doc=async(tipo,nombre,kb)=>({tipo,nombre,kb,hash:await sha("ejemplo:"+nombre)});
+  const b=await nuevoAporte({ejemplo:true,tipo:"Empresa",org:"Empresa operadora (simulación)",resp:"Responsable de Medio Ambiente (ejemplo)",mat:"CUIT 30-00000000-0 (ejemplo)",acred:"",punto:"taguas-abajo",fecha:iso(Date.now()-6*dia),motivo:"Plan de monitoreo de la Declaración de Impacto Ambiental",tipom:"Compuesta",tomo:"Equipo de monitoreo de la empresa",cust:"CC-2026-0311",
+    res:[{p:"ph",v:7.2,met:"SM 4500-H+ B"},{p:"ce",v:560,met:"SM 2510 B"},{p:"sulf",v:180,met:"SM 4500-SO4 E"},{p:"as",v:0.006,met:"SM 3114 C"},{p:"cn",v:null,ld:0.005,menorLD:true,met:"SM 4500-CN E"},{p:"mn",v:0.08,met:"SM 3120 B"}],
+    docs:[await doc("Informe firmado","informe-trimestral-ejemplo.pdf",412),await doc("Cadena de custodia","cadena-custodia-ejemplo.pdf",96)],conflicto:"Trabajo para o con la empresa operadora",obs:"Muestreo trimestral exigido por la Declaración de Impacto Ambiental."});
+  const a=await nuevoAporte({ejemplo:true,tipo:"Laboratorio acreditado",org:"Laboratorio universitario (ejemplo)",resp:"Lic. en Química (ejemplo)",mat:"Mat. 0000 (ejemplo)",acred:"LE 000 (ejemplo)",punto:"jachal",fecha:iso(Date.now()-3*dia),motivo:"Investigación",tipom:"Puntual",tomo:"Equipo del laboratorio y monitores comunitarios",cust:"CC-2026-0458",
+    res:[{p:"ph",v:7.9,met:"SM 4500-H+ B"},{p:"ce",v:1380,met:"SM 2510 B"},{p:"sdt",v:980,met:"SM 2540 C"},{p:"sulf",v:310,met:"SM 4500-SO4 E"},{p:"as",v:0.008,met:"SM 3114 C"},{p:"cn",v:null,ld:0.005,menorLD:true,met:"SM 4500-CN E"}],
+    docs:[await doc("Informe firmado","informe-laboratorio-ejemplo.pdf",538),await doc("Protocolo del laboratorio","protocolo-ejemplo.pdf",210),await doc("Certificado de acreditación","acreditacion-ejemplo.pdf",120)],conflicto:"No tengo relación con empresas de la zona",obs:"Muestra tomada junto a monitores comunitarios de Jáchal."});
+  a.estado="Validado";eventoAn(a,"Autoridad ambiental","Revisamos el informe, la cadena de custodia y los métodos. El análisis queda validado.");
+  if(ruta()==="analisis")renderAnalisis();
+})();
+
+/* ---------- Copiar ---------- */
+$("#copiar").addEventListener("click",()=>{const t=$("#json").textContent;navigator.clipboard?.writeText(t).then(()=>toast("Datos copiados."),()=>{const r=document.createRange();r.selectNodeContents($("#json"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Seleccioné los datos: copialos con Ctrl+C.");});});
+
+/* ---------- Navegación ---------- */
+const VISTAS=["inicio","reportar","reclamos","verificar","whatsapp","analisis","datos","presentacion"];
+function ruta(){const h=location.hash.replace("#","");return VISTAS.includes(h)?h:"inicio";}
+function navegar(){
+  const v=ruta();
+  $$("[data-view]").forEach(s=>s.hidden=s.dataset.view!==v);
+  $$("nav.menu a").forEach(a=>a.getAttribute("href")==="#"+v?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+  if(v==="reportar")prepararReportar();
+  if(v==="reclamos")renderReclamos();
+  if(v==="verificar"){llenarSelectVerif(false);renderLotes();const id=$("#v-sel").value;if(id)dibujarQR(id);if(S.verifId)setTimeout(()=>verificar(false),50);}
+  if(v==="presentacion")renderHistoria();
+  if(v==="analisis")prepararAnalisis();
+  if(v==="whatsapp")prepararWA();
+  renderVivo();
+  window.scrollTo({top:0});
+}
+let toastT;function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3500);}
+window.addEventListener("hashchange",navegar);
+
+/* ---------- Arranque: historial de 3 minutos para que no empiece vacío ---------- */
+/* ---------- Conexión con la API real (si no responde, todo sigue funcionando en el navegador) ---------- */
+const API_URL=(()=>{try{const q=new URLSearchParams(location.search).get("api");if(q)return q.replace(/\/$/,"");}catch(_){}
+  return /github\.io$/.test(location.hostname)?"https://aquaabierta-api-production.up.railway.app":null;})();
+S.api=null;S.apiPend=[];
+async function pedirAPI(ruta,opts={},ms=8000){const c=new AbortController();const to=setTimeout(()=>c.abort(),ms);
+  try{const r=await fetch(API_URL+ruta,{...opts,signal:c.signal,headers:{"content-type":"application/json",...(opts.headers||{})}});if(!r.ok)throw new Error(r.status);return await r.json();}finally{clearTimeout(to);}}
+function estadoAPI(){const el=$("#api-estado");if(!el)return;
+  el.innerHTML=S.api?`<span class="pill s-verde" style="font-size:.85rem">Conectado</span> <span class="small">Los datos de esta página también se guardan y sellan en la API pública: <a class="mono" href="${esc(API_URL)}/docs" target="_blank" rel="noopener" style="display:inline;padding:1px 5px">${esc(API_URL)}</a></span>`
+  :`<span class="pill s-gris" style="font-size:.85rem">Sin conexión</span> <span class="small muted">${API_URL?"La API no respondió todavía (si estuvo dormida tarda unos 30 segundos). Mientras tanto, todo funciona dentro de tu navegador.":"Esta copia funciona sola dentro de tu navegador. Para usar la API, abrí la página con <span class='mono' style='display:inline;padding:1px 5px'>?api=https://tu-api</span>."}</span>`;}
+async function conectarAPI(){if(!API_URL){estadoAPI();return;}
+  for(let i=0;i<3&&!S.api;i++){try{await pedirAPI("/v1/estaciones",{},45000);S.api=API_URL;}catch(_){}}
+  estadoAPI();if(S.api)toast("Conectado a la API pública de AquaAbierta.");}
+async function enviarLecturasAPI(){if(!S.api||!S.apiPend.length)return;const lote=S.apiPend.splice(0);
+  try{const r=await pedirAPI("/v1/lecturas/lote",{method:"POST",body:JSON.stringify({lecturas:lote.map(x=>({est:x.est,t:x.t,ph:x.ph,ce:x.ce,q:x.q}))})});
+    const m=/^L-(\d+)$/.exec(r.primera||"");if(m&&!r.rechazadas?.length){const n0=+m[1],w=r.primera.length-2;lote.forEach((x,i)=>{x.apiCod="L-"+String(n0+i).padStart(w,"0");});}}
+  catch(_){S.api=null;estadoAPI();setTimeout(conectarAPI,30000);}}
+async function reclamoAPI(tk,chips,canal){if(!S.api)return;
+  try{const r=await pedirAPI("/v1/reclamos",{method:"POST",body:JSON.stringify({est:tk.est,chips,desc:tk.desc||"",autor:tk.autor,canal})});tk.apiId=r.id;
+    evento(tk,"Sistema AquaAbierta",`También quedó guardado en la API pública como ${r.id}.`);}catch(_){}}
+setInterval(enviarLecturasAPI,4000);
+construirMapa();renderMinas();
+(function precargar(){const ahora=Date.now();for(let k=89;k>=1;k--){const t=ahora-k*2000;for(const e of EST){const s=Math.sin(t/45000+e.fase);const r={id:"L-"+String(++S.n).padStart(6,"0"),est:e.id,t:new Date(t).toISOString(),ph:+(e.base.ph+0.08*s+rnd(.04)).toFixed(2),ce:Math.round(e.base.ce*(1+0.04*s+rnd(.015))),q:+(e.base.q*(1+0.05*s+rnd(.02))).toFixed(1)};S.hist[e.id].push(r);S.lect[e.id]=r;S.byId.set(r.id,{r});S.pend.push(r);}}})();
+tick();navegar();cerrarLote();
+setInterval(tick,2000);setInterval(cerrarLote,10000);conectarAPI();
+})();
+</script>
+</body></html>

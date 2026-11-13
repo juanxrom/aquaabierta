@@ -1,0 +1,9 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "api/**", "bot-whatsapp/**", "app/**", "docs/**", "datos/scripts/**", "*.sh", "render.yaml"]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}

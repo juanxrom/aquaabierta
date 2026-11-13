@@ -1,0 +1,64 @@
+rules_version = '2';
+// AquaAbierta
+// - Avisos y fotos de vecinos: cualquiera los lee; cada persona crea los suyos; nadie los edita ni los borra.
+// - Revisiones y alertas técnicas: cualquiera las lee; solo las cuentas de Google de la lista de técnicos las escriben.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Cuentas del equipo técnico. Reemplazá el ejemplo por los Gmail reales, entre comillas y separados por comas.
+    function esTecnico() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['TU-EMAIL@gmail.com'];
+    }
+
+    match /reportes/{id} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.id == id
+        && request.resource.data.serverTime == request.time
+        && request.resource.data.keys().hasOnly(['id','created','serverTime','nombre','loc','locName','st','tipo','label','icon','kind','uid','prev','hash','tieneFoto','fotoHash'])
+        && request.resource.data.nombre is string && request.resource.data.nombre.size() >= 2 && request.resource.data.nombre.size() <= 60
+        && request.resource.data.hash is string && request.resource.data.hash.size() == 64
+        && request.resource.data.prev is string && request.resource.data.prev.size() == 64
+        && request.resource.data.locName is string && request.resource.data.locName.size() < 120
+        && request.resource.data.tipo is string && request.resource.data.tipo.size() < 80;
+      allow update, delete: if false;
+    }
+
+    match /fotos/{id} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','data','hash'])
+        && request.resource.data.data is string
+        && request.resource.data.data.size() < 900000;
+      allow update, delete: if false;
+    }
+
+    match /revisiones/{id} {
+      allow read: if true;
+      allow create, update: if esTecnico()
+        && request.resource.data.keys().hasOnly(['estado','respuesta','historial','por','actualizado'])
+        && request.resource.data.estado in ['Recibido','En revisión','En verificación','Respondido','Cerrado']
+        && request.resource.data.respuesta is string && request.resource.data.respuesta.size() <= 1500
+        && request.resource.data.historial is list && request.resource.data.historial.size() <= 30
+        && request.resource.data.por == request.auth.uid
+        && request.resource.data.actualizado == request.time;
+      allow delete: if false;
+    }
+
+    match /alertas_tecnicas/{id} {
+      allow read: if true;
+      allow create, update: if esTecnico()
+        && request.resource.data.id == id
+        && request.resource.data.keys().hasOnly(['id','creado','sub','st','categoria','fuente','evidencia','inspeccion','estado','historial','actualizado'])
+        && request.resource.data.estado in ['Pendiente de revisión','En verificación','Verificada','Descartada','Cerrada']
+        && request.resource.data.evidencia is string && request.resource.data.evidencia.size() <= 1500
+        && request.resource.data.historial is list && request.resource.data.historial.size() <= 30
+        && request.resource.data.actualizado == request.time;
+      allow delete: if false;
+    }
+  }
+}

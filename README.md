@@ -33,3 +33,10 @@ Ver [docs/plan-arquitectura.md](docs/plan-arquitectura.md): API con Fastify y Ti
 - Las ubicaciones de los puntos son aproximadas.
 - Los umbrales marcados como provisorios hay que validarlos con la autoridad ambiental.
 - Hecho con ayuda de inteligencia artificial y revisado por el equipo.
+
+## Cómo está armada la página (versión combinada, 13/11/2026)
+
+- `index.html`: **Mi agua** (para vecinos, por departamento y localidad) y **Datos técnicos** (mapa 3D de la cordillera, mapa 2D de cuencas, subsistemas, evidencia satelital Sentinel-2 en `img/sentinel/`, alertas técnicas, revisión de avisos, CSV, integridad).
+- `panel.html`: **Ríos y sensores** (mapa con los ríos reales que bajan de cada mina y 23 sensores), **Avisar algo**, **Reclamos**, **Comprobar un dato** (árbol de Merkle, OpenTimestamps y QR), **WhatsApp** (simulación del bot), **Análisis** de laboratorios y profesionales, **Datos** y **Demo** de 5 pasos. Se genera con `./build.sh` desde `app/aquaabierta.html`. Se conecta sola a la API publicada en Railway.
+- Las dos páginas comparten el mismo menú, colores y tipografía.
+- Guardado de avisos con Firebase (opcional): `firebase.json`, `.firebaserc` y `firestore.rules`. Para activarlo, completar `window.AQUA_FIREBASE` al principio del `<script>` de `index.html` con la configuración del proyecto de Firebase y seguir los pasos de las reglas.
