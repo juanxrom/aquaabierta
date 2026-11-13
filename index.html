@@ -228,6 +228,7 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
 .ev-grid label{font-size:13px;font-weight:700;display:grid;gap:4px;min-width:0}
 .ev-grid select{width:100%;min-width:0}
 .cmp-box{display:grid;gap:10px;max-width:860px;width:100%}
+.cmp .cmp-load{position:absolute;inset:auto 0 12px 0;margin:0 auto;width:max-content;background:rgba(13,20,24,.8);color:#fff;font-size:13px;padding:4px 10px;border-radius:8px}
 .cmp{cursor:ew-resize;touch-action:pan-y;user-select:none}
 .cmp .cmp-handle{position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:#fff;color:#0B2E4A;display:grid;place-items:center;font-weight:900;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.5);pointer-events:none}
 .cmp{position:relative;width:100%;max-width:860px;aspect-ratio:1086/695;border-radius:12px;overflow:hidden;background:#0d1418}
@@ -458,13 +459,13 @@ nav.menu{flex-basis:100%;justify-content:flex-start;padding-bottom:2px}
     <div class="card" style="display:grid;gap:12px">
       <div class="ev-grid">
         <label for="ev-mine">Proyecto<select id="ev-mine"></select></label>
-        <label for="ev-prod">Producto<select id="ev-prod"><option value="truecolor">Color natural</option><option value="ndwi">NDWI · agua superficial</option><option value="ndsi">NDSI · nieve y hielo</option></select></label>
-        <label for="ev-a">Imagen A (antes)<select id="ev-a"></select></label>
-        <label for="ev-b">Imagen B (después)<select id="ev-b"></select></label>
+        <label for="ev-prod">Producto<select id="ev-prod"><option value="truecolor">Color natural</option><option value="ndwi">Agua y humedad</option><option value="ndsi">Nieve y hielo</option></select></label>
+        <label for="ev-a">Fecha A (antes)<input type="date" id="ev-a"></label>
+        <label for="ev-b">Fecha B (después)<input type="date" id="ev-b"></label>
       </div>
       <p class="sub" id="ev-desc"></p>
       <div id="ev-body" style="display:grid;gap:10px"></div>
-      <p class="sub">Las capturas son imágenes de referencia, no capas georreferenciadas: no se calcula superficie, cobertura ni causa a partir de ellas. Para ver la escena real sobre el mapa, usá los enlaces a Copernicus Browser.</p>
+      <p class="sub">Imágenes reales de Sentinel-2 (Agencia Espacial Europea), servidas por Esri. El satélite pasa cada 5 días aproximadamente y publica con unos días de demora: para cada fecha se muestra la pasada más cercana anterior, con pocas nubes. Son imágenes para mirar, no mediciones: no se calcula superficie, cobertura ni causa a partir de ellas.</p>
     </div>
   </section>
   <section data-tab="estaciones">
@@ -1362,7 +1363,7 @@ let lastSub=null;
 let subFly=false;
 function onSubChange(){lastSub=curSub;renderTechFly();if(view==="tecnico"&&subFly){subFly=false;flyTo3d(subTarget(curSub));const w=$("map3d-wrap");if(w)w.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"})}const ms=[...new Set(STATIONS.filter(s=>s.sub===curSub).flatMap(s=>s.mines))];if(ms.length&&!evTouched){$("ev-mine").value=ms[0];renderEvidence()}const sel=$("ta-st");if(sel&&!taTouched){const m=STATIONS.find(s=>s.sub===curSub&&s.role==="mina")||STATIONS.find(s=>s.sub===curSub);if(m)sel.value=m.id}}
 /* ---------- Evidencia satelital ---------- */
-const PRODUCT_META={truecolor:{label:"Color natural",layer:"1_TRUE_COLOR",desc:"Color natural: sirve para reconocer el terreno, las instalaciones y su contexto. No es un índice espectral."},ndwi:{label:"NDWI · agua superficial",layer:"7-NDWI",desc:"NDWI ayuda a ver dónde hay agua en superficie (ríos, lagunas, piletas). Una captura no alcanza para calcular superficie ni para saber la causa de un cambio."},ndsi:{label:"NDSI · nieve y hielo",layer:"8-NDSI",desc:"NDSI ayuda a ver la cobertura de nieve. No mide la masa de un glaciar ni separa por sí solo el hielo glaciar de la nieve de la temporada."}};
+const PRODUCT_META={truecolor:{label:"Color natural",layer:"1_TRUE_COLOR",rf:"Natural Color with DRA",desc:"Color natural: se ve como una foto desde el espacio. Sirve para reconocer el terreno, las instalaciones y la nieve."},ndwi:{label:"Agua y humedad",layer:"7-NDWI",rf:"NDMI Colorized",desc:"Agua y humedad: el azul muestra agua o suelo húmedo (ríos, lagunas, piletas) y el marrón, suelo seco. Una imagen no alcanza para calcular superficie ni para saber la causa de un cambio."},ndsi:{label:"Nieve y hielo",layer:"8-NDSI",rf:"Short-wave Infrared with DRA",desc:"Nieve y hielo: con infrarrojo, la nieve y el hielo se ven celeste fuerte y el suelo, marrón o rosado. No mide la masa de un glaciar ni separa el hielo glaciar de la nieve de la temporada."}};
 const CAPTURE_DATA={"ndsi-2024-04-02": "img/sentinel/ndsi-2024-04-02.jpg", "ndsi-2025-04-02": "img/sentinel/ndsi-2025-04-02.jpg", "ndsi-2025-12-28": "img/sentinel/ndsi-2025-12-28.jpg", "ndwi-2025-04-02": "img/sentinel/ndwi-2025-04-02.jpg", "ndwi-2025-06-26": "img/sentinel/ndwi-2025-06-26.jpg", "ndwi-2025-12-28": "img/sentinel/ndwi-2025-12-28.jpg", "truecolor-2025-04-02": "img/sentinel/truecolor-2025-04-02.jpg", "truecolor-2025-06-26": "img/sentinel/truecolor-2025-06-26.jpg", "truecolor-2025-12-28": "img/sentinel/truecolor-2025-12-28.jpg"};
 const CAPTURES=[["truecolor","2025-04-02"],["truecolor","2025-06-26"],["truecolor","2025-12-28"],["ndwi","2025-04-02"],["ndwi","2025-06-26"],["ndwi","2025-12-28"],["ndsi","2024-04-02"],["ndsi","2025-04-02"],["ndsi","2025-12-28"]].map(([p,d])=>({p,d,src:CAPTURE_DATA[`${p}-${d}`]}));
 let evTouched=false,taTouched=false;
@@ -1371,28 +1372,45 @@ function closestCap(p,date){const l=CAPTURES.filter(c=>c.p===p);if(!l.length)ret
 function copUrl(ll,layer,date){const f=encodeURIComponent(date+"T00:00:00.000Z"),t=encodeURIComponent(date+"T23:59:59.999Z");return `https://browser.dataspace.copernicus.eu/?zoom=13&lat=${ll[1]}&lng=${ll[0]}&datasetId=S2_L2A_CDAS&layerId=${encodeURIComponent(layer)}&fromTime=${f}&toTime=${t}&dateMode=SINGLE`}
 const fechaCorta=d=>new Date(d+"T12:00:00").toLocaleDateString("es-AR",{day:"numeric",month:"short",year:"numeric"}).replace(".","");
 const fechaLarga=d=>new Date(d+"T12:00:00").toLocaleDateString("es-AR",{day:"numeric",month:"long",year:"numeric"});
-function evDates(){const p=$("ev-prod").value;const ds=CAPTURES.filter(c=>c.p===p).map(c=>c.d).sort();
-  ["ev-a","ev-b"].forEach((id,k)=>{const sel=$(id);const prev=sel.value;sel.innerHTML=ds.map(d=>`<option value="${d}">${fechaLarga(d)}</option>`).join("");
-    sel.value=ds.includes(prev)?prev:(k===0?ds[0]:ds[ds.length-1])});
-  if($("ev-a").value===$("ev-b").value&&ds.length>1){$("ev-a").value=ds[0];$("ev-b").value=ds[ds.length-1]}}
+/* Imágenes reales de Sentinel-2 para cualquier fecha (servicio público Sentinel-2 de Esri, sin clave) */
+const S2="https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer";
+const isoHoy=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const restarDias=(d,n)=>new Date(new Date(d+"T12:00:00").getTime()-n*864e5).toISOString().slice(0,10);
+function s2Bbox(ll){const dy=.045,dx=dy*1.56/Math.cos(ll[1]*Math.PI/180);return [ll[0]-dx,ll[1]-dy,ll[0]+dx,ll[1]+dy].map(v=>v.toFixed(5)).join(",")}
+/* Para cada fecha: mosaico de las pasadas de los 60 días anteriores, la más cercana a la fecha primero y con pocas nubes */
+function s2Img(ll,p,fecha){const fin=new Date(fecha+"T23:59:59Z").getTime(),ini=fin-60*864e5;
+  const mr={mosaicMethod:"esriMosaicAttribute",sortField:"acquisitiondate",sortValue:fecha.replace(/-/g,"/"),ascending:false,where:"category = 1 AND cloudcover <= 0.2"};
+  return `${S2}/exportImage?bbox=${s2Bbox(ll)}&bboxSR=4326&imageSR=3857&size=1086,695&format=jpg&time=${ini},${fin}&mosaicRule=${encodeURIComponent(JSON.stringify(mr))}&renderingRule=${encodeURIComponent(JSON.stringify({rasterFunction:PRODUCT_META[p].rf}))}&f=image`}
+function evDates(){const hoy=isoHoy();["ev-a","ev-b"].forEach(id=>{$(id).min="2015-07-01";$(id).max=hoy});
+  if(!$("ev-b").value)$("ev-b").value=hoy;if(!$("ev-a").value)$("ev-a").value=restarDias(hoy,365)}
+let evRun=0;
 function renderEvidence(){
-  if(!$("ev-a").options.length)evDates();
-  const m=$("ev-mine").value||"veladero",p=$("ev-prod").value,A=$("ev-a").value,B=$("ev-b").value;const meta=PRODUCT_META[p];const M=MINES[m];
+  evDates();
+  const run=++evRun;
+  const m=$("ev-mine").value||"veladero",p=$("ev-prod").value;let A=$("ev-a").value,B=$("ev-b").value;if(A>B)[A,B]=[B,A];
+  const meta=PRODUCT_META[p];const M=MINES[m];
   const ll=(m==="veladero"&&p==="ndsi")?GEO.guanaco:GEO.mines[m];
   $("ev-desc").textContent=meta.desc;
-  const links=`<div class="controls"><a href="${copUrl(ll,meta.layer,A)}" target="_blank" rel="noopener">Ver A (${fechaLarga(A)}) en Copernicus</a><span class="sub">·</span><a href="${copUrl(ll,meta.layer,B)}" target="_blank" rel="noopener">Ver B (${fechaLarga(B)}) en Copernicus</a></div>`;
-  if(m!=="veladero"){$("ev-body").innerHTML=`<p>Todavía no hay capturas guardadas de <strong>${esc(M.name)}</strong>. Abrí la escena real de Sentinel-2 de cada fecha en Copernicus Browser:</p>${links}<p class="sub">Si en esa fecha no aparece imagen (por nubes), probá con días cercanos: el satélite pasa por la zona cada 5 días aproximadamente. En la versión final, las capturas de cada proyecto se guardan solas en cada pasada.</p>`;return}
-  const a=CAPTURES.find(c=>c.p===p&&c.d===A),b=CAPTURES.find(c=>c.p===p&&c.d===B);
-  $("ev-body").innerHTML=`<p class="sub">${p==="ndsi"?"Zona del glaciar Guanaco, cerca de Veladero.":"Zona de Veladero."} Arrastrá la línea blanca (o el control de abajo) para comparar la imagen A con la B.${A===B?" Elegiste la misma fecha en A y en B.":""}</p>
-   <div class="cmp-box"><div class="cmp" id="ev-cmp"><img src="${a.src}" alt="${esc(meta.label)}, ${fechaLarga(a.d)}" draggable="false"><img class="cmp-b" id="ev-imgb" src="${b.src}" alt="${esc(meta.label)}, ${fechaLarga(b.d)}" draggable="false"><div class="cmp-line" id="ev-line"></div><div class="cmp-handle" id="ev-handle" aria-hidden="true">⇆</div><span class="cmp-tag" style="left:8px">A · ${fechaCorta(a.d)}</span><span class="cmp-tag" style="right:8px">B · ${fechaCorta(b.d)}</span></div>
+  const links=`<div class="controls"><a href="${copUrl(ll,meta.layer,A)}" target="_blank" rel="noopener">Ver A en Copernicus</a><span class="sub">·</span><a href="${copUrl(ll,meta.layer,B)}" target="_blank" rel="noopener">Ver B en Copernicus</a></div>`;
+  $("ev-body").innerHTML=`<p class="sub">${esc(M.name)}${p==="ndsi"&&m==="veladero"?" · glaciar Guanaco":""}. Para cada fecha se usa la pasada del satélite más cercana anterior, con pocas nubes. Arrastrá la línea blanca para comparar A con B.</p>
+   <div class="cmp-box"><div class="cmp" id="ev-cmp"><img id="ev-imga" src="${s2Img(ll,p,A)}" alt="${esc(meta.label)}, imagen A" draggable="false"><img class="cmp-b" id="ev-imgb" src="${s2Img(ll,p,B)}" alt="${esc(meta.label)}, imagen B" draggable="false"><div class="cmp-line" id="ev-line"></div><div class="cmp-handle" id="ev-handle" aria-hidden="true">⇆</div><span class="cmp-tag" style="left:8px">A · ${fechaCorta(A)}</span><span class="cmp-tag" style="right:8px">B · ${fechaCorta(B)}</span><p class="cmp-load" id="ev-load">Cargando imagen…</p></div>
    <label class="sub" for="ev-slider" style="display:flex;gap:10px;align-items:center">Mover el corte<input type="range" id="ev-slider" min="0" max="100" value="50" style="flex:1"></label></div>
-   <div class="controls"><a href="${a.src}" download="${p}-${a.d}.jpg">Descargar A</a><span class="sub">·</span><a href="${b.src}" download="${p}-${b.d}.jpg">Descargar B</a></div>${links}`;
+   <div class="controls"><a href="${s2Img(ll,p,A)}" target="_blank" rel="noopener">Abrir imagen A</a><span class="sub">·</span><a href="${s2Img(ll,p,B)}" target="_blank" rel="noopener">Abrir imagen B</a></div>${links}`;
+  let listas=0;["ev-imga","ev-imgb"].forEach(id=>{const im=$(id);im.addEventListener("load",()=>{if(++listas===2&&$("ev-load"))$("ev-load").remove()});im.addEventListener("error",()=>evFalla(run,m,p,links))});
   const setCut=v=>{v=Math.max(0,Math.min(100,v));$("ev-imgb").style.clipPath=`inset(0 0 0 ${v}%)`;$("ev-line").style.left=v+"%";$("ev-handle").style.left=v+"%";$("ev-slider").value=v};
   $("ev-slider").addEventListener("input",e=>setCut(+e.target.value));
   const cmp=$("ev-cmp");let drag=false;const at=e=>{const r=cmp.getBoundingClientRect();setCut((e.clientX-r.left)/r.width*100)};
   cmp.addEventListener("pointerdown",e=>{drag=true;cmp.setPointerCapture(e.pointerId);at(e)});
   cmp.addEventListener("pointermove",e=>{if(drag)at(e)});
   ["pointerup","pointercancel"].forEach(t=>cmp.addEventListener(t,()=>{drag=false}));
+}
+/* Si el servicio de imágenes no responde: capturas guardadas de Veladero o enlaces a Copernicus */
+function evFalla(run,m,p,links){
+  if(run!==evRun||$("ev-body").dataset.falla==run)return;$("ev-body").dataset.falla=run;
+  if(m!=="veladero"){$("ev-body").innerHTML=`<p>No se pudo cargar la imagen del satélite (puede ser la conexión). Abrí la escena en Copernicus Browser:</p>${links}`;return}
+  const cs=CAPTURES.filter(c=>c.p===p).sort((x,y)=>x.d<y.d?-1:1);const a=cs[0],b=cs[cs.length-1];
+  $("ev-body").innerHTML=`<p class="sub">No se pudo cargar la imagen en vivo (puede ser la conexión). Se muestran las capturas guardadas de Veladero: ${fechaLarga(a.d)} y ${fechaLarga(b.d)}.</p>
+   <div class="cmp-box"><div class="cmp"><img src="${a.src}" alt="Captura guardada ${a.d}"><img class="cmp-b" src="${b.src}" alt="Captura guardada ${b.d}"><div class="cmp-line"></div><span class="cmp-tag" style="left:8px">A · ${fechaCorta(a.d)}</span><span class="cmp-tag" style="right:8px">B · ${fechaCorta(b.d)}</span></div></div>${links}`;
 }
 /* ---------- Ingreso del equipo técnico ---------- */
 function renderTechAuth(){
@@ -1462,8 +1480,8 @@ function bindCsv(){
   $("csv-alertas").addEventListener("click",()=>downloadText("aquaabierta-alertas-tecnicas.csv",toCSV([["codigo","fecha","subsistema","punto","categoria","fuente","estado","evidencia","inspeccion"]].concat(techAlerts.map(a=>[a.id,new Date(a.creado).toISOString(),SUBS[a.sub]?SUBS[a.sub].name:a.sub,ST[a.st]?ST[a.st].name:a.st,a.categoria,a.fuente,a.estado,a.evidencia,a.inspeccion]))),$("csv-msg"),"text/csv"));
 }
 function initUnified(){
-  $("ev-mine").innerHTML=Object.entries(MINES).map(([k,M])=>`<option value="${k}">${esc(M.name)}${k==="veladero"?" · con capturas guardadas":""}</option>`).join("");
-  ["ev-mine","ev-prod","ev-a","ev-b"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="ev-mine")evTouched=true;if(id==="ev-prod")evDates();renderEvidence()}));
+  $("ev-mine").innerHTML=Object.entries(MINES).map(([k,M])=>`<option value="${k}">${esc(M.name)}</option>`).join("");
+  ["ev-mine","ev-prod","ev-a","ev-b"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="ev-mine")evTouched=true;renderEvidence()}));
   renderEvidence();fillTaStations();bindTechAlerts();bindStored();bindCsv();renderFlyButtons();renderTechAuth();
 }
 
