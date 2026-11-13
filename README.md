@@ -4,24 +4,28 @@
 
 Plataforma de monitoreo hídrico participativo y transparente para San Juan, Argentina. Desafío 1 de la hackatón minera de Ciclo Pilares.
 
-## Boceto (versión 0)
+## La página
 
-Página única, sin servidor, con datos simulados en el navegador:
+Una sola página (`index.html`), con el estilo de AquaAbierta (celeste y azul, letra redondeada) y pestañas arriba:
 
-- **El agua hoy**: mapa esquemático con los puntos de control y semáforo (verde, amarillo, rojo) en lenguaje simple.
-- **Avisar algo**: formulario para la comunidad (con foto y medición propia opcional). Cada aviso se convierte en un reclamo con número, responsable y plazo.
-- **Reclamos**: seguimiento público. Se puede ver como vecino, empresa o autoridad ambiental. Los avisos se unen solos con las alertas del sensor de la misma cuenca.
-- **Comprobar un dato**: sello digital por lotes (SHA-256 + árbol de Merkle encadenado). Muestra qué pasa si alguien altera un dato.
-- **Datos abiertos**: API planeada, datos en vivo y tabla de umbrales del semáforo.
-- **Demo**: la historia del pitch en 5 pasos y una prueba de velocidad con 10.000 mediciones.
+- **Mi agua**: para vecinos. Elegís tu departamento y localidad y te dice en palabras simples si podés usar el agua, de dónde viene y cómo avisar algo raro.
+- **Mapa**: mapa 3D de la cordillera (relieve real, nieve, glaciares, minas, estaciones, pueblos y avisos), mapa 2D de cuencas y subsistemas.
+- **Estaciones**: datos técnicos por subsistema, control contra después de la mina y empresa contra red independiente.
+- **Satélite**: evidencia Sentinel-2 (color natural, NDWI y NDSI) en `img/sentinel/`.
+- **Alertas**: alertas de toda la provincia y alertas técnicas registradas.
+- **Reportes**: avisos de vecinos con número, responsable, plazo y respuesta pública.
+- **Análisis**: laboratorios y profesionales suben sus análisis con informe firmado, huellas SHA-256 y revisión técnica.
+- **WhatsApp**: simulación del bot, con la misma conversación que el bot real.
+- **Datos abiertos**: cadena de integridad SHA-256, qué está medido y qué no, CSV, API e ingesta.
+- **Minas y pueblos**: minas y proyectos (en producción o en proyecto), departamentos, localidades y fuentes.
 
 ### Cómo verlo
 
-Abrí `index.html` en el navegador o activá GitHub Pages (Settings → Pages → rama `main`, carpeta `/`).
+Publicada en GitHub Pages: https://juanxrom.github.io/aquaabierta/. También se puede abrir `index.html` directo en el navegador.
 
 ### Cómo editarlo
 
-Se edita `app/aquaabierta.html` y después se corre `./build.sh`, que genera `index.html`.
+Se edita `index.html` directamente. Si cambia la conversación del bot (`bot-whatsapp/conversacion.js`), correr `python3 herramientas/copiar-bot.py` para copiarla en la página.
 
 ## Próximos pasos (versión final)
 
@@ -29,14 +33,13 @@ Ver [docs/plan-arquitectura.md](docs/plan-arquitectura.md): API con Fastify y Ti
 
 ## Aclaraciones
 
-- Todos los datos, la empresa "Minera Demo" y los reclamos son de prueba.
+- Las mediciones, alertas y reclamos son de prueba. Las respuestas de empresas están firmadas como "Empresa operadora (simulación)". Los ríos, pueblos, minas y proyectos son reales.
 - Las ubicaciones de los puntos son aproximadas.
 - Los umbrales marcados como provisorios hay que validarlos con la autoridad ambiental.
 - Hecho con ayuda de inteligencia artificial y revisado por el equipo.
 
-## Cómo está armada la página (versión combinada, 13/11/2026)
+## Otras partes del proyecto
 
-- `index.html`: **Mi agua** (para vecinos, por departamento y localidad) y **Datos técnicos** (mapa 3D de la cordillera, mapa 2D de cuencas, subsistemas, evidencia satelital Sentinel-2 en `img/sentinel/`, alertas técnicas, revisión de avisos, CSV, integridad).
-- `panel.html`: **Ríos y sensores** (mapa con los ríos reales que bajan de cada mina y 23 sensores), **Avisar algo**, **Reclamos**, **Comprobar un dato** (árbol de Merkle, OpenTimestamps y QR), **WhatsApp** (simulación del bot), **Análisis** de laboratorios y profesionales, **Datos** y **Demo** de 5 pasos. Se genera con `./build.sh` desde `app/aquaabierta.html`. Se conecta sola a la API publicada en Railway.
-- Las dos páginas comparten el mismo menú, colores y tipografía.
-- Guardado de avisos con Firebase (opcional): `firebase.json`, `.firebaserc` y `firestore.rules`. Para activarlo, completar `window.AQUA_FIREBASE` al principio del `<script>` de `index.html` con la configuración del proyecto de Firebase y seguir los pasos de las reglas.
+- `api/`: API abierta (Fastify), publicada en Railway: https://aquaabierta-api-production.up.railway.app/docs
+- `bot-whatsapp/`: bot de WhatsApp (API oficial de Meta) con respaldo opcional por Telegram.
+- Guardado de avisos con Firebase: `firebase.json`, `.firebaserc` y `firestore.rules`. La configuración está en `window.AQUA_FIREBASE`, al principio del `<script>` de `index.html`.

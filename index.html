@@ -8,30 +8,35 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" rel="stylesheet">
 <script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* Two views: vecino (one locality, plain language) / tecnico (province overview, 3D and 2D maps, data per subsystem) */
-  --bg:#F2F5F7; --surface:#FFFFFF; --ink:#13212C; --muted:#56687A; --line:#D7DFE6; --accent:#1F5FA8;
-  --water:#6FA6D8; --land:#E9EDF0; --hill:#D3DBE2; --s4:#7A5CC7;
-  --ok:#1C8048; --ok-bg:#E3F3E9; --warn:#9A6410; --warn-bg:#FBF0DA; --warn-dot:#E0A030; --bad:#B8322A; --bad-bg:#FBE6E3;
-  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
-  --font-body:"Public Sans","Segoe UI",system-ui,sans-serif;
-  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --bg:#F2F8FC; --surface:#FFFFFF; --soft:#E6F3FB; --ink:#0B2E4A; --muted:#4D6A80; --line:#D3E5F1;
+  --celeste:#29A8E0; --azul:#0A5FAE; --azul-ink:#FFFFFF; --accent:#0A5FAE;
+  --water:#7CC6EC; --land:#EAF2F7; --hill:#D6E6F0; --s4:#7A5CC7;
+  --ok:#1C9A57; --ok-bg:#E3F6EC; --warn:#A87300; --warn-bg:#FFF4D6; --warn-dot:#E0A030; --bad:#D23B3B; --bad-bg:#FDE7E7;
+  --chat-bg:#ECE5DD; --chat-yo:#D9FDD3;
+  --font-display:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;
+  --font-body:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;
+  --font-mono:ui-monospace,Menlo,Consolas,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0E151B; --surface:#16202A; --ink:#E4ECF2; --muted:#93A5B4; --line:#2A3946; --accent:#7AAEE8;
-    --water:#3D74A8; --land:#18232E; --hill:#22313F; --s4:#A994F0;
-    --ok:#56C98A; --ok-bg:#12301F; --warn:#E8B45A; --warn-bg:#36290F; --bad:#F2776D; --bad-bg:#3A1917;
+    --bg:#0A1A27; --surface:#10273A; --soft:#14324A; --ink:#E8F4FC; --muted:#9DB8CC; --line:#1F4260;
+  --celeste:#4CC0F2; --azul:#4AA3F0; --azul-ink:#06192A; --accent:#4AA3F0;
+  --water:#2E7FAF; --land:#0F2234; --hill:#163049; --s4:#A994F0;
+  --ok:#3CCB7F; --ok-bg:#123527; --warn:#F1B935; --warn-bg:#3A2E0E; --warn-dot:#F1B935; --bad:#FF6B6B; --bad-bg:#3C1719;
+  --chat-bg:#0B141A; --chat-yo:#005C4B;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0E151B; --surface:#16202A; --ink:#E4ECF2; --muted:#93A5B4; --line:#2A3946; --accent:#7AAEE8;
-  --water:#3D74A8; --land:#18232E; --hill:#22313F; --s4:#A994F0;
-  --ok:#56C98A; --ok-bg:#12301F; --warn:#E8B45A; --warn-bg:#36290F; --bad:#F2776D; --bad-bg:#3A1917;
+  --bg:#0A1A27; --surface:#10273A; --soft:#14324A; --ink:#E8F4FC; --muted:#9DB8CC; --line:#1F4260;
+  --celeste:#4CC0F2; --azul:#4AA3F0; --azul-ink:#06192A; --accent:#4AA3F0;
+  --water:#2E7FAF; --land:#0F2234; --hill:#163049; --s4:#A994F0;
+  --ok:#3CCB7F; --ok-bg:#123527; --warn:#F1B935; --warn-bg:#3A2E0E; --warn-dot:#F1B935; --bad:#FF6B6B; --bad-bg:#3C1719;
+  --chat-bg:#0B141A; --chat-yo:#005C4B;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -235,6 +240,120 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
 .rev{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:8px}
 .rev select,.rev textarea{width:100%}
 .hist{font-size:12.5px;color:var(--muted);display:grid;gap:2px}
+
+/* ===== Estilo AquaAbierta (celeste y azul, letra redondeada) ===== */
+body{font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1{font-weight:900}
+h2{font-size:1.4rem;font-weight:800}
+h3{font-size:1.08rem;font-weight:800}
+a{color:var(--azul)}
+:focus-visible{outline:3px solid var(--celeste);outline-offset:2px}
+button{border-radius:12px;padding:9px 14px;border:1.5px solid var(--line);font-weight:700;background:var(--surface)}
+button:hover{border-color:var(--celeste);background:var(--soft)}
+button.primary{background:var(--azul);border-color:var(--azul);color:var(--azul-ink);font-weight:800}
+button.primary:hover{background:var(--azul);filter:brightness(1.08)}
+button.danger{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+button[aria-pressed="true"]{border-color:var(--azul);outline:none;box-shadow:inset 0 0 0 1px var(--azul);background:var(--soft)}
+select,input,textarea{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:1rem}
+.wrap{max-width:1180px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card{border-radius:18px;padding:20px}
+.pill{font-weight:800;padding:4px 12px}
+.kpi{border-radius:16px}
+.val{background:var(--soft);border-radius:12px}
+.v-answer-txt{background:var(--soft)}
+.resp{border-left-color:var(--celeste);background:var(--soft);border-radius:0 12px 12px 0}
+pre{background:var(--soft);border-radius:12px}
+.alert{border-radius:14px}
+.block{border-radius:14px}
+.simbar{font-size:.88rem}
+/* Encabezado con pestañas */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top>.wrap{display:flex;align-items:center;gap:10px 16px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-weight:900;font-size:1.35rem;letter-spacing:-.01em}
+.brand svg{width:34px;height:34px}
+.brand .b2{color:var(--celeste)}
+.demo-tag{font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--warn-bg);color:var(--warn);padding:3px 8px;border-radius:6px}
+nav.menu{display:flex;gap:4px;overflow-x:auto;flex:1;min-width:0;justify-content:flex-end;scrollbar-width:thin}
+nav.menu a{white-space:nowrap;text-decoration:none;color:var(--ink);font-weight:700;padding:8px 12px;border-radius:999px;font-size:.96rem}
+nav.menu a:hover{background:var(--soft)}
+nav.menu a[aria-current="page"]{background:var(--azul);color:var(--azul-ink)}
+nav.menu{flex-basis:100%;justify-content:flex-start;padding-bottom:2px}
+.mapcard,.map3d-card{padding:0}
+.demo-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--warn-bg);border-color:transparent}
+.demo-bar p{color:var(--warn);font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;z-index:20;max-width:calc(100% - 32px)}
+/* Análisis y WhatsApp (de la versión anterior de AquaAbierta) */
+.aa .muted{color:var(--muted)}
+.aa .small{font-size:.88rem}
+.aa .num{font-variant-numeric:tabular-nums}
+.aa h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:900}
+.aa h2{font-size:1.4rem;font-weight:800}
+.aa h3{font-size:1.08rem;font-weight:800}
+.aa .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;border-radius:12px;padding:12px 18px;font-weight:800;text-decoration:none;background:var(--azul);color:var(--azul-ink);font-size:1rem}
+.aa .btn.sec{background:var(--soft);color:var(--ink)}
+.aa .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.aa .stack{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.aa .apill{display:inline-flex;align-items:center;gap:8px;font-weight:800;border-radius:999px;padding:5px 12px;font-size:.95rem}
+.aa .apill::before{content:"";width:11px;height:11px;border-radius:50%;background:currentColor}
+.aa .s-verde{background:var(--ok-bg);color:var(--ok)}
+.aa .s-amarillo{background:var(--warn-bg);color:var(--warn)}
+.aa .s-rojo{background:var(--bad-bg);color:var(--bad)}
+.aa .s-gris{background:var(--soft);color:var(--muted)}
+.aa .lbl{font-weight:800;display:block;margin-bottom:6px}
+.aa input[type=text],.aa input[type=number],.aa input[type=datetime-local],.aa select,.aa textarea{width:100%}
+.aa textarea{min-height:90px;resize:vertical}
+.aa details.extra{border:1.5px dashed var(--line);border-radius:14px;padding:12px 14px}
+.aa details.extra summary{cursor:pointer;font-weight:800}
+.aa .info-box{background:var(--soft);border-radius:14px;padding:14px 16px}
+.aa .ticket{display:grid;gap:12px}
+.aa .ticket .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.aa .tid{font-weight:900;color:var(--azul);font-variant-numeric:tabular-nums}
+.aa .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 16px;font-size:.93rem}
+.aa .meta b{display:block;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.aa .timeline{display:grid;gap:10px;border-left:3px solid var(--line);padding-left:14px;margin-left:4px}
+.aa .ev .quien{font-weight:800}
+.aa .tag{display:inline-block;font-size:.8rem;font-weight:800;padding:3px 9px;border-radius:7px;background:var(--soft)}
+.aa .tag.warn{background:var(--warn-bg);color:var(--warn)}
+.aa .pasos{display:grid;gap:10px;counter-reset:p}
+.aa .paso{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start}
+.aa .paso::before{counter-increment:p;content:counter(p);width:30px;height:30px;border-radius:50%;background:var(--azul);color:var(--azul-ink);display:grid;place-items:center;font-weight:900}
+.aa .mono{font-family:var(--font-mono);font-size:.8rem;word-break:break-all;background:var(--soft);padding:6px 8px;border-radius:8px;display:block}
+.aa table{border-collapse:collapse;width:100%;font-size:.95rem}
+.aa th,.aa td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.aa th{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.aa .scroll{overflow-x:auto}
+/* Análisis profesionales */
+.aa .fs{min-width:0;border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:12px;grid-template-columns:minmax(0,1fr);margin:0}
+.aa .fs legend{font-weight:900;font-size:1.05rem;padding:0 6px}
+.aa .campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.aa .campos>*{min-width:0}
+.aa .campos input[type=file]{max-width:100%;width:100%}
+.aa .res-tabla input,.aa .res-tabla select{padding:8px;font-size:.95rem}
+.aa .res-tabla td{padding:6px 4px}
+.aa .res-tabla td:first-child{min-width:170px}
+.aa .doc{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--line);font-size:.92rem}
+.aa .doc .mono{font-size:.72rem}
+.aa .conf{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:.8rem;padding:3px 10px;border-radius:999px}
+.aa .conf.alta{background:var(--ok-bg);color:var(--ok)}
+.aa .conf.media{background:var(--warn-bg);color:var(--warn)}
+.aa .conf.basica{background:var(--soft);color:var(--muted)}
+.aa .help{font-size:.85rem;color:var(--muted);margin-top:4px}
+/* Chat de WhatsApp (simulación) */
+.aa .tel{max-width:400px;width:100%;margin:0 auto;border:10px solid var(--ink);border-radius:34px;overflow:hidden;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;height:640px}
+.aa .tel-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#0F6E5C;color:#fff}
+.aa .tel-top svg{width:30px;height:30px;flex:none}
+.aa .chat{overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:8px;background:var(--chat-bg)}
+.aa .burb{max-width:85%;padding:8px 11px;border-radius:12px;font-size:.92rem;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.aa .burb.bot{background:var(--surface);color:var(--ink);align-self:flex-start;border-top-left-radius:3px}
+.aa .burb.yo{background:var(--chat-yo);color:var(--ink);align-self:flex-end;border-top-right-radius:3px}
+.aa .burb .h{display:block;text-align:right;font-size:.68rem;color:var(--muted);margin-top:2px}
+.aa .rapidas{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
+.aa .rapidas button{flex:none;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;font-size:.85rem}
+.aa .tel-input{display:flex;gap:8px;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
+.aa .tel-input input{flex:1;min-width:0;border-radius:999px}
+.aa .tel-input button{border-radius:999px;padding:10px 16px}
+@media (max-width:560px){.aa .tel{height:560px;border-width:6px}}
 @keyframes pulse{0%{r:9;opacity:.6}100%{r:22;opacity:0}}
 .ring{animation:pulse 1.6s ease-out infinite}
 @media (prefers-reduced-motion: reduce){.ring{animation:none;opacity:0}}
@@ -242,20 +361,23 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
 </head>
 <body>
 <header class="top">
-  <div class="wrap top-inner">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3c3 4.2 6 7.6 6 11a6 6 0 0 1-12 0c0-3.4 3-6.8 6-11Z" fill="#fff"/></svg></div>
-      <div><h1>AquaAbierta</h1><p class="sub">El agua es de todos, la información también · San Juan</p></div>
-    </div>
-    <nav class="topnav" aria-label="Vistas">
-      <a href="#vecino" id="nav-vecino">Mi agua</a>
-      <a href="#tecnico" id="nav-tecnico">Datos técnicos</a>
-      <a href="panel.html#inicio">Ríos y sensores</a>
-      <a href="panel.html#reclamos">Reclamos</a>
-      <a href="panel.html#analisis">Análisis</a>
-      <a href="panel.html#whatsapp">WhatsApp</a>
-      <a href="panel.html#verificar">Comprobar un dato</a>
-      <a href="panel.html#presentacion">Demo</a>
+  <div class="wrap">
+    <a class="brand" href="#vecino" aria-label="AquaAbierta, inicio">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3C20 3 7 17.5 7 26a13 13 0 0 0 26 0C33 17.5 20 3 20 3Z" fill="var(--celeste)"/><path d="M12 27.5q4-3.6 8 0t8 0" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/><circle cx="20" cy="18" r="2.6" fill="#fff"/></svg>
+      <span>Aqua<span class="b2">Abierta</span></span>
+    </a>
+    <span class="demo-tag">Datos de prueba</span>
+    <nav class="menu" aria-label="Secciones">
+      <a href="#vecino">Mi agua</a>
+      <a href="#mapa">Mapa</a>
+      <a href="#estaciones">Estaciones</a>
+      <a href="#satelite">Satélite</a>
+      <a href="#alertas">Alertas</a>
+      <a href="#reportes">Reportes</a>
+      <a href="#analisis">Análisis</a>
+      <a href="#whatsapp">WhatsApp</a>
+      <a href="#datos">Datos abiertos</a>
+      <a href="#minas">Minas y pueblos</a>
     </nav>
   </div>
 </header>
@@ -307,8 +429,9 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
 
 <!-- ============ TECNICO ============ -->
 <main class="view wrap" id="view-tecnico" hidden>
-  <div class="card tech-auth" id="t-auth"></div>
-  <section>
+  <div class="card demo-bar" data-tab="mapa estaciones alertas reportes datos"><p>Modo demostración para el jurado</p><div class="controls" id="t-demo"></div></div>
+  <div class="card tech-auth" id="t-auth" data-tab="alertas reportes"></div>
+  <section data-tab="mapa">
     <div class="sec-head">
       <h2>Toda la provincia, dividida por cuencas</h2>
     </div>
@@ -330,21 +453,21 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
       </div>
     </div>
   </section>
-  <section>
+  <section data-tab="mapa">
     <h2>Subsistemas</h2>
     <div class="grid3" id="p-subs"></div>
   </section>
-  <section>
-    <div class="sec-head"><h2>Datos técnicos por subsistema</h2><div class="controls" id="t-demo"></div></div>
+  <section data-tab="estaciones">
+    <div class="sec-head"><h2>Datos técnicos por subsistema</h2></div>
     <div class="subtabs" id="t-tabs" role="group" aria-label="Elegir subsistema"></div>
     <div class="card" id="t-subinfo" style="display:grid;gap:6px"></div>
     <div class="grid3" id="t-stations"></div>
   </section>
-  <section>
+  <section data-tab="estaciones">
     <div class="sec-head"><h2>Control vs. después de la mina</h2><p class="sub">Si el agua cambia solo aguas abajo de la mina, el cambio viene de ahí. Si cambia también en el control, el origen es otro.</p></div>
     <div class="grid2" id="t-charts"></div>
   </section>
-  <section>
+  <section data-tab="satelite">
     <div class="sec-head"><h2>Evidencia satelital Sentinel-2</h2><p class="sub">Color natural, NDWI (agua) y NDSI (nieve y hielo) para cada proyecto.</p></div>
     <div class="card" style="display:grid;gap:12px">
       <div class="ev-grid">
@@ -358,19 +481,19 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
       <p class="sub">Las capturas son imágenes de referencia, no capas georreferenciadas: no se calcula superficie, cobertura ni causa a partir de ellas. Para ver la escena real sobre el mapa, usá los enlaces a Copernicus Browser.</p>
     </div>
   </section>
-  <section>
+  <section data-tab="estaciones">
     <div class="sec-head"><h2>Empresa vs. red independiente</h2><button class="danger" id="btn-disc">Simular dato de la empresa distinto</button></div>
     <p class="sub" style="max-width:80ch">Cada empresa informa su monitoreo. AquaAbierta lo compara con la red independiente en el mismo punto. Para los proyectos que todavía no explotan, se compara la línea de base.</p>
     <div class="card tbl-wrap"><table class="tbl" id="t-disc"></table></div>
   </section>
-  <section>
+  <section data-tab="alertas">
     <div class="sec-head"><h2>Alertas de toda la provincia</h2><p class="sub">Cada alerta llega solo a las localidades de esa cuenca.</p></div>
     <div class="grid2">
       <div class="alerts" id="t-alerts" aria-live="polite"></div>
       <div class="card"><h3>Así llega al celular</h3><div class="phone" id="t-phone" style="margin-top:10px"></div></div>
     </div>
   </section>
-  <section>
+  <section data-tab="alertas">
     <div class="sec-head"><h2>Alertas técnicas registradas</h2><p class="sub">Las registra el equipo técnico a partir de estaciones, satélite, avisos o campo. Quedan con estado e historial.</p></div>
     <div class="grid2">
       <form class="card" id="ta-form" novalidate style="display:grid;gap:10px">
@@ -386,13 +509,13 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
       <div class="tickets" id="ta-list"></div>
     </div>
   </section>
-  <section>
+  <section data-tab="reportes">
     <div class="sec-head"><h2>Reportes y respuestas formales</h2><p class="sub">Cada reporte tiene código, responsable y respuesta pública en 72 horas.</p></div>
     <div class="card" style="display:grid;gap:10px"><h3>Avisos de vecinos: revisión y respuesta pública</h3><p class="sub">El equipo técnico cambia el estado y escribe una respuesta. El vecino la ve en "Mis avisos" y en "Avisos de los vecinos".</p><p class="sub" id="t-persist"></p><div class="tickets" id="t-stored"></div></div>
     <h3>Reportes de esta demostración (no se guardan)</h3>
     <div class="tickets" id="t-tickets"></div>
   </section>
-  <section>
+  <section data-tab="datos">
     <div class="sec-head"><h2>Integridad de los datos</h2><p class="sub">Cada hora las lecturas de todas las estaciones se sellan con una huella SHA-256 encadenada.</p></div>
     <div class="card" style="display:grid;gap:12px">
       <div class="controls"><button class="primary" id="btn-verify">Verificar la cadena</button><button class="danger" id="btn-tamper">Simular que alguien borra un dato</button><button id="btn-restore">Restaurar</button><button id="btn-verify-stored">Verificar reportes guardados</button></div>
@@ -400,7 +523,7 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
       <div class="chain" id="chain"></div>
     </div>
   </section>
-  <section class="grid2">
+  <section data-tab="datos" class="grid2">
     <div class="card science" style="display:grid;gap:4px">
       <h3>Qué está medido y qué no</h3>
       <p class="sub">Para que nadie confunda una demostración con una medición.</p>
@@ -419,7 +542,7 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
       <p class="sub" id="csv-msg" aria-live="polite"></p>
     </div>
   </section>
-  <section>
+  <section data-tab="datos">
     <div class="sec-head"><h2>API abierta e ingesta</h2></div>
     <div class="grid2">
       <div class="card" style="display:grid;gap:10px">
@@ -444,15 +567,15 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
     </div>
   </section>
 
-  <section>
+  <section data-tab="minas">
     <h2>Minas y proyectos, y a quién puede llegar su agua</h2>
     <div class="card tbl-wrap"><table class="tbl" id="p-mines"></table></div>
   </section>
-  <section>
+  <section data-tab="minas">
     <h2>Departamentos y localidades</h2>
     <div class="card tbl-wrap"><table class="tbl" id="p-locs"></table></div>
   </section>
-  <section class="grid2">
+  <section data-tab="minas" class="grid2">
     <div class="card" style="display:grid;gap:8px">
       <h3>Falta confirmar antes de instalar</h3>
       <ul class="plain sub" id="p-confirm"></ul>
@@ -463,8 +586,102 @@ pre{margin:0;background:var(--bg);border-radius:10px;padding:12px;overflow:auto;
     </div>
   </section>
 
+  <!-- ANÁLISIS PROFESIONALES -->
+  <section data-tab="analisis" class="aa" style="gap:18px">
+    <div><h2 style="font-size:1.7rem;font-weight:900">Análisis de laboratorios y profesionales</h2><p class="muted" style="margin-top:6px;max-width:66ch">Laboratorios, universidades, organismos públicos, empresas y profesionales pueden sumar sus análisis del agua de los ríos de San Juan. Cada aporte trae su informe formal, sus pruebas y la firma de un responsable. Una revisión técnica lo valida antes de marcarlo como confiable, y todo queda a la vista y sellado.</p></div>
+    <div class="row"><a class="btn" href="#analisis" id="an-ir">Aportar un análisis</a><span class="small muted" id="an-cuenta"></span></div>
+    <div class="info-box small"><b>¿Cómo leer los colores?</b> Comparamos cada resultado con el límite para agua de bebida del Código Alimentario Argentino (artículo 982). El agua del río no es agua de red, pero ese límite ayuda a entender si un valor es preocupante.</div>
+    <div id="an-lista" class="stack" style="gap:16px"></div>
+
+    <form class="card stack" id="form-an" novalidate style="scroll-margin-top:80px">
+      <div><h2>Aportar un análisis</h2><p class="muted small" style="margin-top:4px">Completá los 5 pasos. Los campos con * son obligatorios. Tu correo no se publica.</p></div>
+
+      <fieldset class="fs"><legend>1. Quién aporta</legend>
+        <div class="campos">
+          <div><label class="lbl" for="an-tipo">Tipo de aportante *</label><select id="an-tipo">
+            <option>Laboratorio acreditado</option><option>Profesional independiente</option><option>Universidad o centro de investigación</option><option>Organismo público</option><option>Empresa</option><option>Organización de la comunidad</option></select></div>
+          <div><label class="lbl" for="an-org">Institución o empresa *</label><input type="text" id="an-org" placeholder="Ej.: Laboratorio de análisis de aguas"></div>
+          <div><label class="lbl" for="an-resp">Responsable técnico *</label><input type="text" id="an-resp" placeholder="Nombre y título"></div>
+          <div><label class="lbl" for="an-mat">Matrícula profesional o CUIT *</label><input type="text" id="an-mat" placeholder="Ej.: Mat. 1234 o 30-12345678-9"></div>
+          <div><label class="lbl" for="an-acred">N.º de acreditación ISO/IEC 17025</label><input type="text" id="an-acred" placeholder="Si el laboratorio está acreditado"><p class="help">Acreditación del Organismo Argentino de Acreditación (OAA). Sube el nivel de confianza.</p></div>
+          <div><label class="lbl" for="an-mail">Correo de contacto *</label><input type="text" id="an-mail" placeholder="No se publica" inputmode="email"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>2. La muestra</legend>
+        <div class="campos">
+          <div><label class="lbl" for="an-punto">Lugar *</label><select id="an-punto"></select></div>
+          <div><label class="lbl" for="an-fecha">Fecha y hora de la toma *</label><input type="datetime-local" id="an-fecha"></div>
+          <div><label class="lbl" for="an-motivo">Motivo</label><select id="an-motivo"><option>Monitoreo de rutina</option><option>Plan de monitoreo de la Declaración de Impacto Ambiental</option><option>Control de la autoridad</option><option>Investigación</option><option>Respuesta a un reclamo</option></select></div>
+          <div><label class="lbl" for="an-tipom">Tipo de muestra</label><select id="an-tipom"><option>Puntual</option><option>Compuesta</option></select></div>
+          <div><label class="lbl" for="an-tomo">Quién tomó la muestra</label><input type="text" id="an-tomo" placeholder="Nombre o equipo"></div>
+          <div><label class="lbl" for="an-cust">N.º de cadena de custodia</label><input type="text" id="an-cust" placeholder="Ej.: CC-2026-0458"><p class="help">El registro que prueba quién tuvo la muestra en cada momento.</p></div>
+        </div>
+        <div class="campos" id="an-otro" hidden>
+          <div><label class="lbl" for="an-lat">Latitud</label><input type="number" id="an-lat" step="0.0001" placeholder="-30.2208"></div>
+          <div><label class="lbl" for="an-lon">Longitud</label><input type="number" id="an-lon" step="0.0001" placeholder="-68.7571"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>3. Resultados</legend>
+        <p class="help" style="margin:0">Cargá cada valor como figura en el informe. Si el resultado está por debajo de lo que el método puede medir, marcá "menor al límite de detección".</p>
+        <div class="scroll"><table class="res-tabla"><thead><tr><th>Parámetro</th><th>Valor</th><th>Unidad</th><th>Método</th><th>Lím. detección</th><th>&lt; LD</th><th></th></tr></thead><tbody id="an-res"></tbody></table></div>
+        <div><button class="btn sec" type="button" id="an-add">Agregar parámetro</button></div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>4. Documentos de respaldo</legend>
+        <p class="help" style="margin:0">Calculamos la huella digital (SHA-256) de cada archivo en tu dispositivo. Si alguien cambia el archivo después, la huella deja de coincidir. En este prototipo los archivos no se suben a ningún servidor.</p>
+        <div class="campos">
+          <div><label class="lbl" for="an-f-informe">Informe firmado (PDF) *</label><input type="file" id="an-f-informe" data-doc="Informe firmado" accept=".pdf,application/pdf"></div>
+          <div><label class="lbl" for="an-f-protocolo">Protocolo del laboratorio</label><input type="file" id="an-f-protocolo" data-doc="Protocolo del laboratorio" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-custodia">Cadena de custodia</label><input type="file" id="an-f-custodia" data-doc="Cadena de custodia" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-acred">Certificado de acreditación</label><input type="file" id="an-f-acred" data-doc="Certificado de acreditación" accept=".pdf,image/*"></div>
+          <div><label class="lbl" for="an-f-fotos">Fotos del muestreo</label><input type="file" id="an-f-fotos" data-doc="Foto del muestreo" accept="image/*" multiple></div>
+        </div>
+        <div id="an-docs"></div>
+      </fieldset>
+
+      <fieldset class="fs"><legend>5. Declaraciones</legend>
+        <div><label class="lbl" for="an-conf">Relación con la actividad minera de la zona *</label><select id="an-conf"><option value="">Elegí una opción</option><option>No tengo relación con empresas de la zona</option><option>Trabajo para o con la empresa operadora</option><option>Trabajo para un organismo de control</option><option>Otra relación (la explico abajo)</option></select></div>
+        <div><label class="lbl" for="an-obs">Observaciones</label><textarea id="an-obs" placeholder="Condiciones del muestreo, clima, algo que convenga saber."></textarea></div>
+        <label class="row" style="align-items:flex-start;gap:8px"><input type="checkbox" id="an-ddjj" style="margin-top:5px"><span>Declaro bajo juramento que los datos y documentos son auténticos y corresponden a la muestra indicada. *</span></label>
+        <label class="row" style="align-items:flex-start;gap:8px"><input type="checkbox" id="an-pub" style="margin-top:5px"><span>Acepto que los resultados se publiquen como datos abiertos, citando a mi institución. *</span></label>
+      </fieldset>
+
+      <p id="an-error" class="small" style="color:var(--bad)" hidden></p>
+      <div class="row"><button class="btn" type="submit">Enviar a revisión técnica</button><span class="small muted">Queda publicado como "En revisión" hasta que la autoridad lo valide.</span></div>
+    </form>
+  </section>
+
+  <!-- WHATSAPP -->
+  <section data-tab="whatsapp" class="aa">
+    <div class="grid2">
+      <div class="stack">
+        <div class="tel" aria-label="Simulación del chat de WhatsApp">
+          <div class="tel-top"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#fff"/><path d="M20 7C20 7 10 18 10 24.5a10 10 0 0 0 20 0C30 18 20 7 20 7Z" fill="#29A8E0"/><path d="M14 25.5q3-2.7 6 0t6 0" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg><div><b>AquaAbierta</b><br><span class="small" style="opacity:.85">cuenta oficial · simulación</span></div></div>
+          <div class="chat" id="chat" aria-live="polite"></div>
+          <div class="rapidas" id="rapidas"></div>
+          <form class="tel-input" id="chat-form"><input type="text" id="chat-in" placeholder="Escribí un mensaje" autocomplete="off" aria-label="Mensaje"><button class="btn" type="submit">Enviar</button></form>
+        </div>
+      </div>
+      <div class="card stack">
+        <h2 style="font-size:1.7rem;font-weight:900">AquaAbierta por WhatsApp</h2>
+        <p class="muted">Mucha gente no va a entrar a una página. Por eso todo lo importante también funciona por WhatsApp, la app que ya usan todos.</p>
+        <div class="pasos">
+          <div class="paso"><p><b>Consultar:</b> escribí <b>1</b> o mandá tu ubicación y te dice cómo está el punto más cercano.</p></div>
+          <div class="paso"><p><b>Avisar:</b> escribí <b>2</b>, contá qué viste y mandá una foto. Se abre un reclamo con número y plazo.</p></div>
+          <div class="paso"><p><b>Seguir el reclamo:</b> escribí <b>3</b> y el número. Cuando la empresa o la autoridad responden, te llega el aviso.</p></div>
+          <div class="paso"><p><b>Comprobar un dato:</b> escribí <b>4</b> y el código del dato.</p></div>
+        </div>
+        <div class="info-box small">Esto es una simulación en la página, con la misma conversación que el bot real. El bot real usa la API oficial de WhatsApp (Meta) y está en la carpeta <code>bot-whatsapp</code> del proyecto. Los avisos que mandes acá aparecen en <a href="#reportes">Reportes</a>, con el mismo número.</div>
+      </div>
+    </div>
+  </section>
+
+
 </main>
 <footer class="wrap">AquaAbierta · Prototipo para el Desafío 1. Umbrales de ejemplo: en la versión real se fijan con la normativa vigente y la mesa de monitoreo. Las ubicaciones de las estaciones son propuestas y se definen con Hidráulica, OSSE y las comunidades.</footer>
+<div class="toast" id="toast" role="status" hidden></div>
 
 <script>
 /* ===== CONFIGURACIÓN DE FIREBASE =====
@@ -830,7 +1047,7 @@ function renderMine(){
   $("v-mine").innerHTML=`<h2 class="v-h">Mis avisos</h2>`+mine.map(t=>`<div class="v-aviso"><div style="display:flex;gap:12px;align-items:center">${ico(t.icon,44,3.5)}<div><strong>Aviso <span class="code">${esc(t.id)}</span></strong><br><span class="v-note">${esc(t.label)} · ${dayhm(t.t)}${t.saved?" · guardado":""}</span></div></div>${t.src?`<img src="${esc(t.src)}" alt="Foto del aviso" style="max-width:180px;border-radius:10px">`:""}
     <div class="v-prog">${steps.map((s,i)=>`<div class="${t.estado>=i?"on":""}"><i></i>${s}</div>`).join("")}</div>${t.saved?(t.resp?`<p class="v-answer-txt"><strong>Respuesta:</strong> ${esc(t.resp)}</p>`:""):(t.estado===2?`<p class="v-answer-txt">${SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown}</p>`:"")}</div>`).join("");
 }
-function ageMyTickets(){for(const t of tickets){if(!t.mine)continue;t.age++;if(t.estado===0&&t.age>=3)advanceTicket(t);else if(t.estado===1&&t.age>=7){advanceTicket(t);t.respuesta="Respuesta formal de la Mesa de Monitoreo, en lenguaje simple para el vecino: "+(SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown)}}}
+function ageMyTickets(){for(const t of tickets){if(t.wa&&t.estado<2){t.age++;if(t.estado===0&&t.age>=3)advanceTicket(t);else if(t.estado===1&&t.age>=7){advanceTicket(t);t.respuesta="Respuesta formal de la Mesa de Monitoreo: "+(SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown);waAviso(t)}continue}if(!t.mine)continue;t.age++;if(t.estado===0&&t.age>=3)advanceTicket(t);else if(t.estado===1&&t.age>=7){advanceTicket(t);t.respuesta="Respuesta formal de la Mesa de Monitoreo, en lenguaje simple para el vecino: "+(SIMPLE_RESP[t.kind]||SIMPLE_RESP.unknown)}}}
 
 /* ---------- Provincia ---------- */
 const LV_FILL=["var(--ok)","var(--warn-dot)","var(--bad)"];
@@ -878,7 +1095,7 @@ function renderProvincia(){
     <div style="display:flex;flex-wrap:wrap;gap:6px">${ms.length?ms.map(m=>`<span class="chip ${MINES[m].cls}">${esc(MINES[m].name.split(" (")[0])} · ${esc(MINES[m].estado.split(" (")[0].split(";")[0])}</span>`).join(""):`<span class="chip">Sin minas aguas arriba</span>`}</div>
     <p class="sub"><strong>Localidades:</strong> ${ls.length?esc(ls.join(", ")):"Sin pueblos que tomen esta agua"}</p>
     <div><button data-sub="${k}">Ver sus datos y su mapa</button></div></article>`}).join("");
-  $("p-subs").querySelectorAll("[data-sub]").forEach(b=>b.addEventListener("click",()=>{curSub=b.dataset.sub;subFly=true;renderTech();$("t-tabs").scrollIntoView({behavior:"smooth",block:"start"})}));
+  $("p-subs").querySelectorAll("[data-sub]").forEach(b=>b.addEventListener("click",()=>{curSub=b.dataset.sub;location.hash="estaciones"}));
   $("p-mines").innerHTML=`<thead><tr><th>Mina o proyecto</th><th>Departamento</th><th>Estado</th><th>Río o agua que puede afectar</th><th>A quién puede llegar</th><th>Subsistema</th></tr></thead><tbody>`+
     Object.values(MINES).map(M=>`<tr><td><strong>${esc(M.name)}</strong></td><td>${esc(M.dept)}</td><td><span class="chip ${M.cls}">${esc(M.estado)}</span></td><td>${esc(M.rio)}${M.confirm?` <span class="confirm">(a confirmar)</span>`:""}</td><td>${esc(M.comun)}</td><td>${esc(SUBS[ST[M.st].sub].name)}</td></tr>`).join("")+"</tbody>";
   $("p-locs").innerHTML=`<thead><tr><th>Departamento</th><th>Localidad</th><th>Subsistema</th><th>Agua de la canilla</th><th>Estado ahora</th></tr></thead><tbody>`+
@@ -896,7 +1113,7 @@ const ROLE_TXT={control:"Control",mina:"Mina o proyecto",pueblo:"Pueblo",toma:"T
 const SER_COL={control:"var(--muted)",mina:"var(--accent)",pueblo:"var(--warn-dot)",toma:"var(--s4)",libre:"var(--ok)"};
 function renderTabs(){
   $("t-tabs").innerHTML=SUB_ORDER.map(k=>{const lv=subLevel(k);return `<button data-sub="${k}" aria-pressed="${k===curSub}"><span class="pill l${lv}" style="padding:0 6px;margin-right:6px"><span class="dot"></span></span>${esc(SUBS[k].name)}</button>`}).join("");
-  $("t-tabs").querySelectorAll("[data-sub]").forEach(b=>b.addEventListener("click",()=>{curSub=b.dataset.sub;subFly=true;renderTech()}));
+  $("t-tabs").querySelectorAll("[data-sub]").forEach(b=>b.addEventListener("click",()=>{curSub=b.dataset.sub;renderTech()}));
 }
 function renderTech(){
   renderTabs();if(curSub!==lastSub)onSubChange();const S_=SUBS[curSub];const sts=STATIONS.filter(s=>s.sub===curSub||(curSub==="SJ"&&false));
@@ -1305,13 +1522,373 @@ $("v-com-mine").addEventListener("click",()=>{comAll=false;renderCommunity()});
 $("v-com-all").addEventListener("click",()=>{comAll=true;renderCommunity()});
 $("v-change").addEventListener("click",()=>{myLoc=null;try{localStorage.removeItem("aa-loc")}catch(e){}renderVecino();window.scrollTo(0,0)});
 
+/* ---------- Ayudas para Análisis y WhatsApp ---------- */
+const q=sel=>document.querySelector(sel),qq=sel=>[...document.querySelectorAll(sel)];
+const ORDEN={gris:-1,verde:0,amarillo:1,rojo:2};
+const fecha=t=>new Date(t).toLocaleString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
+let toastT;function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3500)}
+/* ---------- Análisis de laboratorios y profesionales ---------- */
+/* Límites: Código Alimentario Argentino, art. 982 (agua potable), Res. Conjunta SCS-SAGyP 33/2023 */
+const PAR_AN=[
+ {id:"ph",n:"pH",u:"",rango:[6.5,8.5],q:"Ácido o alcalino."},
+ {id:"ce",n:"Conductividad",u:"µS/cm",q:"Sales disueltas. Sin límite en el Código; se compara con el sensor."},
+ {id:"sdt",n:"Sólidos disueltos totales",u:"mg/l",max:1500,q:"Todo lo que el agua lleva disuelto."},
+ {id:"turb",n:"Turbiedad",u:"NTU",max:3,q:"Qué tan turbia está el agua."},
+ {id:"temp",n:"Temperatura",u:"°C",q:"Influye en la vida del río."},
+ {id:"od",n:"Oxígeno disuelto",u:"mg/l",q:"Oxígeno para peces y otros seres vivos. Sin límite en el Código."},
+ {id:"sulf",n:"Sulfatos",u:"mg/l",max:400,q:"Pueden venir de rocas con minerales o del drenaje de una mina."},
+ {id:"nitr",n:"Nitratos",u:"mg/l",max:45,q:"Suelen venir de fertilizantes o desechos."},
+ {id:"clor",n:"Cloruros",u:"mg/l",max:350,q:"Sales que le dan gusto salado al agua."},
+ {id:"as",n:"Arsénico",u:"mg/l",max:0.01,q:"Aparece natural en suelos de la región. En exceso daña la salud a largo plazo."},
+ {id:"cn",n:"Cianuro",u:"mg/l",max:0.10,q:"Se usa para separar el oro. En exceso es muy tóxico."},
+ {id:"hg",n:"Mercurio",u:"mg/l",max:0.001,q:"Metal pesado muy tóxico."},
+ {id:"pb",n:"Plomo",u:"mg/l",max:0.05,q:"Metal pesado tóxico."},
+ {id:"cd",n:"Cadmio",u:"mg/l",max:0.005,q:"Metal pesado tóxico."},
+ {id:"cr",n:"Cromo",u:"mg/l",max:0.05,q:"Metal pesado."},
+ {id:"ni",n:"Níquel",u:"mg/l",max:0.02,q:"Metal pesado."},
+ {id:"se",n:"Selenio",u:"mg/l",max:0.01,q:"En exceso es tóxico."},
+ {id:"cu",n:"Cobre",u:"mg/l",max:1.0,q:"En exceso da mal gusto y afecta la salud."},
+ {id:"zn",n:"Zinc",u:"mg/l",max:5.0,q:"En exceso da mal gusto."},
+ {id:"fe",n:"Hierro total",u:"mg/l",max:0.30,q:"Mancha y da color al agua."},
+ {id:"mn",n:"Manganeso",u:"mg/l",max:0.10,q:"Mancha el agua; en exceso afecta la salud."},
+ {id:"al",n:"Aluminio",u:"mg/l",max:0.20,q:"Puede aumentar con aguas ácidas."},
+ {id:"q",n:"Caudal",u:"m³/s",q:"Cuánta agua pasa por segundo."},
+];
+const parAn=id=>PAR_AN.find(p=>p.id===id);
+function evalRes(r){
+  const p=parAn(r.p);
+  if(r.menorLD)return{e:"verde",t:"No detectado"};
+  if(p.rango){if(r.v>=p.rango[0]&&r.v<=p.rango[1])return{e:"verde",t:"Dentro del rango"};return{e:"rojo",t:"Fuera del rango"};}
+  if(p.max==null)return{e:"gris",t:"Sin límite de referencia"};
+  if(r.v>p.max)return{e:"rojo",t:"Supera el límite"};
+  if(r.v>=p.max*0.8)return{e:"amarillo",t:"Cerca del límite"};
+  return{e:"verde",t:"Dentro del límite"};
+}
+const limTxt=p=>p.rango?`${fmt(p.rango[0],1)} a ${fmt(p.rango[1],1)}`:(p.max!=null?`máx. ${String(p.max).replace(".",",")} ${p.u}`:"—");
+function confianza(a){
+  if(a.tipo==="Laboratorio acreditado"&&a.acred)return{c:"alta",t:"Confianza alta: laboratorio acreditado"};
+  if(a.mat&&a.docs.some(d=>d.tipo==="Informe firmado"))return{c:"media",t:"Confianza media: profesional matriculado con informe"};
+  return{c:"basica",t:"Confianza básica"};
+}
+const AN={aportes:[],n:0};
+async function sellarAporte(a){
+  const base=JSON.stringify({id:a.id,tipo:a.tipo,org:a.org,resp:a.resp,mat:a.mat,punto:a.punto,fecha:a.fecha,res:a.res,docs:a.docs.map(d=>d.hash)});
+  a.sello=await sha256(base);
+}
+function eventoAn(a,quien,texto){a.eventos.push({t:Date.now(),quien,texto});}
+async function nuevoAporte(d){
+  const a={id:"AN-"+String(++AN.n).padStart(4,"0"),creado:Date.now(),estado:"En revisión técnica",eventos:[],...d};
+  eventoAn(a,a.org,"Envió el análisis con "+a.docs.length+" documento(s) de respaldo.");
+  await sellarAporte(a);
+  AN.aportes.unshift(a);return a;
+}
+function compararSensor(a){
+  const e=ST[a.punto];if(!e)return"";
+  const s=last(e.id);if(!s)return"";
+  const out=[];
+  for(const r of a.res){
+    if(r.menorLD)continue;
+    if(r.p==="ph"){const dif=Math.abs(r.v-s.ph);out.push(`pH: análisis ${fmt(r.v,1)}, sensor ${fmt(s.ph,1)} → ${dif<=0.5?"coinciden":"no coinciden"}`);}
+    if(r.p==="ce"){const dif=Math.abs(r.v-s.ce)/s.ce;out.push(`Conductividad: análisis ${fmtInt(r.v)}, sensor ${fmtInt(s.ce)} µS/cm → ${dif<=0.25?"coinciden":"no coinciden"}`);}
+  }
+  return out.length?`<div class="info-box small"><b>Comparación con el sensor de ${esc(e.name)}</b> (valor actual del sensor):<br>${out.join("<br>")}</div>`:"";
+}
+function renderAnalisis(){
+  q("#an-cuenta").textContent=`${AN.aportes.length} análisis aportados · ${AN.aportes.filter(a=>a.estado==="Validado").length} validados`;
+  q("#an-lista").innerHTML=AN.aportes.map(a=>{
+    const e=ST[a.punto],cf=confianza(a),cls=a.estado==="Validado"?"s-verde":a.estado==="Observado"?"s-rojo":"s-amarillo";
+    const peor=a.res.map(evalRes).reduce((m,x)=>ORDEN[x.e]>(ORDEN[m]??-1)?x.e:m,"verde");
+    return `<article class="card ticket">
+      <div class="head"><div><span class="tid">${a.id}</span> <span class="tag">${esc(a.tipo)}</span> <span class="conf ${cf.c}">${cf.t}</span>${a.ejemplo?' <span class="tag warn">Ejemplo</span>':""}
+        <h3 style="margin-top:6px">${esc(a.org)}</h3><p class="small muted">${e?esc(e.name):`Lat ${a.lat}, Lon ${a.lon}`} · muestra del ${fecha(new Date(a.fecha).getTime())} · ${esc(a.motivo)}</p></div>
+        <div class="stack" style="gap:6px;justify-items:end"><span class="apill ${cls}">${a.estado}</span><span class="apill s-${peor}" style="font-size:.8rem">${peor==="rojo"?"Hay valores que superan el límite":peor==="amarillo"?"Hay valores cerca del límite":"Valores dentro de lo normal"}</span></div></div>
+      <div class="meta"><div><b>Responsable técnico</b>${esc(a.resp)}</div><div><b>Matrícula o CUIT</b>${esc(a.mat)}</div>${a.acred?`<div><b>Acreditación</b>${esc(a.acred)}</div>`:""}${a.cust?`<div><b>Cadena de custodia</b>${esc(a.cust)}</div>`:""}<div><b>Relación con la minería</b>${esc(a.conflicto)}</div></div>
+      <div class="scroll"><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Límite de referencia</th><th>Qué significa</th><th>Método</th></tr></thead><tbody>
+        ${a.res.map(r=>{const p=parAn(r.p),ev=evalRes(r);return `<tr><td><b>${p.n}</b></td><td class="num">${r.menorLD?`&lt; ${String(r.ld).replace(".",",")}`:String(r.v).replace(".",",")} ${p.u}<br><span class="apill s-${ev.e}" style="font-size:.75rem;padding:2px 8px;margin-top:4px">${ev.t}</span></td><td class="num">${limTxt(p)}</td><td class="small muted">${p.q}</td><td class="small">${esc(r.met||"—")}</td></tr>`;}).join("")}
+      </tbody></table></div>
+      ${compararSensor(a)}
+      ${a.obs?`<p class="small"><b>Observaciones:</b> ${esc(a.obs)}</p>`:""}
+      <details class="extra"><summary>Documentos de respaldo (${a.docs.length}) y sello</summary>
+        <div style="margin-top:8px">${a.docs.map(d=>`<div class="doc"><span><b>${esc(d.tipo)}</b><br><span class="muted">${esc(d.nombre)} · ${fmtInt(d.kb)} KB</span></span><span class="mono" title="Huella SHA-256">${d.hash}</span></div>`).join("")}
+        <div class="doc"><span><b>Sello del aporte</b><br><span class="muted">Une los datos y las huellas de los documentos</span></span><span class="mono">${a.sello||"calculando…"}</span></div></div>
+      </details>
+      <div class="timeline">${a.eventos.map(ev=>`<div class="ev"><p><span class="quien">${esc(ev.quien)}</span> <span class="small muted">${fecha(ev.t)}</span></p><p>${esc(ev.texto)}</p></div>`).join("")}</div>
+      ${a.estado==="En revisión técnica"?`<div class="info-box stack"><span class="small"><b>Revisión técnica</b> (en la demo, como autoridad ambiental)</span><div class="row"><button class="btn" type="button" data-an="validar" data-id="${a.id}">Validar análisis</button><button class="btn sec" type="button" data-an="observar" data-id="${a.id}">Pedir correcciones</button></div></div>`:""}
+    </article>`;}).join("")||`<div class="card"><p class="muted">Todavía no hay análisis aportados.</p></div>`;
+  qq("[data-an]").forEach(b=>b.addEventListener("click",()=>{const a=AN.aportes.find(x=>x.id===b.dataset.id);if(!a)return;
+    if(b.dataset.an==="validar"){a.estado="Validado";eventoAn(a,"Autoridad ambiental","Revisamos el informe, la cadena de custodia y los métodos. El análisis queda validado.");toast(`${a.id} validado.`);}
+    else{a.estado="Observado";eventoAn(a,"Autoridad ambiental","Falta el certificado de acreditación o el protocolo firmado. Se pidió al aportante que lo complete.");toast(`Se pidieron correcciones en ${a.id}.`);}
+    renderAnalisis();}));
+}
+/* Formulario */
+let anDocs=[];
+function filaRes(pid="",v="",met="",ld=""){
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><select class="r-p">${PAR_AN.map(p=>`<option value="${p.id}" ${p.id===pid?"selected":""}>${p.n}</option>`).join("")}</select></td><td><input type="number" class="r-v" step="any" value="${v}" style="width:110px"></td><td class="r-u small muted"></td><td><input type="text" class="r-m" value="${esc(met)}" placeholder="Ej.: SM 4500-H+ B" style="width:150px"></td><td><input type="number" class="r-ld" step="any" value="${ld}" style="width:90px"></td><td><input type="checkbox" class="r-lt" aria-label="Menor al límite de detección"></td><td><button type="button" class="btn sec r-x" style="padding:6px 10px" aria-label="Quitar parámetro">×</button></td>`;
+  const upd=()=>{tr.querySelector(".r-u").textContent=parAn(tr.querySelector(".r-p").value).u||"—";};
+  tr.querySelector(".r-p").addEventListener("change",upd);tr.querySelector(".r-x").addEventListener("click",()=>tr.remove());upd();
+  q("#an-res").appendChild(tr);
+}
+function prepararAnalisis(){
+  const sel=q("#an-punto");
+  if(!sel.options.length){sel.innerHTML=STATIONS.map(e=>`<option value="${e.id}">${esc(e.name)} · ${esc(SUBS[e.sub].name)}</option>`).join("")+`<option value="otro">Otro lugar (cargar coordenadas)</option>`;
+    sel.addEventListener("change",()=>{q("#an-otro").hidden=sel.value!=="otro";});}
+  if(!q("#an-res").children.length){filaRes("ph");filaRes("ce");filaRes("sulf");filaRes("as");}
+  renderAnalisis();
+}
+q("#an-add").addEventListener("click",()=>filaRes("cn"));
+q("#an-ir").addEventListener("click",ev=>{ev.preventDefault();q("#form-an").scrollIntoView({behavior:"smooth"});});
+qq("#form-an input[type=file]").forEach(inp=>inp.addEventListener("change",async()=>{
+  anDocs=anDocs.filter(d=>d.input!==inp.id);
+  for(const f of inp.files){const buf=await f.arrayBuffer();const h=await crypto.subtle.digest("SHA-256",buf);
+    anDocs.push({input:inp.id,tipo:inp.dataset.doc,nombre:f.name,kb:Math.max(1,Math.round(f.size/1024)),hash:Array.from(new Uint8Array(h),x=>x.toString(16).padStart(2,"0")).join("")});}
+  q("#an-docs").innerHTML=anDocs.map(d=>`<div class="doc"><span><b>${esc(d.tipo)}</b><br><span class="muted">${esc(d.nombre)} · ${fmtInt(d.kb)} KB</span></span><span class="mono" title="Huella SHA-256">${d.hash}</span></div>`).join("");
+}));
+q("#form-an").addEventListener("submit",async ev=>{
+  ev.preventDefault();
+  const val=id=>q(id).value.trim(),err=[];
+  if(!val("#an-org"))err.push("la institución");if(!val("#an-resp"))err.push("el responsable técnico");if(!val("#an-mat"))err.push("la matrícula o CUIT");
+  if(!/^\S+@\S+\.\S+$/.test(val("#an-mail")))err.push("un correo válido");if(!val("#an-fecha"))err.push("la fecha de la toma");
+  const punto=val("#an-punto");if(punto==="otro"&&(!val("#an-lat")||!val("#an-lon")))err.push("las coordenadas del lugar");
+  const res=qq("#an-res tr").map(tr=>({p:tr.querySelector(".r-p").value,v:tr.querySelector(".r-v").value===""?null:Number(tr.querySelector(".r-v").value),met:tr.querySelector(".r-m").value.trim(),ld:tr.querySelector(".r-ld").value===""?null:Number(tr.querySelector(".r-ld").value),menorLD:tr.querySelector(".r-lt").checked})).filter(r=>r.v!=null||r.menorLD);
+  if(!res.length)err.push("al menos un resultado");
+  if(res.some(r=>r.menorLD&&r.ld==null))err.push("el límite de detección de los valores marcados como “< LD”");
+  if(!anDocs.some(d=>d.tipo==="Informe firmado"))err.push("el informe firmado en PDF");
+  if(!val("#an-conf"))err.push("tu relación con la actividad minera");
+  if(!q("#an-ddjj").checked)err.push("la declaración jurada");if(!q("#an-pub").checked)err.push("la aceptación de publicar los datos");
+  const box=q("#an-error");
+  if(err.length){box.textContent="Falta completar: "+err.join(", ")+".";box.hidden=false;return;}
+  box.hidden=true;
+  const a=await nuevoAporte({tipo:val("#an-tipo"),org:val("#an-org"),resp:val("#an-resp"),mat:val("#an-mat"),acred:val("#an-acred"),punto:punto==="otro"?null:punto,lat:val("#an-lat"),lon:val("#an-lon"),fecha:val("#an-fecha"),motivo:val("#an-motivo"),tipom:val("#an-tipom"),tomo:val("#an-tomo"),cust:val("#an-cust"),res,docs:anDocs.map(({input,...d})=>d),conflicto:val("#an-conf"),obs:val("#an-obs")});
+  q("#form-an").reset();anDocs=[];q("#an-docs").innerHTML="";q("#an-res").innerHTML="";filaRes("ph");filaRes("ce");filaRes("sulf");filaRes("as");q("#an-otro").hidden=true;
+  renderAnalisis();window.scrollTo({top:0,behavior:"smooth"});toast(`Recibimos el análisis ${a.id}. Queda en revisión técnica.`);
+});
+/* Dos ejemplos para que la sección no arranque vacía (marcados como ejemplo) */
+(async()=>{
+  const dia=864e5,iso=t=>new Date(t).toISOString().slice(0,16);
+  const doc=async(tipo,nombre,kb)=>({tipo,nombre,kb,hash:await sha256("ejemplo:"+nombre)});
+  const b=await nuevoAporte({ejemplo:true,tipo:"Empresa",org:"Empresa operadora (simulación)",resp:"Responsable de Medio Ambiente (ejemplo)",mat:"CUIT 30-00000000-0 (ejemplo)",acred:"",punto:"JB2",fecha:iso(Date.now()-6*dia),motivo:"Plan de monitoreo de la Declaración de Impacto Ambiental",tipom:"Compuesta",tomo:"Equipo de monitoreo de la empresa",cust:"CC-2026-0311",
+    res:[{p:"ph",v:7.2,met:"SM 4500-H+ B"},{p:"ce",v:810,met:"SM 2510 B"},{p:"sulf",v:180,met:"SM 4500-SO4 E"},{p:"as",v:0.006,met:"SM 3114 C"},{p:"cn",v:null,ld:0.005,menorLD:true,met:"SM 4500-CN E"},{p:"mn",v:0.08,met:"SM 3120 B"}],
+    docs:[await doc("Informe firmado","informe-trimestral-ejemplo.pdf",412),await doc("Cadena de custodia","cadena-custodia-ejemplo.pdf",96)],conflicto:"Trabajo para o con la empresa operadora",obs:"Muestreo trimestral exigido por la Declaración de Impacto Ambiental."});
+  const a=await nuevoAporte({ejemplo:true,tipo:"Laboratorio acreditado",org:"Laboratorio universitario (ejemplo)",resp:"Lic. en Química (ejemplo)",mat:"Mat. 0000 (ejemplo)",acred:"LE 000 (ejemplo)",punto:"JB6",fecha:iso(Date.now()-3*dia),motivo:"Investigación",tipom:"Puntual",tomo:"Equipo del laboratorio y monitores comunitarios",cust:"CC-2026-0458",
+    res:[{p:"ph",v:7.9,met:"SM 4500-H+ B"},{p:"ce",v:990,met:"SM 2510 B"},{p:"sdt",v:640,met:"SM 2540 C"},{p:"sulf",v:310,met:"SM 4500-SO4 E"},{p:"as",v:0.008,met:"SM 3114 C"},{p:"cn",v:null,ld:0.005,menorLD:true,met:"SM 4500-CN E"}],
+    docs:[await doc("Informe firmado","informe-laboratorio-ejemplo.pdf",538),await doc("Protocolo del laboratorio","protocolo-ejemplo.pdf",210),await doc("Certificado de acreditación","acreditacion-ejemplo.pdf",120)],conflicto:"No tengo relación con empresas de la zona",obs:"Muestra tomada junto a monitores comunitarios de Jáchal."});
+  a.estado="Validado";eventoAn(a,"Autoridad ambiental","Revisamos el informe, la cadena de custodia y los métodos. El análisis queda validado.");
+  if(view==="tecnico"&&curTab==="analisis")renderAnalisis();
+})();
+/* ---------- Bot de WhatsApp (simulación con la misma conversación que el bot real) ---------- */
+const BOT=(()=>{const module={exports:{}};
+/*BOT-INICIO*/
+// Lógica de la conversación del bot de AquaAbierta (sin dependencias).
+// Recibe el estado de la charla y el mensaje del vecino, devuelve el nuevo estado y las respuestas.
+// La usan el servidor de WhatsApp (servidor.js) y las pruebas (prueba.js).
+
+const MENU =
+  "Hola, soy *AquaAbierta* 💧\n" +
+  "Te cuento cómo está el agua de los ríos de San Juan.\n\n" +
+  "Respondé con un número:\n" +
+  "*1* Ver cómo está el agua\n" +
+  "*2* Avisar algo raro en el agua\n" +
+  "*3* Seguir mi reclamo\n" +
+  "*4* Comprobar que un dato es real\n\n" +
+  "También podés mandarme tu *ubicación* 📍 y te digo cómo está el punto más cercano.";
+
+const SEMAFORO = { verde: "🟢 Normal", amarillo: "🟡 Atención", rojo: "🔴 Alerta" };
+const QUE_VISTE = ["Color raro", "Olor feo", "Espuma", "Peces o animales muertos", "Poca agua", "Otra cosa"];
+
+function distanciaKm(a, b) {
+  const R = 6371, rad = (x) => (x * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function fichaEstacion(e) {
+  const r = e.ultima_lectura || {};
+  let t = `*${e.nombre}*\n${SEMAFORO[e.estado] || "Sin datos"}\n`;
+  if (r.ph != null) t += `• pH: ${r.ph} (normal entre 6,5 y 8,5)\n`;
+  if (r.ce != null) t += `• Sales: ${r.ce} µS/cm\n`;
+  if (r.q != null) t += `• Caudal: ${r.q} m³/s\n`;
+  if (e.estado === "rojo") t += "\n⚠️ Hay un valor fuera de lo normal. Por precaución no uses esta agua para tomar ni para los animales.";
+  if (e.estado === "amarillo") t += "\nHay un valor que conviene mirar de cerca.";
+  if (r.id) t += `\n\nCódigo del dato: ${r.id}`;
+  return t;
+}
+
+/**
+ * @param {object} estado  estado guardado de esta charla ({paso, borrador})
+ * @param {object} msg     {tipo:'texto'|'ubicacion'|'imagen', texto, lat, lon, imagenId, de}
+ * @param {object} datos   funciones para leer/escribir datos: estaciones(), crearReclamo(d), verReclamo(id), verificar(id)
+ * @returns {Promise<{estado:object, respuestas:string[]}>}
+ */
+async function responder(estado, msg, datos) {
+  estado = estado || { paso: "inicio" };
+  const txt = (msg.texto || "").trim();
+  const t = txt.toLowerCase();
+  const out = [];
+
+  if (["menu", "menú", "hola", "inicio", "0", "volver"].includes(t)) {
+    return { estado: { paso: "inicio" }, respuestas: [MENU] };
+  }
+
+  if (msg.tipo === "ubicacion") {
+    const est = await datos.estaciones();
+    const cerca = est
+      .map((e) => ({ e, d: distanciaKm({ lat: msg.lat, lon: msg.lon }, e) }))
+      .sort((a, b) => a.d - b.d)[0];
+    if (estado.paso === "aviso_lugar") {
+      estado.borrador.est = cerca.e.id;
+      estado.paso = "aviso_que";
+      out.push(`Anotado: cerca de *${cerca.e.nombre}* (a ${cerca.d.toFixed(1)} km).`);
+      out.push(preguntaQueViste());
+      return { estado, respuestas: out };
+    }
+    out.push(`El punto de control más cercano está a ${cerca.d.toFixed(1)} km:\n\n${fichaEstacion(cerca.e)}`);
+    out.push("Escribí *menu* para volver.");
+    return { estado: { paso: "inicio" }, respuestas: out };
+  }
+
+  switch (estado.paso) {
+    case "inicio": {
+      if (t === "1") {
+        const est = await datos.estaciones();
+        const lista = est.map((e, i) => `*${i + 1}* ${SEMAFORO[e.estado] || "⚪"} ${e.nombre}`).join("\n");
+        return { estado: { paso: "elegir_estacion" }, respuestas: [`Estos son los puntos de control:\n\n${lista}\n\nRespondé con el número para ver el detalle.`] };
+      }
+      if (t === "2") {
+        const est = await datos.estaciones();
+        const lista = est.map((e, i) => `*${i + 1}* ${e.nombre}`).join("\n");
+        return { estado: { paso: "aviso_lugar", borrador: {} }, respuestas: [`Vamos a cargar tu aviso. ¿Dónde fue?\n\n${lista}\n\nRespondé con el número o mandame tu *ubicación* 📍`] };
+      }
+      if (t === "3") return { estado: { paso: "seguir" }, respuestas: ["Escribí el número de tu reclamo. Por ejemplo: *RA-2026-0041*"] };
+      if (t === "4") return { estado: { paso: "verificar" }, respuestas: ["Escribí el código del dato que querés comprobar. Por ejemplo: *B-12-JB4*"] };
+      return { estado: { paso: "inicio" }, respuestas: [MENU] };
+    }
+    case "elegir_estacion": {
+      const est = await datos.estaciones();
+      const e = est[Number(t) - 1];
+      if (!e) return { estado, respuestas: ["No encontré ese número. Probá de nuevo o escribí *menu*."] };
+      return { estado: { paso: "inicio" }, respuestas: [fichaEstacion(e), "Escribí *menu* para volver."] };
+    }
+    case "aviso_lugar": {
+      const est = await datos.estaciones();
+      const e = est[Number(t) - 1];
+      if (!e) return { estado, respuestas: ["Respondé con el número del lugar o mandame tu ubicación 📍"] };
+      estado.borrador.est = e.id;
+      estado.paso = "aviso_que";
+      return { estado, respuestas: [preguntaQueViste()] };
+    }
+    case "aviso_que": {
+      const n = Number(t);
+      estado.borrador.chips = n >= 1 && n <= QUE_VISTE.length ? [QUE_VISTE[n - 1]] : [];
+      if (!estado.borrador.chips.length) estado.borrador.desc = txt;
+      estado.paso = "aviso_desc";
+      return { estado, respuestas: ["Contame con tus palabras qué viste. Si tenés una *foto*, mandala ahora. Cuando termines escribí *listo*."] };
+    }
+    case "aviso_desc": {
+      if (msg.tipo === "imagen") {
+        estado.borrador.fotos = [...(estado.borrador.fotos || []), msg.imagenId];
+        return { estado, respuestas: ["📷 Foto recibida. Podés mandar otra o escribir *listo*."] };
+      }
+      if (t !== "listo") {
+        estado.borrador.desc = [estado.borrador.desc, txt].filter(Boolean).join(" ");
+        return { estado, respuestas: ["Anotado. Si querés agregar algo más, escribilo. Si no, escribí *listo*."] };
+      }
+      const tk = await datos.crearReclamo({ ...estado.borrador, canal: "whatsapp", contacto: msg.de });
+      let r = `✅ Tu reclamo es el *${tk.id}*.\nLa empresa tiene plazo hasta el *${tk.vence_texto}* para responder por escrito. La autoridad ambiental controla el plazo.`;
+      if (tk.vinculado) r += `\n\nTu aviso coincide con una alerta del sensor (${tk.vinculado}). Quedaron unidos.`;
+      r += "\n\nTe aviso por acá cuando haya una respuesta. Escribí *menu* para volver.";
+      return { estado: { paso: "inicio" }, respuestas: [r] };
+    }
+    case "seguir": {
+      const tk = await datos.verReclamo(txt.toUpperCase());
+      if (!tk) return { estado, respuestas: ["No encontré ese reclamo. Revisá el número o escribí *menu*."] };
+      const ult = tk.eventos[tk.eventos.length - 1];
+      return {
+        estado: { paso: "inicio" },
+        respuestas: [`*${tk.id}* · ${tk.estado}\n${tk.titulo}\n\nÚltima novedad (${ult.quien}):\n${ult.texto}\n\nEscribí *menu* para volver.`],
+      };
+    }
+    case "verificar": {
+      const v = await datos.verificar(txt.toUpperCase());
+      if (!v) return { estado, respuestas: ["No encontré ese dato o todavía se está sellando. Probá en unos segundos."] };
+      return {
+        estado: { paso: "inicio" },
+        respuestas: [v.ok ? `✅ El dato *${v.id}* es real. Coincide con el sello del lote #${v.lote}.` : `❌ El dato *${v.id}* no coincide con su sello.`],
+      };
+    }
+    default:
+      return { estado: { paso: "inicio" }, respuestas: [MENU] };
+  }
+}
+
+function preguntaQueViste() {
+  return "¿Qué viste?\n\n" + QUE_VISTE.map((q, i) => `*${i + 1}* ${q}`).join("\n") + "\n\nRespondé con el número o escribilo.";
+}
+
+module.exports = { responder, MENU, distanciaKm };
+
+/*BOT-FIN*/
+return module.exports;})();
+const charla={estado:null};
+const NIVEL=["verde","amarillo","rojo"];
+function selladaDe(id){for(let i=blocks.length-1;i>=0;i--){const d=blocks[i].data;for(let k=d.length-1;k>=0;k--){const x=d[k];if(x.est===id&&x.ph!==undefined&&!x.fuente)return {b:blocks[i],r:x}}}return null}
+const datosBot={
+  estaciones:async()=>STATIONS.map(e=>{const sel=selladaDe(e.id);const r=sel?sel.r:last(e.id);
+    return {id:e.id,nombre:e.name,lat:GEO.st[e.id][1],lon:GEO.st[e.id][0],estado:NIVEL[evaluate(last(e.id)).level],
+      ultima_lectura:{id:sel?`B-${sel.b.n}-${e.id}`:null,ph:fmt(r.ph,1),ce:fmtInt(r.ce),q:fmt(r.q,1)}}}),
+  crearReclamo:async d=>{const s=ST[d.est];ticketSeq++;const id=`RA-2026-${String(ticketSeq).padStart(4,"0")}`;
+    const a=attribution(s);const kind=a?(a.kind==="early"?"mine":a.kind):"unknown";
+    const desc=[d.chips&&d.chips.length?d.chips.join(", "):"",d.desc||""].filter(Boolean).join(": ")||"Sin descripción";
+    tickets.unshift({id,t:simTime,tipo:"Aviso por WhatsApp",st:s.id,desc:`Aviso de un vecino por WhatsApp: ${desc}.`,estado:0,resp:"Mesa de monitoreo de la cuenca",foto:d.fotos&&d.fotos.length?`${d.fotos.length} por WhatsApp`:null,wa:true,age:0,kind,loc:"WhatsApp"});
+    pending.push({tipo:"reporte",id,estado:"Recibido",t:simTime});renderTickets();
+    return {id,vence_texto:dayhm(simTime+72*3600000),vinculado:null}},
+  verReclamo:async id=>{const tk=tickets.find(t=>t.id===id);if(!tk)return null;
+    return {id:tk.id,estado:ST_TXT[tk.estado],titulo:`${tk.tipo} · ${ST[tk.st].name}`,eventos:[{quien:tk.resp,texto:tk.estado===2?tk.respuesta:tk.estado===1?tk.nota:tk.desc}]}},
+  verificar:async code=>{const m=/^B-(\d+)-([A-Z0-9]+)$/.exec(code);if(!m)return null;const b=blocks[+m[1]];if(!b||!b.data.some(x=>x.est===m[2]))return null;
+    const bad=verifyChain();return {id:code,ok:bad<0||bad>b.n,lote:b.n}},
+};
+const fmtWA=t=>esc(t).replace(/\*([^*\n]+)\*/g,"<b>$1</b>");
+function burbuja(txt,yo){const d=document.createElement("div");d.className="burb "+(yo?"yo":"bot");d.innerHTML=fmtWA(txt)+`<span class="h">${hhmm(Date.now())}</span>`;$("chat").appendChild(d);$("chat").scrollTop=$("chat").scrollHeight}
+async function hablar(msg,mostrar){
+  burbuja(mostrar??msg.texto,true);
+  const {estado,respuestas}=await BOT.responder(charla.estado,msg,datosBot);charla.estado=estado;
+  for(const r of respuestas){await new Promise(z=>setTimeout(z,350));burbuja(r,false)}
+  rapidas();
+}
+function waAviso(tk){if(!$("chat").children.length)return;burbuja(`🔔 Novedad en tu reclamo *${tk.id}*: ya está *Respondido*.\n\n${tk.respuesta}`,false)}
+function rapidas(){
+  const p=charla.estado?.paso||"inicio";let b=[];
+  if(p==="inicio")b=[["1","Ver el agua"],["2","Avisar algo"],["3","Seguir reclamo"],["4","Comprobar dato"],["ubic","📍 Mandar ubicación"]];
+  else if(p==="aviso_lugar")b=[["ubic","📍 Mandar ubicación"],...STATIONS.slice(0,4).map((e,i)=>[String(i+1),e.name])];
+  else if(p==="aviso_que")b=[["1","Color raro"],["2","Olor feo"],["3","Espuma"],["5","Poca agua"]];
+  else if(p==="aviso_desc")b=[["foto","📷 Mandar foto"],["listo","listo"]];
+  else if(p==="seguir")b=tickets.slice(0,3).map(t=>[t.id,t.id]);
+  else if(p==="verificar"){const sel=selladaDe("JB4");if(sel)b=[[`B-${sel.b.n}-JB4`,`B-${sel.b.n}-JB4`]]}
+  b.push(["menu","menú"]);
+  $("rapidas").innerHTML=b.map(([v,t])=>`<button type="button" data-v="${esc(v)}">${esc(t)}</button>`).join("");
+  $("rapidas").querySelectorAll("button").forEach(x=>x.addEventListener("click",()=>{const v=x.dataset.v;
+    if(v==="ubic"){const g=GEO.st.JB4;hablar({tipo:"ubicacion",lat:g[1]+0.004,lon:g[0]+0.004},"📍 Ubicación enviada (cerca de Angualasto)")}
+    else if(v==="foto")hablar({tipo:"imagen",imagenId:"foto-demo"},"📷 Foto");
+    else hablar({tipo:"texto",texto:v})}));
+}
+$("chat-form").addEventListener("submit",ev=>{ev.preventDefault();const v=$("chat-in").value.trim();if(!v)return;$("chat-in").value="";hablar({tipo:"texto",texto:v})});
+function prepararWA(){if(!$("chat").children.length){burbuja(BOT.MENU,false);rapidas()}}
 /* ---------- Rutas y ciclo ---------- */
 let view="vecino";
-function route(){const h=location.hash.replace("#","");view=(h==="tecnico"||h==="provincia")?"tecnico":"vecino";
+const TABS=["mapa","estaciones","satelite","alertas","reportes","analisis","whatsapp","datos","minas"];
+let curTab="mapa";
+function route(){let h=location.hash.replace("#","");if(h==="tecnico"||h==="provincia")h="mapa";
+  view=TABS.includes(h)?"tecnico":"vecino";if(view==="tecnico")curTab=h;
   $("view-vecino").hidden=view!=="vecino";$("view-tecnico").hidden=view!=="tecnico";
-  ["vecino","tecnico"].forEach(v=>$("nav-"+v).classList.toggle("on",v===view));
+  const cur="#"+(view==="vecino"?"vecino":curTab);
+  document.querySelectorAll("nav.menu a").forEach(a=>{if(a.getAttribute("href")===cur){a.setAttribute("aria-current","page");a.scrollIntoView({block:"nearest",inline:"nearest"})}else a.removeAttribute("aria-current")});
+  document.querySelectorAll("#view-tecnico>[data-tab]").forEach(el=>{el.hidden=!el.dataset.tab.split(" ").includes(curTab)});
   bindDemo("vd","v-demo");bindDemo("td","t-demo");
-  if(view==="tecnico"){placeMap("p-map3d-slot");flyTo3d(VIEWS.prov());lastSub=null}
+  if(view==="tecnico"&&curTab==="mapa"){placeMap("p-map3d-slot");flyTo3d(VIEWS.prov())}
+  lastSub=null;
+  if(view==="tecnico"&&curTab==="analisis")prepararAnalisis();
+  if(view==="tecnico"&&curTab==="whatsapp")prepararWA();
   renderAll();window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);
 function renderClock(){$("clock").textContent=`Hora simulada ${dayhm(simTime-STEP)}${paused?" · en pausa":""}`}
